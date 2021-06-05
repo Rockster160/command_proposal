@@ -1,0 +1,37 @@
+.reporting {
+  .nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+    background: $cmd-blue;
+    height: 50px;
+
+    .nav-tab,
+    a {
+      display: inline-block;
+      vertical-align: top;
+      margin: 0;
+      padding: 0 20px;
+      height: 100%;
+      color: white;
+      font-size: 18px;
+      font-weight: normal;
+      line-height: 50px;
+      text-decoration: none;
+      white-space: nowrap;
+
+      input {
+        border-radius: 0;
+        font-size: 18px;
+      }
+    }
+
+    a:hover {
+      background: lighten($cmd-blue, 10%);
+    }
+  }
+
+  .breadcrumbs {}
+}

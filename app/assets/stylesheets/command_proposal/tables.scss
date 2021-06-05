@@ -1,0 +1,127 @@
+// .reporting {
+//   .table {
+//     display: table;
+//     border-spacing: 0 0;
+//     background: white;
+//     width: 100%;
+//     max-width: 100%;
+//     overflow: hidden;
+//
+//     &.fixed {
+//       table-layout: fixed;
+//     }
+//
+//     .thead {
+//       display: table-header-group;
+//     }
+//
+//     .tbody {
+//       display: table-row-group;
+//     }
+//
+//     .tr {
+//       display: table-row;
+//     }
+//
+//     .td,
+//     .th {
+//       display: table-cell;
+//       border: 1px solid $border-grey;
+//
+//       max-width: 100%;
+//       overflow: hidden;
+//       text-align: left;
+//
+//       &.text-center {
+//         text-align: center;
+//       }
+//     }
+//
+//     .link-cell {
+//       color: $text-color;
+//       text-decoration: none;
+//
+//       &:hover {
+//         background: darken($background-grey, 5%);
+//       }
+//     }
+//
+//     &.bordered {
+//       .tbody .tr:nth-child(odd) {
+//         background: $background-grey;
+//       }
+//     }
+//
+//     &.padded {
+//       .link-cell,
+//       .td,
+//       .th {
+//         padding: 20px;
+//       }
+//     }
+//   }
+//
+//   .errors {
+//     .report-title-wrapper {
+//       margin-bottom: 5px;
+//
+//       .report-title {
+//         color: $cmd-blue;
+//       }
+//     }
+//
+//     .report-location {
+//       display: inline-block;
+//       color: orange;
+//     }
+//
+//     .report-message {
+//       padding-top: 5px;
+//       color: grey;
+//     }
+//   }
+//
+//   .section {
+//     &#summary {
+//       .table {
+//         .td:first-of-type {
+//           background: $background-grey;
+//           width: 100px;
+//           color: #AAA;
+//           font-size: 12px;
+//           text-align: right;
+//         }
+//       }
+//     }
+//   }
+//
+//   .filters {
+//     text-align: center;
+//
+//     .filter-table {
+//       display: inline-block;
+//       vertical-align: top;
+//       width: 300px;
+//
+//       .link-cell,
+//       .td,
+//       .th {
+//         padding: 10px;
+//         width: 300px;
+//       }
+//
+//       .th {
+//         text-align: center;
+//       }
+//
+//       .td {
+//         font-size: 14px;
+//
+//         &.selected {
+//           background: darken($background-grey, 10%);
+//         }
+//       }
+//     }
+//   }
+//
+// }

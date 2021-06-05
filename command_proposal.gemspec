@@ -9,16 +9,16 @@ Gem::Specification.new do |spec|
   spec.email         = ["rocco11nicholls@gmail.com"]
 
   spec.summary       = "Gives the ability to run approved commands through a UI in your browser"
-  spec.description   = "Rather than creating rake tasks, which have to go through CI/CD, then some deploy process, eventually make it to production, only to be run once, and then litter your code base- this gem allows you to create command proposals via a UI that can be immediately reviewed by your peers and then run."
+  spec.description   = "Rather than creating rake tasks, which have to go through CI/CD, then some deploy process, eventually make it to production, only to be run once, and then never get deleted and litter your code base- this gem allows you to create command proposals via a UI that can be immediately reviewed by your peers and then run- keeping a history of what happened, when, and what the results were."
   spec.homepage      = "https://github.com/Rockster160/command_proposal"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
-  spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
+  # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/Rockster160/command_proposal"
-  spec.metadata["changelog_uri"] = "https://github.com/Rockster160/command_proposal/CHANGELOG.md"
+  spec.metadata["changelog_uri"] = "https://github.com/Rockster160/command_proposal/blob/master/README.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
