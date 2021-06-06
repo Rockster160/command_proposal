@@ -1,2 +1,92 @@
   [1m[35m (351.7ms)[0m  [1m[35mCREATE DATABASE "command_development" ENCODING = 'utf8'[0m
   [1m[35m (283.7ms)[0m  [1m[35mCREATE DATABASE "command_test" ENCODING = 'utf8'[0m
+  [1m[35m (5.1ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[35m (3.0ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_try_advisory_lock(6795690021978756045)[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to InstallCommandProposal (20210606194944)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (3.4ms)[0m  [1m[35mCREATE TABLE "command_proposal_task" ("id" bigserial primary key, "session_type" integer, "last_executed_at" timestamp, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (3.5ms)[0m  [1m[35mCREATE TABLE "command_proposal_iteration" ("id" bigserial primary key, "task_id" bigint, "args" text, "code" text, "result" text, "status" integer, "author_id" bigint, "approver_id" bigint, "approved_at" timestamp, "started_at" timestamp, "completed_at" timestamp, "stopped_at" timestamp, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_iteration_on_task_id" ON "command_proposal_iteration" ("task_id")[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_iteration_on_author_id" ON "command_proposal_iteration" ("author_id")[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_iteration_on_approver_id" ON "command_proposal_iteration" ("approver_id")[0m
+  [1m[35m (4.2ms)[0m  [1m[35mCREATE TABLE "command_proposal_comment" ("id" bigserial primary key, "iteration_id" bigint, "line_number" integer, "author_id" bigint, "body" text, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_comment_on_iteration_id" ON "command_proposal_comment" ("iteration_id")[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_comment_on_author_id" ON "command_proposal_comment" ("author_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.8ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20210606194944"]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.7ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.8ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "environment"], ["value", "development"], ["created_at", "2021-06-06 19:49:53.630439"], ["updated_at", "2021-06-06 19:49:53.630439"]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(6795690021978756045)[0m
+  [1m[35m (1.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_try_advisory_lock(6795690021978756045)[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to InstallCommandProposal (20210606194944)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (2.0ms)[0m  [1m[35mDROP TABLE "command_proposal_comment"[0m
+  [1m[35m (1.2ms)[0m  [1m[35mDROP TABLE "command_proposal_iteration"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mDROP TABLE "command_proposal_task"[0m
+  [1m[36mActiveRecord::SchemaMigration Destroy (0.5ms)[0m  [1m[31mDELETE FROM "schema_migrations" WHERE "schema_migrations"."version" = $1[0m  [["version", "20210606194944"]]
+  [1m[36mTRANSACTION (2.6ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(6795690021978756045)[0m
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_try_advisory_lock(6795690021978756045)[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_advisory_unlock(6795690021978756045)[0m
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(6795690021978756045)[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to InstallCommandProposal (20210606194944)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (4.7ms)[0m  [1m[35mCREATE TABLE "command_proposal_task" ("id" bigserial primary key, "session_type" integer, "last_executed_at" timestamp, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (3.8ms)[0m  [1m[35mCREATE TABLE "command_proposal_iteration" ("id" bigserial primary key, "task_id" bigint, "args" text, "code" text, "result" text, "status" integer, "author_id" bigint, "approver_id" bigint, "approved_at" timestamp, "started_at" timestamp, "completed_at" timestamp, "stopped_at" timestamp, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_iteration_on_task_id" ON "command_proposal_iteration" ("task_id")[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_iteration_on_author_id" ON "command_proposal_iteration" ("author_id")[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_iteration_on_approver_id" ON "command_proposal_iteration" ("approver_id")[0m
+  [1m[35m (3.6ms)[0m  [1m[35mCREATE TABLE "command_proposal_comment" ("id" bigserial primary key, "iteration_id" bigint, "line_number" integer, "author_id" bigint, "body" text, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (0.9ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_comment_on_iteration_id" ON "command_proposal_comment" ("iteration_id")[0m
+  [1m[35m (0.9ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_comment_on_author_id" ON "command_proposal_comment" ("author_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20210606194944"]]
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.4ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(6795690021978756045)[0m
+  [1m[35m (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(6795690021978756045)[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to InstallCommandProposal (20210606194944)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (1.7ms)[0m  [1m[35mDROP TABLE "command_proposal_comment"[0m
+  [1m[35m (1.2ms)[0m  [1m[35mDROP TABLE "command_proposal_iteration"[0m
+  [1m[35m (0.6ms)[0m  [1m[35mDROP TABLE "command_proposal_task"[0m
+  [1m[36mActiveRecord::SchemaMigration Destroy (0.4ms)[0m  [1m[31mDELETE FROM "schema_migrations" WHERE "schema_migrations"."version" = $1[0m  [["version", "20210606194944"]]
+  [1m[36mTRANSACTION (3.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(6795690021978756045)[0m
+  [1m[35m (0.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_try_advisory_lock(6795690021978756045)[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to InstallCommandProposal (20210606195234)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (3.9ms)[0m  [1m[35mCREATE TABLE "command_proposal_tasks" ("id" bigserial primary key, "session_type" integer, "last_executed_at" timestamp, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (3.0ms)[0m  [1m[35mCREATE TABLE "command_proposal_iterations" ("id" bigserial primary key, "task_id" bigint, "args" text, "code" text, "result" text, "status" integer, "author_id" bigint, "approver_id" bigint, "approved_at" timestamp, "started_at" timestamp, "completed_at" timestamp, "stopped_at" timestamp, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_iterations_on_task_id" ON "command_proposal_iterations" ("task_id")[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_iterations_on_author_id" ON "command_proposal_iterations" ("author_id")[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_iterations_on_approver_id" ON "command_proposal_iterations" ("approver_id")[0m
+  [1m[35m (3.0ms)[0m  [1m[35mCREATE TABLE "command_proposal_comments" ("id" bigserial primary key, "iteration_id" bigint, "line_number" integer, "author_id" bigint, "body" text, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_comments_on_iteration_id" ON "command_proposal_comments" ("iteration_id")[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE INDEX "index_command_proposal_comments_on_author_id" ON "command_proposal_comments" ("author_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20210606195234"]]
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.4ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(6795690021978756045)[0m
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
