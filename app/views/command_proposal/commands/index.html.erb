@@ -1,1 +1,26 @@
-<h1>Hello, World!</h1>
+<div class="medium-container">
+  <%= form_for "" do |f| %>
+    <% if true_param?(:force_stop) %>
+      <%= f.hidden_field :force_stop, value: true %>
+      <h3 class="danger">Edit the command to remove the error, then click update. After saving, Stop All jobs in Sidekiq and allow them to boot back up.</h3>
+    <% else %>
+      <div class="form-group">
+        <%= f.label :description %><br>
+        <%= f.text_area :description %>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <p>Keep in mind, this code will be run as eval- changes will be written to the database and cannot be undone.</p>
+      <p>In order to run code safely, try to use conditionals to verify each step is as you expect.</p>
+      <p>Use `return "Error message"` to stop the code from running in case anything unexpected occurs.</p>
+
+      <p class="danger">Code has already been successfully run, so can not be modified further.</p>
+
+      <%= f.label :proposed_code %><br>
+      <%= f.text_area :proposed_code, class: :command, rows: 20, wrap: :off %>
+    </div>
+
+    <%= f.submit class: "orca-btn" %>
+  <% end %>
+</div>

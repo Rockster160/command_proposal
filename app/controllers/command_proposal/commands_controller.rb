@@ -2,6 +2,7 @@ require_dependency "command_proposal/application_controller"
 
 class ::CommandProposal::CommandsController < ApplicationController
   include ::CommandProposal::ParamsHelper
+  helper ::CommandProposal::ParamsHelper
   # include ::CommandProposal::ProposalHelper
   # helper ::CommandProposal::ProposalHelper
 
