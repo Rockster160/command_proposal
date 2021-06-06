@@ -1,10 +1,13 @@
-# frozen_string_literal: true
+source 'https://rubygems.org'
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-source "https://rubygems.org"
-
-# Specify your gem's dependencies in command_proposal.gemspec
+# Specify your gem's dependencies in command_proposal.gemspec.
 gemspec
 
-gem "rake", "~> 13.0"
+group :development do
+  gem 'pg'
+end
 
-gem "rubocop", "~> 0.80"
+
+# To use a debugger
+# gem 'byebug', group: [:development, :test]

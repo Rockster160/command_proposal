@@ -3,6 +3,7 @@ class InstallSnitchReporting < ActiveRecord::Migration[5.2]
     create_table :command_proposal_task do |t|
       # has_many :iterations
       t.integer :session_type # [line, session, function]
+      t.datetime :last_executed_at
 
       t.timestamps
     end

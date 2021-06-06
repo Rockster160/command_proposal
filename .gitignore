@@ -1,9 +1,11 @@
 /.bundle/
-/.yardoc
-/_yardoc/
-/coverage/
 /doc/
+/log/*.log
 /pkg/
-/spec/reports/
 /tmp/
-/tmp/
+/test/dummy/db/*.pg
+/test/dummy/db/*.pg-*
+/test/dummy/log/*.log
+/test/dummy/storage/
+/test/dummy/tmp/
+.byebug_history

@@ -1,12 +1,14 @@
 require_dependency "command_proposal/application_controller"
 
-class ::CommandProposal::CommandsController < ApplicationController
+class ::CommandProposal::TasksController < ApplicationController
   include ::CommandProposal::ParamsHelper
   helper ::CommandProposal::ParamsHelper
-  # include ::CommandProposal::ProposalHelper
-  # helper ::CommandProposal::ProposalHelper
 
   layout "application"
+
+  def index
+    ::CommandProposal::Task.order(last_executed_at: :desc)
+  end
 
 #   def index
 #     ::CommandProposal::Proposal.warn("Error", some: :data)
