@@ -4,6 +4,6 @@
 # text :body
 
 class CommandProposal::Comment < ApplicationRecord
-  belongs_to :iteration
-  belongs_to :author
+  belongs_to :iteration, belongs_to: :optional
+  belongs_to :author, belongs_to: :optional
 end

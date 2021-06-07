@@ -13,9 +13,9 @@
 
 class CommandProposal::Iteration < ApplicationRecord
   has_many :comments
-  belongs_to :task
-  belongs_to :author
-  belongs_to :approver
+  belongs_to :task, optional: true
+  belongs_to :author, optional: true
+  belongs_to :approver, optional: true
 
   enum status: {
     created:  0,

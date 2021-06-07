@@ -1,6 +1,6 @@
 require "rails/generators/migration"
 
-module SnitchReporting
+module CommandProposal
   module Generators
     class InstallGenerator < ::Rails::Generators::Base
       include Rails::Generators::Migration
@@ -17,7 +17,7 @@ module SnitchReporting
       end
 
       def copy_migrations
-        migration_template "install_snitch_reporting.rb", "db/migrate/install_snitch_reporting.rb"
+        migration_template "install_command_proposal.rb", "db/migrate/install_command_proposal.rb"
       end
     end
   end

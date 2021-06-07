@@ -30,11 +30,11 @@ module CommandProposal
         begin
           stored_stdout = $stdout
           $stdout = StringIO.new
-          res = session.eval(iteration.code) # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
+          result = session.eval(iteration.code) # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
         rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
           iteration.failure = true
 
-          res = results_from_exception(e)
+          result = results_from_exception(e)
         ensure
           output = $stdout.try(:string)
 
@@ -46,7 +46,7 @@ module CommandProposal
 
       def complete
         iteration.completed_at = Time.current
-        iteration.save
+        iteration.save!
         # trigger completed callback
       end
 

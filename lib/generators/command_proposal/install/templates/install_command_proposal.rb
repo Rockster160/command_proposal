@@ -1,6 +1,6 @@
-class InstallSnitchReporting < ActiveRecord::Migration[5.2]
+class InstallCommandProposal < ActiveRecord::Migration[5.2]
   def change
-    create_table :command_proposal_task do |t|
+    create_table :command_proposal_tasks do |t|
       # has_many :iterations
       t.integer :session_type # [line, session, function]
       t.datetime :last_executed_at
@@ -8,7 +8,7 @@ class InstallSnitchReporting < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    create_table :command_proposal_iteration do |t|
+    create_table :command_proposal_iterations do |t|
       # has_many :comments
       t.belongs_to :task
       t.text :args
@@ -25,7 +25,7 @@ class InstallSnitchReporting < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    create_table :command_proposal_comment do |t|
+    create_table :command_proposal_comments do |t|
       t.belongs_to :iteration
       t.integer :line_number
       t.belongs_to :author
