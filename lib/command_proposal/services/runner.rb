@@ -6,8 +6,6 @@ module CommandProposal
       attr_accessor :task, :iteration, :session, :success
 
       def initialize(iteration, session=nil)
-        # Call this when proposal is created
-        # ::CommandProposal.configuration.proposal_callback&.call(@iteration)
         @iteration = iteration
         # @task = @iteration.task
         @session = session || binding

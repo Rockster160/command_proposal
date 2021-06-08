@@ -1,7 +1,9 @@
-class InstallCommandProposal < ActiveRecord::Migration[5.2]
+class InstallCommandProposal < ActiveRecord::Migration[5.0]
   def change
     create_table :command_proposal_tasks do |t|
       # has_many :iterations
+      t.text :name
+      t.text :description
       t.integer :session_type # [line, session, function]
       t.datetime :last_executed_at
 
@@ -15,7 +17,7 @@ class InstallCommandProposal < ActiveRecord::Migration[5.2]
       t.text :code
       t.text :result
       t.integer :status # [created approved started failed success]
-      t.belongs_to :author
+      t.belongs_to :requester
       t.belongs_to :approver
       t.datetime :approved_at
       t.datetime :started_at

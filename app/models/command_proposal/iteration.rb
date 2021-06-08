@@ -4,18 +4,22 @@
 # text :code
 # text :result
 # integer :status
-# belongs_to :author
+# belongs_to :requester
 # belongs_to :approver
 # datetime :approved_at
 # datetime :started_at
 # datetime :completed_at
 # datetime :stopped_at
 
-class CommandProposal::Iteration < ApplicationRecord
+require "command_proposal/service/external_belong"
+
+class ::CommandProposal::Iteration < ApplicationRecord
+  include ::CommandProposal::Service::ExternalBelong
+
   has_many :comments
-  belongs_to :task, optional: true
-  belongs_to :author, optional: true
-  belongs_to :approver, optional: true
+  belongs_to :task
+  external_belongs_to :requester
+  external_belongs_to :approver
 
   enum status: {
     created:  nil,
@@ -24,4 +28,13 @@ class CommandProposal::Iteration < ApplicationRecord
     failed:   2,
     success:  3,
   }
+
+  delegate :name, to: :task
+  delegate :description, to: :task
+
+  def line_count
+    return 0 if code.blank?
+
+    code.count("\n")
+  end
 end

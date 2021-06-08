@@ -3,7 +3,11 @@
 # belongs_to :author
 # text :body
 
-class CommandProposal::Comment < ApplicationRecord
+require "command_proposal/service/external_belong"
+
+class ::CommandProposal::Comment < ApplicationRecord
+  include ::CommandProposal::Service::ExternalBelong
+
   belongs_to :iteration, belongs_to: :optional
-  belongs_to :author, belongs_to: :optional
+  external_belongs_to :author
 end

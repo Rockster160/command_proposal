@@ -7,7 +7,52 @@ class ::CommandProposal::TasksController < ApplicationController
   layout "application"
 
   def index
-    ::CommandProposal::Task.order(last_executed_at: :desc)
+    @tasks = ::CommandProposal::Task.includes(:iterations).order(last_executed_at: :desc)
+  end
+
+  def show
+    @task = ::CommandProposal::Task.find(params[:id])
+  end
+
+  def new
+    @task = ::CommandProposal::Task.new
+
+    render partial: "form"
+  end
+
+  def create
+    @task = ::CommandProposal::Task.new(task_params.except(:code))
+
+    # Cannot create the iteration until the task is created, save save then update
+    if @task.save && @task.update(task_params)
+      ::CommandProposal.configuration.proposal_callback&.call(@task.last_run)
+
+      redirect_to @task
+    else
+      # TODO: Display errors
+      render partial: "form"
+    end
+  end
+
+  def update
+    @task = ::CommandProposal::Task.find(params[:id])
+
+    if @task.update(task_params)
+      redirect_to @task
+    else
+      # TODO: Display errors
+      render partial: "form"
+    end
+  end
+
+  private
+
+  def task_params
+    params.require(:task).permit(
+      :name,
+      :description,
+      :code,
+    )
   end
 
 #   def index

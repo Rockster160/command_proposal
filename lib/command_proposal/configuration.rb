@@ -3,6 +3,8 @@ module CommandProposal
     attr_accessor(
       # Required
       :user_class,
+      :role_scope,
+      :user_name,
       # Default
       :approval_required,
       # Optional
@@ -14,6 +16,8 @@ module CommandProposal
     def initialize
       # Required
       @user_class = nil
+      @role_scope = nil
+      @user_name = nil
 
       # Default
       @approval_required = true

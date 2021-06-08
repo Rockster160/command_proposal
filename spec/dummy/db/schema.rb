@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_06_195234) do
+ActiveRecord::Schema.define(version: 2021_06_08_214455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "command_proposal_comments", force: :cascade do |t|
-    t.bigint "iteration_id"
+  create_table "command_proposal_comments", id: :serial, force: :cascade do |t|
+    t.integer "iteration_id"
     t.integer "line_number"
-    t.bigint "author_id"
+    t.integer "author_id"
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -26,14 +26,14 @@ ActiveRecord::Schema.define(version: 2021_06_06_195234) do
     t.index ["iteration_id"], name: "index_command_proposal_comments_on_iteration_id"
   end
 
-  create_table "command_proposal_iterations", force: :cascade do |t|
-    t.bigint "task_id"
+  create_table "command_proposal_iterations", id: :serial, force: :cascade do |t|
+    t.integer "task_id"
     t.text "args"
     t.text "code"
     t.text "result"
     t.integer "status"
-    t.bigint "author_id"
-    t.bigint "approver_id"
+    t.integer "requester_id"
+    t.integer "approver_id"
     t.datetime "approved_at"
     t.datetime "started_at"
     t.datetime "completed_at"
@@ -41,11 +41,13 @@ ActiveRecord::Schema.define(version: 2021_06_06_195234) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["approver_id"], name: "index_command_proposal_iterations_on_approver_id"
-    t.index ["author_id"], name: "index_command_proposal_iterations_on_author_id"
+    t.index ["requester_id"], name: "index_command_proposal_iterations_on_requester_id"
     t.index ["task_id"], name: "index_command_proposal_iterations_on_task_id"
   end
 
-  create_table "command_proposal_tasks", force: :cascade do |t|
+  create_table "command_proposal_tasks", id: :serial, force: :cascade do |t|
+    t.text "name"
+    t.text "description"
     t.integer "session_type"
     t.datetime "last_executed_at"
     t.datetime "created_at", null: false

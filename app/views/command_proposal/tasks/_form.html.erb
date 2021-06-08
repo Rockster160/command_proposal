@@ -1,0 +1,36 @@
+<div class="skinny-container">
+  <%= form_for(@task) do |f| %>
+    <div class="form-title">
+      <%= @task.name || "New Task" %>
+    </div>
+
+    <div class="form-fields">
+      <div class="form-field">
+        <% if @task.persisted? %>
+          <a href="<%= task_path(@task) %>" class="btn">&larr; Back to Task</a>
+        <% else %>
+          <a href="<%= tasks_path %>" class="btn">&larr; Back to Tasks</a>
+        <% end %>
+      </div>
+
+      <div class="form-field">
+        <%= f.label :name %>
+        <%= f.text_field :name %>
+      </div>
+
+      <div class="form-field">
+        <%= f.label :description %>
+        <%= f.text_field :description %>
+      </div>
+
+      <div class="form-field">
+        <%= f.label :code %>
+        <%= f.text_area :code, class: :code, rows: [@task.line_count.to_i + 1, 10].max %>
+      </div>
+
+      <div class="form-submission">
+        <%= f.submit %>
+      </div>
+    </div>
+  <% end %>
+</div>

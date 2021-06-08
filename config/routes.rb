@@ -1,5 +1,5 @@
 CommandProposal::Engine.routes.draw do
   root to: "tasks#index"
 
-  resources :tasks
+  resources :tasks, path: "/"
 end
