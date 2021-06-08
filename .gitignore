@@ -3,9 +3,9 @@
 /log/*.log
 /pkg/
 /tmp/
-/test/dummy/db/*.pg
-/test/dummy/db/*.pg-*
-/test/dummy/log/*.log
-/test/dummy/storage/
-/test/dummy/tmp/
+/spec/dummy/db/*.pg
+/spec/dummy/db/*.pg-*
+/spec/dummy/log/*.log
+/spec/dummy/storage/
+/spec/dummy/tmp/
 .byebug_history
