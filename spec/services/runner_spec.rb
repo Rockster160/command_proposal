@@ -25,6 +25,8 @@ RSpec.describe ::CommandProposal::Services::Runner do
   context "without approval" do
     it "does not run the function" do
       expect(subject).to_not receive(:run)
+      expect(DummyCallerBack).not_to receive(:success)
+      expect(DummyCallerBack).not_to receive(:failed)
 
       expect { execute }.to raise_error(::CommandProposal::Error)
       iteration.reload
@@ -40,6 +42,8 @@ RSpec.describe ::CommandProposal::Services::Runner do
 
     it "shows the output of the function" do
       expect(subject).to receive(:run).and_call_original
+      expect(DummyCallerBack).to receive(:success)
+      expect(DummyCallerBack).not_to receive(:failed)
 
       execute
       iteration.reload
@@ -55,6 +59,8 @@ RSpec.describe ::CommandProposal::Services::Runner do
 
     it "returns output before the error and the error message" do
       expect(subject).to receive(:run).and_call_original
+      expect(DummyCallerBack).not_to receive(:success)
+      expect(DummyCallerBack).to receive(:failed)
 
       execute
       iteration.reload

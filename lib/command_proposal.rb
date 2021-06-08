@@ -5,10 +5,6 @@ require "command_proposal/services/runner"
 
 module CommandProposal
   class Error < StandardError; end
-  class << self
-    attr_accessor :configuration
-  end
-
   def self.configuration
     @configuration ||= ::CommandProposal::Configuration.new
   end

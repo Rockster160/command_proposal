@@ -1269,3 +1269,144 @@
   [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
   [1m[36mCommandProposal::Iteration Load (0.2ms)[0m  [1m[34mSELECT "command_proposal_iterations".* FROM "command_proposal_iterations" WHERE "command_proposal_iterations"."id" = $1 LIMIT $2[0m  [["id", 69], ["LIMIT", 1]]
   [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1[0m  [["key", "schema_sha1"]]
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Task Create (0.5ms)[0m  [1m[32mINSERT INTO "command_proposal_tasks" ("session_type", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["session_type", 1], ["created_at", "2021-06-08 01:06:58.359874"], ["updated_at", "2021-06-08 01:06:58.359874"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Create (0.7ms)[0m  [1m[32mINSERT INTO "command_proposal_iterations" ("task_id", "code", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["task_id", 95], ["code", "a = 1\nputs 'Hello, World!'\na + 1"], ["created_at", "2021-06-08 01:06:58.379170"], ["updated_at", "2021-06-08 01:06:58.379170"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Load (0.5ms)[0m  [1m[34mSELECT "command_proposal_iterations".* FROM "command_proposal_iterations" WHERE "command_proposal_iterations"."id" = $1 LIMIT $2[0m  [["id", 70], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Task Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_tasks" ("session_type", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["session_type", 1], ["created_at", "2021-06-08 01:06:58.421121"], ["updated_at", "2021-06-08 01:06:58.421121"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_iterations" ("task_id", "code", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["task_id", 96], ["code", "a = 1\nputs 'Hello, World!'\na + 1"], ["created_at", "2021-06-08 01:06:58.422562"], ["updated_at", "2021-06-08 01:06:58.422562"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.4ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "status" = $1, "updated_at" = $2 WHERE "command_proposal_iterations"."id" = $3[0m  [["status", 0], ["updated_at", "2021-06-08 01:06:58.423972"], ["id", 71]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "status" = $1, "started_at" = $2, "updated_at" = $3 WHERE "command_proposal_iterations"."id" = $4[0m  [["status", 1], ["started_at", "2021-06-08 01:06:58.425693"], ["updated_at", "2021-06-08 01:06:58.425918"], ["id", 71]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "result" = $1, "status" = $2, "completed_at" = $3, "updated_at" = $4 WHERE "command_proposal_iterations"."id" = $5[0m  [["result", "Hello, World!\n\n2"], ["status", 3], ["completed_at", "2021-06-08 01:06:58.427303"], ["updated_at", "2021-06-08 01:06:58.427482"], ["id", 71]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Load (0.3ms)[0m  [1m[34mSELECT "command_proposal_iterations".* FROM "command_proposal_iterations" WHERE "command_proposal_iterations"."id" = $1 LIMIT $2[0m  [["id", 71], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Task Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_tasks" ("session_type", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["session_type", 1], ["created_at", "2021-06-08 01:06:58.432519"], ["updated_at", "2021-06-08 01:06:58.432519"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_iterations" ("task_id", "code", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["task_id", 97], ["code", "a = 1\nputs 'Hello, World!'\na + 1"], ["created_at", "2021-06-08 01:06:58.434008"], ["updated_at", "2021-06-08 01:06:58.434008"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "code" = $1, "status" = $2, "updated_at" = $3 WHERE "command_proposal_iterations"."id" = $4[0m  [["code", "a = 1\nputs 'Hello, World!'\nb + 1"], ["status", 0], ["updated_at", "2021-06-08 01:06:58.435402"], ["id", 72]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "status" = $1, "started_at" = $2, "updated_at" = $3 WHERE "command_proposal_iterations"."id" = $4[0m  [["status", 1], ["started_at", "2021-06-08 01:06:58.437001"], ["updated_at", "2021-06-08 01:06:58.437186"], ["id", 72]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.4ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "result" = $1, "status" = $2, "completed_at" = $3, "updated_at" = $4 WHERE "command_proposal_iterations"."id" = $5[0m  [["result", "Hello, World!\n\nNameError: undefined local variable or method `b'\n\n>> Command Trace\n3: b + 1\n\n"], ["status", 2], ["completed_at", "2021-06-08 01:06:58.439485"], ["updated_at", "2021-06-08 01:06:58.439965"], ["id", 72]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Load (0.2ms)[0m  [1m[34mSELECT "command_proposal_iterations".* FROM "command_proposal_iterations" WHERE "command_proposal_iterations"."id" = $1 LIMIT $2[0m  [["id", 72], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1[0m  [["key", "schema_sha1"]]
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Task Create (0.5ms)[0m  [1m[32mINSERT INTO "command_proposal_tasks" ("session_type", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["session_type", 1], ["created_at", "2021-06-08 01:10:49.860614"], ["updated_at", "2021-06-08 01:10:49.860614"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Create (0.5ms)[0m  [1m[32mINSERT INTO "command_proposal_iterations" ("task_id", "code", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["task_id", 98], ["code", "a = 1\nputs 'Hello, World!'\na + 1"], ["created_at", "2021-06-08 01:10:49.878206"], ["updated_at", "2021-06-08 01:10:49.878206"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Load (0.5ms)[0m  [1m[34mSELECT "command_proposal_iterations".* FROM "command_proposal_iterations" WHERE "command_proposal_iterations"."id" = $1 LIMIT $2[0m  [["id", 73], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Task Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_tasks" ("session_type", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["session_type", 1], ["created_at", "2021-06-08 01:10:49.921884"], ["updated_at", "2021-06-08 01:10:49.921884"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_iterations" ("task_id", "code", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["task_id", 99], ["code", "a = 1\nputs 'Hello, World!'\na + 1"], ["created_at", "2021-06-08 01:10:49.923351"], ["updated_at", "2021-06-08 01:10:49.923351"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.4ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "status" = $1, "updated_at" = $2 WHERE "command_proposal_iterations"."id" = $3[0m  [["status", 0], ["updated_at", "2021-06-08 01:10:49.924794"], ["id", 74]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "status" = $1, "started_at" = $2, "updated_at" = $3 WHERE "command_proposal_iterations"."id" = $4[0m  [["status", 1], ["started_at", "2021-06-08 01:10:49.926592"], ["updated_at", "2021-06-08 01:10:49.926822"], ["id", 74]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "result" = $1, "status" = $2, "completed_at" = $3, "updated_at" = $4 WHERE "command_proposal_iterations"."id" = $5[0m  [["result", "Hello, World!\n\n2"], ["status", 3], ["completed_at", "2021-06-08 01:10:49.928265"], ["updated_at", "2021-06-08 01:10:49.928428"], ["id", 74]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Load (0.3ms)[0m  [1m[34mSELECT "command_proposal_iterations".* FROM "command_proposal_iterations" WHERE "command_proposal_iterations"."id" = $1 LIMIT $2[0m  [["id", 74], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Task Create (0.2ms)[0m  [1m[32mINSERT INTO "command_proposal_tasks" ("session_type", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["session_type", 1], ["created_at", "2021-06-08 01:10:49.933100"], ["updated_at", "2021-06-08 01:10:49.933100"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_iterations" ("task_id", "code", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["task_id", 100], ["code", "a = 1\nputs 'Hello, World!'\na + 1"], ["created_at", "2021-06-08 01:10:49.934537"], ["updated_at", "2021-06-08 01:10:49.934537"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "code" = $1, "status" = $2, "updated_at" = $3 WHERE "command_proposal_iterations"."id" = $4[0m  [["code", "a = 1\nputs 'Hello, World!'\nb + 1"], ["status", 0], ["updated_at", "2021-06-08 01:10:49.935848"], ["id", 75]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "status" = $1, "started_at" = $2, "updated_at" = $3 WHERE "command_proposal_iterations"."id" = $4[0m  [["status", 1], ["started_at", "2021-06-08 01:10:49.937496"], ["updated_at", "2021-06-08 01:10:49.937671"], ["id", 75]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.4ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "result" = $1, "status" = $2, "completed_at" = $3, "updated_at" = $4 WHERE "command_proposal_iterations"."id" = $5[0m  [["result", "Hello, World!\n\nNameError: undefined local variable or method `b'\n\n>> Command Trace\n3: b + 1\n\n"], ["status", 2], ["completed_at", "2021-06-08 01:10:49.940223"], ["updated_at", "2021-06-08 01:10:49.940476"], ["id", 75]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Load (0.3ms)[0m  [1m[34mSELECT "command_proposal_iterations".* FROM "command_proposal_iterations" WHERE "command_proposal_iterations"."id" = $1 LIMIT $2[0m  [["id", 75], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1[0m  [["key", "schema_sha1"]]
+  [1m[35m (0.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Task Create (0.7ms)[0m  [1m[32mINSERT INTO "command_proposal_tasks" ("session_type", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["session_type", 1], ["created_at", "2021-06-08 01:13:14.950047"], ["updated_at", "2021-06-08 01:13:14.950047"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Create (0.7ms)[0m  [1m[32mINSERT INTO "command_proposal_iterations" ("task_id", "code", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["task_id", 101], ["code", "a = 1\nputs 'Hello, World!'\na + 1"], ["created_at", "2021-06-08 01:13:14.973319"], ["updated_at", "2021-06-08 01:13:14.973319"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Load (0.5ms)[0m  [1m[34mSELECT "command_proposal_iterations".* FROM "command_proposal_iterations" WHERE "command_proposal_iterations"."id" = $1 LIMIT $2[0m  [["id", 76], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Task Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_tasks" ("session_type", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["session_type", 1], ["created_at", "2021-06-08 01:13:15.019920"], ["updated_at", "2021-06-08 01:13:15.019920"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_iterations" ("task_id", "code", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["task_id", 102], ["code", "a = 1\nputs 'Hello, World!'\na + 1"], ["created_at", "2021-06-08 01:13:15.021487"], ["updated_at", "2021-06-08 01:13:15.021487"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.4ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "status" = $1, "updated_at" = $2 WHERE "command_proposal_iterations"."id" = $3[0m  [["status", 0], ["updated_at", "2021-06-08 01:13:15.022956"], ["id", 77]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.4ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "status" = $1, "started_at" = $2, "updated_at" = $3 WHERE "command_proposal_iterations"."id" = $4[0m  [["status", 1], ["started_at", "2021-06-08 01:13:15.024922"], ["updated_at", "2021-06-08 01:13:15.025140"], ["id", 77]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "result" = $1, "status" = $2, "completed_at" = $3, "updated_at" = $4 WHERE "command_proposal_iterations"."id" = $5[0m  [["result", "Hello, World!\n\n2"], ["status", 3], ["completed_at", "2021-06-08 01:13:15.027129"], ["updated_at", "2021-06-08 01:13:15.027344"], ["id", 77]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Load (0.3ms)[0m  [1m[34mSELECT "command_proposal_iterations".* FROM "command_proposal_iterations" WHERE "command_proposal_iterations"."id" = $1 LIMIT $2[0m  [["id", 77], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Task Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_tasks" ("session_type", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["session_type", 1], ["created_at", "2021-06-08 01:13:15.032131"], ["updated_at", "2021-06-08 01:13:15.032131"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Create (0.3ms)[0m  [1m[32mINSERT INTO "command_proposal_iterations" ("task_id", "code", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["task_id", 103], ["code", "a = 1\nputs 'Hello, World!'\na + 1"], ["created_at", "2021-06-08 01:13:15.033717"], ["updated_at", "2021-06-08 01:13:15.033717"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "code" = $1, "status" = $2, "updated_at" = $3 WHERE "command_proposal_iterations"."id" = $4[0m  [["code", "a = 1\nputs 'Hello, World!'\nb + 1"], ["status", 0], ["updated_at", "2021-06-08 01:13:15.035449"], ["id", 78]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.3ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "status" = $1, "started_at" = $2, "updated_at" = $3 WHERE "command_proposal_iterations"."id" = $4[0m  [["status", 1], ["started_at", "2021-06-08 01:13:15.037123"], ["updated_at", "2021-06-08 01:13:15.037337"], ["id", 78]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Update (0.4ms)[0m  [1m[33mUPDATE "command_proposal_iterations" SET "result" = $1, "status" = $2, "completed_at" = $3, "updated_at" = $4 WHERE "command_proposal_iterations"."id" = $5[0m  [["result", "Hello, World!\n\nNameError: undefined local variable or method `b'\n\n>> Command Trace\n3: b + 1\n\n"], ["status", 2], ["completed_at", "2021-06-08 01:13:15.040223"], ["updated_at", "2021-06-08 01:13:15.040463"], ["id", 78]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mCommandProposal::Iteration Load (0.2ms)[0m  [1m[34mSELECT "command_proposal_iterations".* FROM "command_proposal_iterations" WHERE "command_proposal_iterations"."id" = $1 LIMIT $2[0m  [["id", 78], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
