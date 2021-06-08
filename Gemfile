@@ -8,6 +8,10 @@ group :development do
   gem 'pg'
 end
 
+group :development, :test do
+  gem 'pry-rails'
+end
+
 
 # To use a debugger
 # gem 'byebug', group: [:development, :test]

@@ -18,10 +18,10 @@ class CommandProposal::Iteration < ApplicationRecord
   belongs_to :approver, optional: true
 
   enum status: {
-    created:  0,
-    approved: 1,
-    started:  2,
-    failed:   3,
-    success:  4,
+    created:  nil,
+    approved: 0,
+    started:  1,
+    failed:   2,
+    success:  3,
   }
 end
