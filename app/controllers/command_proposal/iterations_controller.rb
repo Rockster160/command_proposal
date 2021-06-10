@@ -1,55 +1,50 @@
 require_dependency "command_proposal/application_controller"
 
-class ::CommandProposal::TasksController < ApplicationController
+class ::CommandProposal::IterationsController < ApplicationController
   include ::CommandProposal::ParamsHelper
   helper ::CommandProposal::ParamsHelper
 
   layout "application"
 
-  def index
-    @tasks = ::CommandProposal::Task.includes(:iterations).order(last_executed_at: :desc)
-  end
+  # def index
+  #   # @iterations = ::CommandProposal::Iteration.includes(:iterations).order(last_executed_at: :desc)
+  # end
 
-  def show
-    @task = ::CommandProposal::Task.find(params[:id])
-    @iteration = @task.current_iteration
-  end
-
-  def new
-    @task = ::CommandProposal::Task.new
-
-    render partial: "form"
-  end
-
-  def edit
-    @task = ::CommandProposal::Task.find(params[:id])
-
-    render partial: "form"
-  end
-
-  def create
-    @task = ::CommandProposal::Task.new(task_params.except(:code))
-
-    # Cannot create the iteration until the task is created, save save then update
-    if @task.save && @task.update(task_params)
-      ::CommandProposal.configuration.proposal_callback&.call(@task.last_run)
-
-      redirect_to @task
-    else
-      # TODO: Display errors
-      render partial: "form"
-    end
-  end
+  # def show
+  #   @iteration = ::CommandProposal::Iteration.find(params[:id])
+  #   @task = @iteration.task
+  # end
+  #
+  # def new
+  #   # @iteration = ::CommandProposal::Iteration.new
+  #
+  #   # render partial: "form"
+  # end
+  #
+  # def create
+  #   @iteration = ::CommandProposal::Iteration.new(task_params.except(:code))
+  #
+  #   # Cannot create the iteration until the task is created, save save then update
+  #   if @iteration.save && @iteration.update(task_params)
+  #     ::CommandProposal.configuration.proposal_callback&.call(@iteration.last_run)
+  #
+  #     redirect_to @iteration
+  #   else
+  #     # TODO: Display errors
+  #     render partial: "form"
+  #   end
+  # end
 
   def update
-    @task = ::CommandProposal::Task.find(params[:id])
+    @iteration = ::CommandProposal::Iteration.find(params[:id])
 
-    if @task.update(task_params)
-      redirect_to @task
-    else
-      # TODO: Display errors
-      render partial: "form"
-    end
+    # TODO: REMOVE THIS! Should only be approved by somebody else
+    @iteration.update(status: :approved)
+
+    # Should be async
+    ::CommandProposal::Services::Runner.new(@iteration).execute
+
+    redirect_to @iteration.task
   end
 
   private

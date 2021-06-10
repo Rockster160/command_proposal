@@ -81,7 +81,9 @@ module CommandProposal
         end.compact
         error_info += [">> Command Trace"] + eval_trace + ["\n"] if eval_trace.any?
 
-        app_trace = backtrace.select { |row| row.include?("/app/") }.presence || []
+        app_trace = backtrace.select { |row|
+          row.include?("/app/") && !row.match?(/command_proposal\/(lib|app)/)
+        }.presence || []
         error_info += [">> App Trace"] + app_trace + ["\n"] if app_trace.any?
 
         error_info.join("\n")
@@ -89,6 +91,9 @@ module CommandProposal
 
       def full_trace_from_exception(exception)
         trace = exception.try(:backtrace).presence
+        return trace if trace.present?
+
+        trace = @session.send(:caller).dup
         return trace if trace.present?
 
         trace = caller.dup

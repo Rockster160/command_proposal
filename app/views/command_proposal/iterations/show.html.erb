@@ -2,12 +2,7 @@
 <h3><%= @task.name %></h3>
 <p><%= @task.description %></p>
 <div class="command"><%= @task.code %></div>
-<% if @iteration.present? %>
-  <br>
-  <div class="command"><%= @iteration.result %></div>
-<% end %>
 
-<%= link_to "Run", iteration_path(@task.current_iteration), class: "btn", method: :patch %>
 
 <%
 =begin

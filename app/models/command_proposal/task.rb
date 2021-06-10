@@ -17,7 +17,7 @@ class ::CommandProposal::Task < ApplicationRecord
   delegate :code, to: :current_iteration, allow_nil: true
 
   def current_iteration
-    iterations.order(completed_at: :desc).first
+    iterations.order(created_at: :desc).first
   end
 
   def current_iteration_at
