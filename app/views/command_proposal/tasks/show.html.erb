@@ -7,6 +7,12 @@
   <div class="command"><%= @iteration.result %></div>
 <% end %>
 
+<br>
+<div class="terminal">
+  <div class="line">sup</div>
+  <div contenteditable="true" class="line" name="name" rows="1"></div>
+</div>
+
 <%= link_to "Run", iteration_path(@task.current_iteration), class: "btn", method: :patch %>
 
 <%

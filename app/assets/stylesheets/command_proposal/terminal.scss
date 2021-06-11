@@ -1,0 +1,42 @@
+.terminal {
+  font-size: 0;
+  display: block;
+  position: relative;
+  background: black;
+  padding: 10px 20px;
+  padding-left: 40px;
+  overflow-x: auto;
+  overflow-y: visible;
+  color: lime;
+  font-family: monospace;
+  text-align: left;
+  white-space: nowrap;
+  white-space: pre;
+
+  .line {
+    counter-increment: line-count;
+    font-size: 16px;
+    padding-left: 5px;
+    position: relative;
+
+    &:before {
+      content: "[" counter(line-count) "]>";
+      position: absolute;
+      left: -40px;
+      top: 3px;
+      width: 40px;
+      font-size: 10px;
+      vertical-align: middle;
+      text-align: right;
+    }
+
+    &:focus {
+      outline: none !important;
+    }
+  }
+
+  *::selection {
+    background: lime;
+    color: black;
+  }
+}

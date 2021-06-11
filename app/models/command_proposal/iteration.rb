@@ -26,7 +26,8 @@ class ::CommandProposal::Iteration < ApplicationRecord
     approved: 0,
     started:  1,
     failed:   2,
-    success:  3,
+    stopped:  3,
+    success:  4,
   }
 
   delegate :name, to: :task

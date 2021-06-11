@@ -8,8 +8,8 @@ class ::CommandProposal::Task < ApplicationRecord
   has_many :iterations
 
   enum session_type: {
-    line:     0,
-    task:     1,
+    task:     0,
+    console:  1,
     function: 2,
   }
 
