@@ -20,6 +20,22 @@ class ::CommandProposal::IterationsController < ApplicationController
   #
   #   # render partial: "form"
   # end
+
+  def create
+    # Can only be used by console tasks- runs line-by-line functions
+    @task = ::CommandProposal::Task.find(params[:task_id])
+
+    @task.update(code: params[:code])
+    @iteration = @task.current_iteration
+    @iteration.update(status: :approved)
+
+    # sync
+    ::CommandProposal::Services::Runner.new(@iteration).execute
+
+    render json: {
+      result: @iteration.result
+    }
+  end
   #
   # def create
   #   @iteration = ::CommandProposal::Iteration.new(task_params.except(:code))

@@ -79,12 +79,12 @@ module CommandProposal
           error_line = @iteration.code.split("\n")[eval_row_number.to_i - 1]
           "#{eval_row_number}: #{error_line}" if error_line.present?
         end.compact
-        error_info += [">> Command Trace"] + eval_trace + ["\n"] if eval_trace.any?
+        error_info += ["\n>> Command Trace"] + eval_trace if eval_trace.any?
 
         app_trace = backtrace.select { |row|
           row.include?("/app/") && !row.match?(/command_proposal\/(lib|app)/)
         }.presence || []
-        error_info += [">> App Trace"] + app_trace + ["\n"] if app_trace.any?
+        error_info += ["\n>> App Trace"] + app_trace if app_trace.any?
 
         error_info.join("\n")
       end

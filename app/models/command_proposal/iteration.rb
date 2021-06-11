@@ -11,6 +11,8 @@
 # datetime :completed_at
 # datetime :stopped_at
 
+# ADD: iteration_count?
+
 require "command_proposal/service/external_belong"
 
 class ::CommandProposal::Iteration < ApplicationRecord

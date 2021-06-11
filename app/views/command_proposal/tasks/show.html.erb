@@ -8,9 +8,9 @@
 <% end %>
 
 <br>
-<div class="terminal">
-  <div class="line">sup</div>
-  <div contenteditable="true" class="line" name="name" rows="1"></div>
+<div class="terminal" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>">
+  <div class="lines"></div>
+  <div contenteditable="true" class="line input" name="name" rows="1">a = 5</div>
 </div>
 
 <%= link_to "Run", iteration_path(@task.current_iteration), class: "btn", method: :patch %>
