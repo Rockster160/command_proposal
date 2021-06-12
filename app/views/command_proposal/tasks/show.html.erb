@@ -10,7 +10,7 @@
 <br>
 <div class="terminal" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>">
   <div class="lines"></div>
-  <div contenteditable="true" class="line input" name="name" rows="1">a = 5</div>
+  <div contenteditable="true" autofocus=true class="line input">  </div>
 </div>
 
 <%= link_to "Run", iteration_path(@task.current_iteration), class: "btn", method: :patch %>

@@ -22,6 +22,16 @@ class ::CommandProposal::IterationsController < ApplicationController
   # end
 
   def create
+    runner = ::CommandProposal.sessions["task-#{params[:task_id]}"]
+    # DELETE ME
+    # Should have some logic here checking if approved, if no session has been run prior, etc
+    if runner.nil?
+      puts "\e[33m[LOGIT]#Creating new runner\e[0m"
+      runner = ::CommandProposal::Services::Runner.new
+      ::CommandProposal.sessions["task-#{params[:task_id]}"] = runner
+    end
+    # / DELETE ME
+
     # Can only be used by console tasks- runs line-by-line functions
     @task = ::CommandProposal::Task.find(params[:task_id])
 
@@ -30,7 +40,7 @@ class ::CommandProposal::IterationsController < ApplicationController
     @iteration.update(status: :approved)
 
     # sync
-    ::CommandProposal::Services::Runner.new(@iteration).execute
+    runner.execute(@iteration)
 
     render json: {
       result: @iteration.result

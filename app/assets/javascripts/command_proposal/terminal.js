@@ -1,8 +1,10 @@
+// https://stackoverflow.com/questions/5379120/get-the-highlighted-selected-text
 docReady(function() {
   var terminal = document.querySelector(".terminal")
   var term_input = document.querySelector(".terminal .input")
   var lines = document.querySelector(".terminal .lines")
   var queue = Promise.resolve()
+  var prev_cmd_idx = undefined
 
   terminal.addEventListener("click", function(evt) {
     term_input.focus()
@@ -15,6 +17,12 @@ docReady(function() {
       submitTerminalCode()
 
       return false
+    }
+    if (evt.key == "Up") {
+
+    }
+    if (evt.key == "Down") {
+
     }
   })
 
@@ -30,6 +38,8 @@ docReady(function() {
   }
 
   function runTerminalCode(line) {
+    if (/^[\s\n]*$/m.test(line.textContent)) { return }
+
     queue = queue.then(async function() {
       $.rails.refreshCSRFTokens()
 

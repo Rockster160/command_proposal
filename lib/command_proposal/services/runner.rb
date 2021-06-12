@@ -1,26 +1,32 @@
 require "pry"
 
+# def doit; puts "hi"; 3; end; doit
+
 module CommandProposal
   module Services
     class Runner
-      attr_accessor :task, :iteration, :session, :success
+      attr_accessor :session
+      # Add expiration and things like that...
 
-      def initialize(iteration, session=nil)
-        @iteration = iteration
-        # @task = @iteration.task
-        @session = session || binding
-        @success = nil
+      def initialize
+        @session = session
       end
 
-      def execute
+      def execute(iteration)
+        @iteration = iteration
         prepare
 
         run
 
         complete
+        @iteration = nil
       end
 
       private
+
+      def session
+        binding
+      end
 
       def prepare
         raise CommandProposal::Error, "Cannot run task without approval" unless @iteration.approved?
@@ -32,6 +38,9 @@ module CommandProposal
         begin
           stored_stdout = $stdout
           $stdout = StringIO.new
+          # result = @session.class_eval(@iteration.code) # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
+          # result = @session.instance_eval(@iteration.code) # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
+          # result = @session.instance_exec(@iteration.code) # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
           result = @session.eval(@iteration.code) # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
         rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
           @iteration.status = :failed
@@ -43,7 +52,9 @@ module CommandProposal
           $stdout = stored_stdout
         end
 
-        @iteration.result = [output, result].map(&:presence).compact.join("\n")
+        output = nil if output == ""
+
+        @iteration.result = [output, "#{result || 'nil'}"].compact.join("\n")
       end
 
       def complete
@@ -64,7 +75,7 @@ module CommandProposal
         msg.gsub!(/ for \#\<CommandProposal.*/, "") # Remove proposal context
         info = gather_exception_info(exc)
 
-        "#{klass}: #{msg}\n\n#{info}"
+        ["#{klass}: #{msg}", info.presence].compact.join("\n")
       end
 
       def gather_exception_info(exception)
