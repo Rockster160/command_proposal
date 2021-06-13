@@ -22,6 +22,10 @@ class ::CommandProposal::IterationsController < ApplicationController
   # end
 
   def create
+    # Verify task is of type `console`
+    # if it's the first iteration, create a new session
+    # If it's NOT the first iteration, find the existing session
+    # If no session exists, return an error
     runner = ::CommandProposal.sessions["task-#{params[:task_id]}"]
     # DELETE ME
     # Should have some logic here checking if approved, if no session has been run prior, etc

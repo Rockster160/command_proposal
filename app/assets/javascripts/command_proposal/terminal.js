@@ -1,16 +1,18 @@
-// https://stackoverflow.com/questions/5379120/get-the-highlighted-selected-text
 docReady(function() {
-  var terminal = document.querySelector(".terminal")
-  var term_input = document.querySelector(".terminal .input")
-  var lines = document.querySelector(".terminal .lines")
+  var terminal = document.querySelector(".console")
+  var term_input = document.querySelector(".console .input")
+  var lines = document.querySelector(".console .lines")
   var queue = Promise.resolve()
-  var prev_cmd_idx = undefined
+  var prev_cmd_idx = undefined, prev_entry = ""
 
   terminal.addEventListener("click", function(evt) {
-    term_input.focus()
+    if (!window.getSelection().toString().length) {
+      term_input.focus()
+    }
   })
 
   terminal.addEventListener("keydown", function(evt) {
+    // console.log(evt.key);
     if (evt.key == "Enter" && !event.shiftKey) {
       evt.preventDefault()
 
@@ -18,13 +20,36 @@ docReady(function() {
 
       return false
     }
-    if (evt.key == "Up") {
+    if (evt.key == "ArrowUp") {
+      // CMD + up -> Jump to top of line? or jump to first idx?
+      // OPT, CMD, Shift -> What do they do?
+      // cancel scroll unless cursor is at the beginning or end of line? Or only beginning?
+      var commands = getPrevCommands()
 
-    }
-    if (evt.key == "Down") {
+      if (!prev_cmd_idx) {
+        prev_cmd_idx = commands.length
+        prev_entry = term_input.textContent
+      }
 
+      prev_cmd_idx -= 1
+      console.log("prev_cmd_idx", prev_cmd_idx);
+      console.log("commands[prev_cmd_idx]", commands[prev_cmd_idx]);
+      term_input.textContent = commands[prev_cmd_idx]
     }
+    // if (evt.key == "ArrowDown") {
+    //
+    // }
   })
+
+  function getPrevCommands() {
+    return Array.prototype.map.call(document.querySelectorAll(".line"), function(line) {
+      var text_node = Array.prototype.find.call(line.childNodes, function(node) {
+        return node.nodeName == "#text"
+      })
+
+      return text_node ? text_node.textContent : ""
+    })
+  }
 
   function submitTerminalCode() {
     var line = document.createElement("div")

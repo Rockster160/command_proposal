@@ -1,16 +1,24 @@
 <%= link_to "Edit", edit_task_path(@task) %>
 <h3><%= @task.name %></h3>
 <p><%= @task.description %></p>
-<div class="command"><%= @task.code %></div>
 <% if @iteration.present? %>
-  <br>
-  <div class="command"><%= @iteration.result %></div>
+  <div class="terminal">
+    <% @task.iterations.order(:created_at).each do |iteration| %>
+      <div class="line"><%=
+        iteration.code
+        %><% if iteration.result?
+          %><div class="result"><%= iteration.result %></div><%
+        end
+      %></div>
+    <% end %>
+  </div>
 <% end %>
-
+%>
 <br>
-<div class="terminal" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>">
+
+<div class="terminal console" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>">
   <div class="lines"></div>
-  <div contenteditable="true" autofocus=true class="line input">  </div>
+  <div contenteditable="true" autofocus=true class="line input"></div>
 </div>
 
 <%= link_to "Run", iteration_path(@task.current_iteration), class: "btn", method: :patch %>
