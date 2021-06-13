@@ -15,6 +15,15 @@
   counter-reset: line-count;
   caret-color: transparent;
 
+  @keyframes blink {
+    0%, 10%, 90%, 100% {
+      border-color: lime;
+    }
+    50% {
+      border-color: transparent;
+    }
+  }
+
   .caret {
     display: inline-block;
     width: 10px;
@@ -22,7 +31,7 @@
     position: absolute;
     border: 1px solid lime;
 
-    &.flash {} // Animate
+    &.flash { animation: blink 1s infinite; }
     &.hidden { display: none; }
   }
 

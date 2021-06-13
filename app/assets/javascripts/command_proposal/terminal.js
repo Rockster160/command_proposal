@@ -31,20 +31,26 @@ docReady(function() {
       return false
     }
     if (evt.key == "ArrowUp") {
+      console.log(getCaretIndex(terminal));
+      if (getCaretIndex(terminal) == 0) {
+        var commands = getPrevCommands()
+
+        if (!prev_cmd_idx) {
+          prev_cmd_idx = commands.length - 1
+          prev_entry = term_input.textContent
+        }
+
+        prev_cmd_idx -= 1
+        console.log("prev_cmd_idx", prev_cmd_idx)
+        console.log("commands[prev_cmd_idx]", commands[prev_cmd_idx])
+        term_input.textContent = commands[prev_cmd_idx]
+        // change focus to end of line
+      }
+      // if start of line
+        //
       // CMD + up -> Jump to top of line? or jump to first idx?
       // OPT, CMD, Shift -> What do they do?
       // cancel scroll unless cursor is at the beginning or end of line? Or only beginning?
-      // var commands = getPrevCommands()
-      //
-      // if (!prev_cmd_idx) {
-      //   prev_cmd_idx = commands.length
-      //   prev_entry = term_input.textContent
-      // }
-      //
-      // prev_cmd_idx -= 1
-      // console.log("prev_cmd_idx", prev_cmd_idx)
-      // console.log("commands[prev_cmd_idx]", commands[prev_cmd_idx])
-      // term_input.textContent = commands[prev_cmd_idx]
     }
     // if (evt.key == "ArrowDown") {
     //
@@ -62,19 +68,23 @@ docReady(function() {
   function moveCaretToFocus() {
     setTimeout(function() {
       caret.classList.remove("hidden")
+      caret.classList.remove("flash")
+      void caret.offsetWidth
+      caret.classList.add("flash")
       var coords = getCaretCoordinates()
       var offset = getOffset(terminal)
+      var left = coords.x - offset.left
+      var top = coords.y - offset.top
+      if (coords.x == 0 && coords.y == 0) {
+        left = offset.left
+        top = offset.top
+      }
 
-      console.log("idx", getCaretIndex(term_input))
-      console.log("Coord", coords)
-      console.log("offset", offset)
-      console.log("pos.x", coords.x - offset.left)
-      console.log("pos.y", coords.y - offset.top)
-
-      caret.style.left = coords.x - offset.left + "px"
-      caret.style.top = coords.y - offset.top + "px"
+      caret.style.left = left + "px"
+      caret.style.top = top + "px"
     }, 1)
   }
+  moveCaretToFocus()
 
   function getCaretCoordinates() {
     var x = 0, y = 0
@@ -87,6 +97,10 @@ docReady(function() {
         if (rect) {
           x = rect.left
           y = rect.top
+        } else {
+          var offset = getOffset(range.startContainer)
+          x = offset.left
+          y = offset.top
         }
       }
     }
