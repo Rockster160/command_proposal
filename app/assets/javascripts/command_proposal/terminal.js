@@ -4,6 +4,16 @@ docReady(function() {
   var lines = document.querySelector(".console .lines")
   var queue = Promise.resolve()
   var prev_cmd_idx = undefined, prev_entry = ""
+  var caret = document.querySelector(".caret")
+
+  term_input.addEventListener("blur", stopCaretFlash)
+  term_input.addEventListener("focus", function() {
+    startCaretFlash()
+    moveCaretToFocus()
+  })
+  term_input.addEventListener("keydown", moveCaretToFocus)
+  term_input.addEventListener("keyup", moveCaretToFocus)
+  term_input.addEventListener("mousedown", moveCaretToFocus)
 
   terminal.addEventListener("click", function(evt) {
     if (!window.getSelection().toString().length) {
@@ -12,7 +22,7 @@ docReady(function() {
   })
 
   terminal.addEventListener("keydown", function(evt) {
-    // console.log(evt.key);
+    // console.log(evt.key)
     if (evt.key == "Enter" && !event.shiftKey) {
       evt.preventDefault()
 
@@ -24,22 +34,89 @@ docReady(function() {
       // CMD + up -> Jump to top of line? or jump to first idx?
       // OPT, CMD, Shift -> What do they do?
       // cancel scroll unless cursor is at the beginning or end of line? Or only beginning?
-      var commands = getPrevCommands()
-
-      if (!prev_cmd_idx) {
-        prev_cmd_idx = commands.length
-        prev_entry = term_input.textContent
-      }
-
-      prev_cmd_idx -= 1
-      console.log("prev_cmd_idx", prev_cmd_idx);
-      console.log("commands[prev_cmd_idx]", commands[prev_cmd_idx]);
-      term_input.textContent = commands[prev_cmd_idx]
+      // var commands = getPrevCommands()
+      //
+      // if (!prev_cmd_idx) {
+      //   prev_cmd_idx = commands.length
+      //   prev_entry = term_input.textContent
+      // }
+      //
+      // prev_cmd_idx -= 1
+      // console.log("prev_cmd_idx", prev_cmd_idx)
+      // console.log("commands[prev_cmd_idx]", commands[prev_cmd_idx])
+      // term_input.textContent = commands[prev_cmd_idx]
     }
     // if (evt.key == "ArrowDown") {
     //
     // }
   })
+
+  function stopCaretFlash() {
+    caret.classList.remove("flash")
+  }
+
+  function startCaretFlash() {
+    caret.classList.add("flash")
+  }
+
+  function moveCaretToFocus() {
+    setTimeout(function() {
+      caret.classList.remove("hidden")
+      var coords = getCaretCoordinates()
+      var offset = getOffset(terminal)
+
+      console.log("idx", getCaretIndex(term_input))
+      console.log("Coord", coords)
+      console.log("offset", offset)
+      console.log("pos.x", coords.x - offset.left)
+      console.log("pos.y", coords.y - offset.top)
+
+      caret.style.left = coords.x - offset.left + "px"
+      caret.style.top = coords.y - offset.top + "px"
+    }, 1)
+  }
+
+  function getCaretCoordinates() {
+    var x = 0, y = 0
+    if (window.getSelection) {
+      var selection = window.getSelection()
+      if (selection.rangeCount !== 0) {
+        var range = selection.getRangeAt(0).cloneRange()
+        range.collapse(true)
+        var rect = range.getClientRects()[0]
+        if (rect) {
+          x = rect.left
+          y = rect.top
+        }
+      }
+    }
+
+    return { x, y }
+  }
+
+  function getCaretIndex(element) {
+    var position = 0
+    if (window.getSelection) {
+      var selection = window.getSelection()
+      if (selection.rangeCount !== 0) {
+        var range = window.getSelection().getRangeAt(0)
+        var preCaretRange = range.cloneRange()
+        preCaretRange.selectNodeContents(element)
+        preCaretRange.setEnd(range.endContainer, range.endOffset)
+        position = preCaretRange.toString().length
+      }
+    }
+
+    return position
+  }
+
+  function getOffset(el) {
+    const rect = el.getBoundingClientRect()
+    return {
+      left: rect.left,
+      top: rect.top
+    }
+  }
 
   function getPrevCommands() {
     return Array.prototype.map.call(document.querySelectorAll(".line"), function(line) {
@@ -95,7 +172,7 @@ docReady(function() {
 
 // eventTarget.addEventListener("keydown", event => {
 //   if (event.isComposing || event.keyCode === 229) {
-//     return;
+//     return
 //   }
 //   // do something
-// });
+// })
