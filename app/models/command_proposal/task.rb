@@ -6,6 +6,7 @@
 
 class ::CommandProposal::Task < ApplicationRecord
   has_many :iterations
+  has_many :ordered_iterations, -> { order(created_at: :desc) }, class_name: "CommandProposal::Iteration"
 
   enum session_type: {
     # Task will have multiple iterations that are all essentially the same just with code changes
@@ -18,9 +19,22 @@ class ::CommandProposal::Task < ApplicationRecord
 
   delegate :line_count, to: :current_iteration, allow_nil: true
   delegate :code, to: :current_iteration, allow_nil: true
+  delegate :status, to: :current_iteration, allow_nil: true
+
+  def approved?
+    if console?
+      first_iteration.approved?
+    else
+      current_iteration.approved?
+    end
+  end
+
+  def first_iteration
+    ordered_iterations.last
+  end
 
   def current_iteration
-    iterations.order(created_at: :desc).first
+    ordered_iterations.first
   end
 
   def current_iteration_at

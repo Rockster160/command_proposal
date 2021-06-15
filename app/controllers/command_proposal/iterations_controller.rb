@@ -3,6 +3,8 @@ require_dependency "command_proposal/application_controller"
 class ::CommandProposal::IterationsController < ApplicationController
   include ::CommandProposal::ParamsHelper
   helper ::CommandProposal::ParamsHelper
+  include ::CommandProposal::PermissionsHelper
+  helper ::CommandProposal::PermissionsHelper
 
   layout "application"
 
@@ -22,28 +24,27 @@ class ::CommandProposal::IterationsController < ApplicationController
   # end
 
   def create
-    # Verify task is of type `console`
-    # if it's the first iteration, create a new session
-    # If it's NOT the first iteration, find the existing session
-    # If no session exists, return an error
-    runner = ::CommandProposal.sessions["task-#{params[:task_id]}"]
-    # DELETE ME
-    # Should have some logic here checking if approved, if no session has been run prior, etc
-    if runner.nil?
-      puts "\e[33m[LOGIT]#Creating new runner\e[0m"
+    return error!("You do not have permission to run commands.") unless can_command?
+
+    @task = ::CommandProposal::Task.find(params[:task_id])
+    # Should rescue/catch and render json
+    return error!("Can only run commands on type: :console") unless @task.console?
+    return error!("Session has not been approved.") unless @task.approved?
+
+    if @task.iterations.many?
+      runner = ::CommandProposal.sessions["task-#{params[:task_id]}"]
+    elsif @task.iterations.one?
       runner = ::CommandProposal::Services::Runner.new
       ::CommandProposal.sessions["task-#{params[:task_id]}"] = runner
     end
-    # / DELETE ME
 
-    # Can only be used by console tasks- runs line-by-line functions
-    @task = ::CommandProposal::Task.find(params[:task_id])
+    return error!("Session has expired. Please start a new session.") if runner.nil?
 
-    @task.update(code: params[:code])
+    @task.update(code: params[:code]) # Creates a new iteration
     @iteration = @task.current_iteration
-    @iteration.update(status: :approved)
+    @iteration.update(status: :approved) # Task was already approved, and this is line-by-line
 
-    # sync
+    # in-sync
     runner.execute(@iteration)
 
     render json: {
@@ -85,6 +86,12 @@ class ::CommandProposal::IterationsController < ApplicationController
       :description,
       :code,
     )
+  end
+
+  def error!(msg="An error occurred.")
+    render json: {
+      error: msg
+    }
   end
 
 #   def index

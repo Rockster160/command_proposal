@@ -5,6 +5,7 @@ module CommandProposal
       :user_class,
       :role_scope,
       :user_name,
+      :controller_var,
       # Default
       :approval_required,
       # Optional
@@ -15,9 +16,10 @@ module CommandProposal
 
     def initialize
       # Required
-      @user_class = nil
-      @role_scope = nil
-      @user_name = nil
+      @user_class = User
+      @role_scope = :admin
+      @user_name = :name
+      @controller_var = "current_#{@user_class.name.downcase}"
 
       # Default
       @approval_required = true
@@ -26,6 +28,10 @@ module CommandProposal
       @proposal_callback = nil
       @success_callback = nil
       @failed_callback = nil
+    end
+
+    def approval_required?
+      !!approval_required
     end
   end
 end

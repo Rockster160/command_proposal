@@ -6,7 +6,7 @@
 <h3><%= @task.name %></h3>
 <p><%= @task.description %></p>
 <% if @iteration.present? %>
-  <div class="terminal">
+  <div class="cmd-terminal">
     <% @task.iterations.order(:created_at).each do |iteration| %>
       <div class="line"><%=
         iteration.code
@@ -17,11 +17,10 @@
     <% end %>
   </div>
 <% end %>
-%>
 <br>
 
 <!-- Closing > offset to get rid of spacing issues. -->
-<div class="terminal console" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>"
+<div class="cmd-terminal <%= 'cmd-console' %>" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>"
   ><div class="lines"></div
   ><div contenteditable="true" autofocus=true class="line input"></div
   ><span class="caret"></span

@@ -38,9 +38,6 @@ module CommandProposal
         begin
           stored_stdout = $stdout
           $stdout = StringIO.new
-          # result = @session.class_eval(@iteration.code) # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
-          # result = @session.instance_eval(@iteration.code) # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
-          # result = @session.instance_exec(@iteration.code) # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
           result = @session.eval(@iteration.code) # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
         rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
           @iteration.status = :failed

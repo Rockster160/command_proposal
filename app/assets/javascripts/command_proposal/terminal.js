@@ -1,7 +1,7 @@
 docReady(function() {
-  var terminal = document.querySelector(".console")
-  var term_input = document.querySelector(".console .input")
-  var lines = document.querySelector(".console .lines")
+  var terminal = document.querySelector(".cmd-console")
+  var term_input = document.querySelector(".cmd-console .input")
+  var lines = document.querySelector(".cmd-console .lines")
   var queue = Promise.resolve()
   var prev_cmd_idx = undefined, prev_entry = undefined
   var caret = document.querySelector(".caret")
@@ -226,13 +226,29 @@ docReady(function() {
           "X-CSRF-Token": $.rails.csrfToken()
         },
         body: JSON.stringify({ code: code, task_id: terminal.dataset.task })
+      }).then(function(res) {
+        if (res.ok) {
+          return res.json()
+        } else {
+          throw new Error("Server error")
+        }
+      }).catch(function(err) {
+        return {
+          error: err,
+        }
       })
 
-      var json = await res.json()
+      var json = await res
 
       var result = document.createElement("div")
       result.classList.add("result")
-      result.textContent = json.result
+
+      if (json.error) {
+        result.classList.add("cmd-error")
+        result.textContent = json.error
+      } else {
+        result.textContent = json.result
+      }
 
       line.appendChild(result)
     })
