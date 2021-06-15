@@ -3,17 +3,23 @@ docReady(function() {
   var term_input = document.querySelector(".console .input")
   var lines = document.querySelector(".console .lines")
   var queue = Promise.resolve()
-  var prev_cmd_idx = undefined, prev_entry = ""
+  var prev_cmd_idx = undefined, prev_entry = undefined
   var caret = document.querySelector(".caret")
+  var commands = getPrevCommands()
+
+  if (disable_block_caret) {
+    caret.remove()
+    terminal.style.caretColor = "lime"
+  }
 
   term_input.addEventListener("blur", stopCaretFlash)
   term_input.addEventListener("focus", function() {
     startCaretFlash()
-    moveCaretToFocus()
+    placeBlockAtCaret()
   })
-  term_input.addEventListener("keydown", moveCaretToFocus)
-  term_input.addEventListener("keyup", moveCaretToFocus)
-  term_input.addEventListener("mousedown", moveCaretToFocus)
+  term_input.addEventListener("keydown", placeBlockAtCaret)
+  term_input.addEventListener("keyup", placeBlockAtCaret)
+  term_input.addEventListener("mousedown", placeBlockAtCaret)
 
   terminal.addEventListener("click", function(evt) {
     if (!window.getSelection().toString().length) {
@@ -23,49 +29,79 @@ docReady(function() {
 
   terminal.addEventListener("keydown", function(evt) {
     // console.log(evt.key)
+    // evt.shiftKey
+    // evt.ctrlKey
+    // evt.altKey
+    // evt.metaKey (windows key or CMD key)
+
     if (evt.key == "Enter" && !event.shiftKey) {
       evt.preventDefault()
-
       submitTerminalCode()
-
       return false
     }
-    if (evt.key == "ArrowUp") {
-      console.log(getCaretIndex(terminal));
-      if (getCaretIndex(terminal) == 0) {
-        var commands = getPrevCommands()
 
-        if (!prev_cmd_idx) {
-          prev_cmd_idx = commands.length - 1
-          prev_entry = term_input.textContent
-        }
-
-        prev_cmd_idx -= 1
-        console.log("prev_cmd_idx", prev_cmd_idx)
-        console.log("commands[prev_cmd_idx]", commands[prev_cmd_idx])
-        term_input.textContent = commands[prev_cmd_idx]
-        // change focus to end of line
-      }
-      // if start of line
-        //
-      // CMD + up -> Jump to top of line? or jump to first idx?
-      // OPT, CMD, Shift -> What do they do?
-      // cancel scroll unless cursor is at the beginning or end of line? Or only beginning?
+    if (evt.ctrlKey && evt.key == "c") {
+      prev_entry = term_input.textContent
+      term_input.textContent = ""
     }
-    // if (evt.key == "ArrowDown") {
-    //
-    // }
+
+    if (evt.key == "ArrowUp" && getCaretIndex(term_input) == 0) {
+      handleUpKey(evt)
+    }
+    if (evt.key == "ArrowDown" && getCaretIndex(term_input) == term_input.textContent.length) {
+      handleDownKey()
+    }
   })
 
+  function handleUpKey() {
+    if (!prev_cmd_idx) {
+      if (prev_entry) {
+        prev_cmd_idx = commands.length - 1
+        term_input.textContent = prev_entry
+
+        return
+      }
+
+      prev_cmd_idx = commands.length
+      prev_entry = term_input.textContent
+    }
+
+    prev_cmd_idx -= 1
+    term_input.textContent = commands[prev_cmd_idx]
+  }
+
+  function handleDownKey() {
+    if (prev_cmd_idx) {
+      var cmd = ""
+      if (prev_cmd_idx < commands.length - 1) {
+        prev_cmd_idx += 1
+        cmd = commands[prev_cmd_idx]
+      } else if (prev_entry && prev_cmd_idx == commands.length - 1) {
+        prev_cmd_idx += 1
+        cmd = prev_entry
+      } else {
+        prev_cmd_idx = undefined
+      }
+
+      term_input.textContent = cmd
+      if (cmd) {
+        setCaretIndex(term_input, term_input.textContent.length)
+      }
+    }
+  }
+
   function stopCaretFlash() {
+    if (disable_block_caret) { return }
     caret.classList.remove("flash")
   }
 
   function startCaretFlash() {
+    if (disable_block_caret) { return }
     caret.classList.add("flash")
   }
 
-  function moveCaretToFocus() {
+  function placeBlockAtCaret() {
+    if (disable_block_caret) { return }
     setTimeout(function() {
       caret.classList.remove("hidden")
       caret.classList.remove("flash")
@@ -84,7 +120,7 @@ docReady(function() {
       caret.style.top = top + "px"
     }, 1)
   }
-  moveCaretToFocus()
+  placeBlockAtCaret()
 
   function getCaretCoordinates() {
     var x = 0, y = 0
@@ -124,6 +160,27 @@ docReady(function() {
     return position
   }
 
+  function setCaretIndex(element, idx) {
+    var setpos = document.createRange()
+    var set = window.getSelection()
+
+    // Set start position of range
+    setpos.setStart(element.childNodes[0], idx)
+
+    // Collapse range within its boundary points
+    // Returns boolean
+    setpos.collapse(true)
+
+    // Remove all ranges set
+    set.removeAllRanges()
+
+    // Add range with respect to range object.
+    set.addRange(setpos)
+
+    // Set cursor on focus
+    element.focus()
+  }
+
   function getOffset(el) {
     const rect = el.getBoundingClientRect()
     return {
@@ -133,7 +190,7 @@ docReady(function() {
   }
 
   function getPrevCommands() {
-    return Array.prototype.map.call(document.querySelectorAll(".line"), function(line) {
+    return Array.prototype.map.call(document.querySelectorAll(".line:not(.input)"), function(line) {
       var text_node = Array.prototype.find.call(line.childNodes, function(node) {
         return node.nodeName == "#text"
       })
@@ -149,6 +206,8 @@ docReady(function() {
 
     term_input.textContent = ""
     lines.appendChild(line)
+    commands.push(line)
+    prev_entry = undefined
 
     runTerminalCode(line)
   }
@@ -179,14 +238,3 @@ docReady(function() {
     })
   }
 })
-
-
-
-
-
-// eventTarget.addEventListener("keydown", event => {
-//   if (event.isComposing || event.keyCode === 229) {
-//     return
-//   }
-//   // do something
-// })
