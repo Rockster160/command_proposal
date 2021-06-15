@@ -17,15 +17,17 @@ class ::CommandProposal::Task < ApplicationRecord
     function: 2,
   }
 
+  after_initialize -> { self.session_type ||= :task }
+
   delegate :line_count, to: :current_iteration, allow_nil: true
   delegate :code, to: :current_iteration, allow_nil: true
   delegate :status, to: :current_iteration, allow_nil: true
 
   def approved?
     if console?
-      first_iteration.approved?
+      first_iteration&.approved?
     else
-      current_iteration.approved?
+      current_iteration&.approved?
     end
   end
 

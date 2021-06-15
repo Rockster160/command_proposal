@@ -1,9 +1,5 @@
 <div class="skinny-container">
   <%= form_for(@task) do |f| %>
-    <div class="form-title">
-      <%= @task.name || "New Task" %>
-    </div>
-
     <div class="form-fields">
       <div class="form-field">
         <% if @task.persisted? %>
@@ -14,19 +10,42 @@
       </div>
 
       <div class="form-field">
-        <%= f.label :name %>
-        <%= f.text_field :name %>
+        <%= f.text_field :name, placeholder: "Title" %>
       </div>
 
       <div class="form-field">
-        <%= f.label :description %>
-        <%= f.text_field :description %>
+        <%= f.text_area :description, placeholder: "Description" %>
       </div>
 
-      <div class="form-field">
-        <%= f.label :code %>
-        <%= f.text_area :code, class: :code, rows: [@task.line_count.to_i + 1, 10].max %>
-      </div>
+      <% unless @task.persisted? %>
+        <div class="form-field">
+          <p>
+            <%= f.radio_button :session_type, :task %>
+            <%= f.label :session_type, value: :task do %>
+              Task - Batch of code that typically only needs to be executed once. (Can be re-run if needed)
+            <% end %>
+          </p>
+          <p>
+            <%= f.radio_button :session_type, :console %>
+            <%= f.label :session_type, value: :console do %>
+              Console - Starts a session that allows line-by-line commands to be executed.
+            <% end %>
+          </p>
+          <p>
+            <%= f.radio_button :session_type, :function %>
+            <%= f.label :session_type, value: :function do %>
+              Function - Reusable batch of code, can accept arguments
+            <% end %>
+          </p>
+        </div>
+      <% end %>
+
+      <% if @task.persisted? && (@task.task? || @task.function?) %>
+        <div class="form-field">
+          <%= f.label :code %>
+          <%= f.text_area :code, class: :terminal, rows: [@task.line_count.to_i + 1, 10].max %>
+        </div>
+      <% end %>
 
       <div class="form-submission">
         <%= f.submit %>

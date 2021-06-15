@@ -14,9 +14,9 @@ module CommandProposal
             return if user_class.blank?
 
             if role_scope.present?
-              user_class.send(role_scope).find_by(id: "#{key_id}")
+              user_class.send(role_scope).find_by(id: "#{key}_id")
             else
-              user_class.find_by(id: "#{key_id}")
+              user_class.find_by(id: "#{key}_id")
             end
           end
 

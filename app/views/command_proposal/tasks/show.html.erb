@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  disable_block_caret = true
+  display_caret_block = false
 </script>
 
 <%= link_to "Edit", edit_task_path(@task) %>
@@ -20,13 +20,13 @@
 <br>
 
 <!-- Closing > offset to get rid of spacing issues. -->
-<div class="cmd-terminal <%= 'cmd-console' %>" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>"
+<div class="cmd-terminal <%= @task.console? ? 'cmd-console' : 'cmd-multiline'  %>" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>"
   ><div class="lines"></div
   ><div contenteditable="true" autofocus=true class="line input"></div
-  ><span class="caret"></span
+  ><span class="caret hidden"></span
 ></div>
 
-<%= link_to "Run", iteration_path(@task.current_iteration), class: "btn", method: :patch %>
+<%#= link_to "Run", iteration_path(@task.current_iteration), class: "btn", method: :patch %>
 
 <%
 =begin
