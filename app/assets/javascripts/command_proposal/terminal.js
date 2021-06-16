@@ -1,153 +1,41 @@
-// Only run on needed pages
+// Add tab / shift-tab for changing indents
 docReady(function() {
-  var console = document.querySelector(".cmd-console")
+  var terminal = document.querySelector(".cmd-terminal")
 
-  if (console) {
-    var console_input = document.querySelector(".cmd-console .input")
-    var lines = document.querySelector(".cmd-console .lines")
-    var queue = Promise.resolve()
-    var prev_cmd_idx = undefined, prev_entry = undefined
-    var caret = document.querySelector(".caret")
-    var commands = getPrevCommands()
+  if (terminal) {
+    // terminal.addEventListener("keydown", function(evt) {
+    //   // Disable shift+enter
+    //   if (evt.key == "Enter" && evt.shiftKey) {
+    //     evt.preventDefault()
+    //   }
+    // })
 
-    if (display_caret_block) {
-      caret.classList.remove("hidden")
-      console.style.caretColor = "transparent"
-    } else {
-      caret.remove()
-    }
-
-    console_input.addEventListener("blur", stopCaretFlash)
-    console_input.addEventListener("focus", function() {
-      startCaretFlash()
-      placeBlockAtCaret()
-    })
-    console_input.addEventListener("keydown", placeBlockAtCaret)
-    console_input.addEventListener("keyup", placeBlockAtCaret)
-    console_input.addEventListener("mousedown", placeBlockAtCaret)
-
-    console.addEventListener("click", function(evt) {
-      if (!window.getSelection().toString().length) {
-        console_input.focus()
-      }
-    })
-
-    console.addEventListener("keydown", function(evt) {
-      // console.log(evt.key)
-      // evt.shiftKey
-      // evt.ctrlKey
-      // evt.altKey
-      // evt.metaKey (windows key or CMD key)
-
-      if (evt.key == "Enter" && !event.shiftKey) {
-        evt.preventDefault()
-        submitConsoleCode()
-        return false
-      }
-
-      if (evt.ctrlKey && evt.key == "c") {
-        prev_entry = console_input.textContent
-        console_input.textContent = ""
-      }
-
-      if (evt.key == "ArrowUp" && getCaretIndex(console_input) == 0) {
-        handleUpKey(evt)
-      }
-      if (evt.key == "ArrowDown" && getCaretIndex(console_input) == console_input.textContent.length) {
-        handleDownKey()
-      }
-    })
-
-    function handleUpKey() {
-      if (!prev_cmd_idx) {
-        if (prev_entry) {
-          prev_cmd_idx = commands.length - 1
-          console_input.textContent = prev_entry
-
-          return
-        }
-
-        prev_cmd_idx = commands.length
-        prev_entry = console_input.textContent
-      }
-
-      prev_cmd_idx -= 1
-      console_input.textContent = commands[prev_cmd_idx]
-    }
-
-    function handleDownKey() {
-      if (prev_cmd_idx) {
-        var cmd = ""
-        if (prev_cmd_idx < commands.length - 1) {
-          prev_cmd_idx += 1
-          cmd = commands[prev_cmd_idx]
-        } else if (prev_entry && prev_cmd_idx == commands.length - 1) {
-          prev_cmd_idx += 1
-          cmd = prev_entry
-        } else {
-          prev_cmd_idx = undefined
-        }
-
-        console_input.textContent = cmd
-        if (cmd) {
-          setCaretIndex(console_input, console_input.textContent.length)
-        }
-      }
-    }
-
-    function stopCaretFlash() {
-      if (!display_caret_block) { return }
-      caret.classList.remove("flash")
-    }
-
-    function startCaretFlash() {
-      if (!display_caret_block) { return }
-      caret.classList.add("flash")
-    }
-
-    function placeBlockAtCaret() {
-      if (!display_caret_block) { return }
-      setTimeout(function() {
-        caret.classList.remove("hidden")
-        caret.classList.remove("flash")
-        void caret.offsetWidth
-        caret.classList.add("flash")
-        var coords = getCaretCoordinates()
-        var offset = getOffset(console)
-        var left = coords.x - offset.left
-        var top = coords.y - offset.top
-        if (coords.x == 0 && coords.y == 0) {
-          left = offset.left
-          top = offset.top
-        }
-
-        caret.style.left = left + "px"
-        caret.style.top = top + "px"
-      }, 1)
-    }
-    placeBlockAtCaret()
-
-    function getCaretCoordinates() {
-      var x = 0, y = 0
-      if (window.getSelection) {
-        var selection = window.getSelection()
-        if (selection.rangeCount !== 0) {
-          var range = selection.getRangeAt(0).cloneRange()
-          range.collapse(true)
-          var rect = range.getClientRects()[0]
-          if (rect) {
-            x = rect.left
-            y = rect.top
-          } else {
-            var offset = getOffset(range.startContainer)
-            x = offset.left
-            y = offset.top
-          }
-        }
-      }
-
-      return { x, y }
-    }
+    terminal.addEventListener("keydown", handleInput)
+    terminal.addEventListener("keyup", handleInput)
+    terminal.addEventListener("input", handleInput)
+    terminal.addEventListener("paste", handleInput)
+    // terminal.addEventListener("paste", function(evt) {
+    //   // before paste
+    //   let paste = (evt.clipboardData || window.clipboardData).getData("text")
+    //   // paste = paste.replaceAll("\n", "</div><div class=\"line\">")
+    //
+    //   const selection = window.getSelection()
+    //   if (!selection.rangeCount) return false
+    //   selection.deleteFromDocument()
+    //   paste.split("\n").forEach(function(paste_line) {
+    //     // console.log(paste_line)
+    //     // insertNodeAtCaret(document.createTextNode(paste_line))
+    //     // var e = new KeyboardEvent("keypress")
+    //     // e.keyCode = 13
+    //     // e.which = 13
+    //     // e.key = "Enter"
+    //     // terminal.dispatchEvent(e)
+    //     // Simulate enter
+    //     selection.getRangeAt(0).insertNode(document.createTextNode(paste_line))
+    //   })
+    //
+    //   evt.preventDefault()
+    // })
 
     function getCaretIndex(element) {
       var position = 0
@@ -186,77 +74,84 @@ docReady(function() {
       element.focus()
     }
 
-    function getOffset(el) {
-      const rect = el.getBoundingClientRect()
-      return {
-        left: rect.left,
-        top: rect.top
-      }
+    function handleInput(evt) {
+      fixEmptyEditor(evt)
+      handleNewLines()
+      unnestLines()
     }
 
-    function getPrevCommands() {
-      return Array.prototype.map.call(document.querySelectorAll(".line:not(.input)"), function(line) {
-        var text_node = Array.prototype.find.call(line.childNodes, function(node) {
-          return node.nodeName == "#text"
-        })
+    function fixEmptyEditor(event) {
+      // setTimeout(function() {
+        var evt = event || window.event
+        var elem = evt.target || evt.srcElement
+        if (elem.nodeType == 3) {
+          elem = elem.parentNode
+        } // Defeat Safari bug
 
-        return text_node ? text_node.textContent : ""
-      })
-    }
-
-    function submitConsoleCode() {
-      var line = document.createElement("div")
-      line.classList.add("line")
-      line.textContent = console_input.textContent
-
-      console_input.textContent = ""
-      lines.appendChild(line)
-      prev_entry = undefined
-
-      runConsoleCode(line)
-    }
-
-    function runConsoleCode(line) {
-      if (/^[\s\n]*$/m.test(line.textContent)) { return }
-
-      commands.push(line.textContent)
-      queue = queue.then(async function() {
-        $.rails.refreshCSRFTokens()
-
-        var code = line.textContent
-        var res = await fetch(console.dataset.exeUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-Token": $.rails.csrfToken()
-          },
-          body: JSON.stringify({ code: code, task_id: console.dataset.task })
-        }).then(function(res) {
-          if (res.ok) {
-            return res.json()
-          } else {
-            throw new Error("Server error")
-          }
-        }).catch(function(err) {
-          return {
-            error: err,
-          }
-        })
-
-        var json = await res
-
-        var result = document.createElement("div")
-        result.classList.add("result")
-
-        if (json.error) {
-          result.classList.add("cmd-error")
-          result.textContent = json.error
-        } else {
-          result.textContent = json.result
+        if (elem.innerHTML == "") {
+          elem.innerHTML = "<div class=\"line\"><br></div>"
         }
+      // }, 0)
+    }
 
-        line.appendChild(result)
+    function generateToken() {
+      var token = "abc"
+
+      while (terminal.innerHTML.indexOf(token) >= 0) {
+        token = Math.random().toString(36).substring(2, 15)
+      }
+
+      return token
+    }
+
+    function unnestLines() {
+      var token = generateToken()
+      var newHtml  = terminal.innerHTML
+
+      if (!newHtml.match(/<div class=\"line\">[^(<\/div)]*?<div class=\"line\">/gi)) { return }
+      console.log("Nest found!");
+
+      var open = "<div class=\"line\">"
+      var close = "</div>"
+
+      newHtml = newHtml.replaceAll(/<\/?br>/gi, "<>" + token + "<>")
+      // newHtml = newHtml.replaceAll(/<div class="line">[\s\n]*?<\/?br>[\s\n]*?<\/div>/gi, "<>" + token + "<>")
+
+      var inner_tag_regexp = />[^<>]+?</ig
+      var lines = (newHtml.match(inner_tag_regexp) || []).map(function(line_match) {
+        return line_match.substr(1, line_match.length-2) || ""
       })
+      var open = "<div class=\"line\">"
+      var close = "</div>"
+
+      var joined_lines = open + lines.join(close + open) + close
+
+      terminal.innerHTML =  joined_lines.replaceAll(token, "<br>")
+    }
+    // terminal.innerHTML = unnestLines()
+
+    function handleNewLines(evt) {
+      // Find .line followed by .line (not /div) and remove it and next /div
+      // Remove all spaces before .line?
+      // console.log("1", getCaretIndex(terminal));
+      setTimeout(function() {
+        if (terminal.innerHTML.indexOf("\n") >= 0) {
+          var newline_count = (terminal.innerHTML.match(new RegExp("\n", "g")) || []).length
+          var idx = getCaretIndex(terminal)
+
+          terminal.innerHTML = terminal.innerHTML.replaceAll("\n", "</div><div class=\"line\">")
+
+          // console.log("2", getCaretIndex(terminal));
+          setCaretIndex(terminal, idx - newline_count - 1)
+          // setCaretIndex(terminal, idx)
+        }
+        // if (terminal.innerHTML.indexOf("<br>") >= 0) {
+        //   terminal.innerHTML = terminal.innerHTML.replaceAll("<br>", "")
+        // }
+        //
+        // if (terminal.innerHTML.indexOf("\n") >= 0) {
+        // }
+      }, 0)
     }
   }
 })
