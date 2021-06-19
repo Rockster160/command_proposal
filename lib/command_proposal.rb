@@ -2,6 +2,7 @@ require "command_proposal/configuration"
 require "command_proposal/version"
 require "command_proposal/engine"
 require "command_proposal/services/runner"
+
 # ::CommandProposal::SESSIONS
 module CommandProposal
   class Error < StandardError; end

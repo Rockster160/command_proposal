@@ -3,6 +3,10 @@ require_dependency "command_proposal/application_controller"
 class ::CommandProposal::TasksController < ApplicationController
   include ::CommandProposal::ParamsHelper
   helper ::CommandProposal::ParamsHelper
+  include ::CommandProposal::PermissionsHelper
+  helper ::CommandProposal::PermissionsHelper
+
+  before_action :authorize!, except: :error
 
   layout "application"
 
@@ -13,7 +17,12 @@ class ::CommandProposal::TasksController < ApplicationController
 
   def show
     @task = ::CommandProposal::Task.find(params[:id])
-    @iteration = @task.current_iteration
+
+    if params.key?(:iteration)
+      @iteration = @task.iterations.find(params[:iteration])
+    else
+      @iteration = @task.current_iteration
+    end
   end
 
   def new
@@ -31,10 +40,8 @@ class ::CommandProposal::TasksController < ApplicationController
   def create
     @task = ::CommandProposal::Task.new(task_params.except(:code))
 
-    # Cannot create the iteration until the task is created, save save then update
+    # Cannot create the iteration until the task is created, so save then update
     if @task.save && @task.update(task_params)
-      ::CommandProposal.configuration.proposal_callback&.call(@task.last_run)
-
       if @task.console?
         redirect_to @task
       else
@@ -63,13 +70,22 @@ class ::CommandProposal::TasksController < ApplicationController
     params.require(:task).permit(
       :name,
       :description,
+      :session_type,
       :code,
       :code_html,
     ).tap do |whitelist|
+      whitelist[:user] = command_user
+
       if whitelist.key?(:code_html)
         whitelist[:code] = ::CommandProposal::CommandFormatter.to_text_lines whitelist.delete(:code_html)
       end
     end
+  end
+
+  def authorize!
+    return if can_command?
+
+    redirect_to main_app.root_path, alert: "Sorry, you are not authorized to access this page."
   end
 
 #   def index

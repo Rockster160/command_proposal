@@ -24,16 +24,25 @@ class ::CommandProposal::Iteration < ApplicationRecord
   external_belongs_to :approver
 
   enum status: {
-    created:  nil,
-    approved: 0,
-    started:  1,
-    failed:   2,
-    stopped:  3,
-    success:  4,
+    created:  0,
+    approved: 1,
+    started:  2,
+    failed:   3,
+    stop:     5, # Running, but told to stop
+    stopped:  6,
+    success:  7,
   }
 
   delegate :name, to: :task
   delegate :description, to: :task
+
+  def complete?
+    success? || failed? || stopped?
+  end
+
+  def pending?
+    created?
+  end
 
   def line_count
     return 0 if code.blank?

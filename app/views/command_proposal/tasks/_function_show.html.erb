@@ -1,19 +1,27 @@
-<div class="cmd-terminal"><%= CommandProposal::CommandFormatter.to_html_lines @task.code %></div>
+<div class="cmd-terminal"><%= CommandProposal::CommandFormatter.to_html_lines @iteration&.code %></div>
 
-<% if @task.result.present? %>
-  <h3>Results</h3>
-  <div class="cmd-terminal"><%= CommandProposal::CommandFormatter.to_html_lines @task.result %></div>
+<% if @iteration&.result.present? %>
+  <h3>Results: <%= @iteration.success? ? "Success!" : "Failed!" %></h3>
+  <div class="cmd-terminal"><%= CommandProposal::CommandFormatter.to_html_lines @iteration.result %></div>
 <% end %>
 
-<% case @task.status&.to_sym %>
-<% when :created, :failed, :stopped %>
-  <%= link_to "Request Access", "" %>
-<% when :approved %>
-  <%= link_to "Run!", "" %>
-<% when :started %>
-  <%= link_to "Stop (With warning about outside of transaction)", "" %>
-<% when :success %>
-  <%= link_to "Request Re-Run Access", "" %>
+<% if command_user&.id == @iteration&.requester&.id %>
+  <% case @iteration.status&.to_sym %>
+  <% when :created, :failed, :stopped %>
+    <%= link_to "Request Access", [@iteration, command: :request], method: :patch %>
+  <% when :approved %>
+    <%= link_to "Run!", [@iteration, command: :run], method: :patch %>
+  <% when :started %>
+    <%= link_to "Stop (With warning about outside of transaction)", [@iteration, command: :stop], method: :patch %>
+  <% when :success %>
+    <%= link_to "Request Re-Run Access", [@iteration, command: :request], method: :patch %>
+  <% end %>
+<% elsif can_approve?(@iteration) %>
+  <% if @iteration.approved? %>
+    <p>Approved. Ready to run.</p>
+  <% elsif @iteration.pending? %>
+    <%= link_to "Approve!", [@iteration, command: :approve], method: :patch %>
+  <% end %>
 <% end %>
 
 <table>
@@ -24,7 +32,7 @@
     <th>Diff</th>
   </thead>
   <tbody>
-    <% @task.iterations.order(created_at: :desc).each do |iteration| %>
+    <% @task.iterations.where.not(id: @iteration&.id).order(created_at: :desc).each do |iteration| %>
       <tr>
         <td><%= link_to iteration.created_at.strftime("%b %-d %Y at %H:%M"), task_path(@task, iteration: iteration) %></td>
         <td><%= iteration.status %></td>

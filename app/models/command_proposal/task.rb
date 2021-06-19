@@ -5,6 +5,8 @@
 # datetime :last_executed_at
 
 class ::CommandProposal::Task < ApplicationRecord
+  attr_accessor :user
+
   has_many :iterations
   has_many :ordered_iterations, -> { order(created_at: :desc) }, class_name: "CommandProposal::Iteration"
 
@@ -49,6 +51,6 @@ class ::CommandProposal::Task < ApplicationRecord
   end
 
   def code=(new_code)
-    iterations.create(code: new_code)
+    iterations.create(code: new_code, requester: user)
   end
 end

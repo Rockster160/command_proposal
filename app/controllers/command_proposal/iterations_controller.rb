@@ -1,4 +1,5 @@
 require_dependency "command_proposal/application_controller"
+require "command_proposal/services/command_interpreter"
 
 class ::CommandProposal::IterationsController < ApplicationController
   include ::CommandProposal::ParamsHelper
@@ -40,22 +41,30 @@ class ::CommandProposal::IterationsController < ApplicationController
   def update
     @iteration = ::CommandProposal::Iteration.find(params[:id])
 
-    # TODO: REMOVE THIS! Should only be approved by somebody else
-    @iteration.update(status: :approved)
-
-    # Should be async
-    ::CommandProposal::Services::Runner.new(@iteration).execute
+    begin
+      alter_command if params.key?(:command)
+    rescue ::CommandProposal::Services::CommandInterpreter::Error => e
+      return redirect_to error_tasks_path, alert: e.message
+    end
 
     redirect_to @iteration.task
   end
 
   private
 
-  def task_params
-    params.require(:task).permit(
-      :name,
-      :description,
-      :code,
+  # def task_params
+  #   params.require(:task).permit(
+  #     :name,
+  #     :description,
+  #     :code,
+  #   )
+  # end
+
+  def alter_command
+    ::CommandProposal::Services::CommandInterpreter.command(
+      @iteration,
+      params[:command],
+      current_user
     )
   end
 
