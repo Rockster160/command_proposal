@@ -1,17 +1,31 @@
-<% case @task.status&.to_sym %>
-<% when :approved %>
-  <%# Closing > offset to get rid of spacing issues. %>
-  <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>"
-    ><div class="lines"></div
-    ><div contenteditable="true" autofocus=true class="line input"></div
-    ><span class="caret hidden"></span
-  ></div>
-<% when :create %>
-  <%= link_to "Request Access", "" %>
-<% else %>
-  <div class="cmd-terminal">
-    <% @task.iterations.order(created_at: :asc).each do |iteration| %>
-      <div class="line"><%= iteration.code %><div class="result"><%= iteration.result %></div></div>
+<% if command_user&.id == @iteration&.requester&.id %>
+  <% case @task.first_iteration.status.to_sym %>
+  <% when :approved %>
+    <%# Closing > offset to get rid of spacing issues. %>
+    <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>"
+      ><div class="lines"><%= render partial: "lines", locals: { lines: @lines, skip_empty: true }
+      %></div
+      ><div contenteditable="true" autofocus=true class="line input"></div
+      ><span class="caret hidden"></span
+    ></div>
+
+    <%= link_to "Close Session", [@iteration, command: :close], method: :patch %>
+  <% when :created, nil %>
+    <%= link_to "Request Access", [@iteration, command: :request], method: :patch %>
+  <% else %>
+    <% if @task.first_iteration.success? %>
+      <p>Session closed.</p>
     <% end %>
-  </div>
+    <div class="cmd-terminal"><%= render partial: "lines", locals: { lines: @lines } %></div>
+  <% end %>
+<% else %>
+  <% if can_approve?(@iteration) && @iteration.pending? %>
+    <%= link_to "Approve!", [@iteration, command: :approve], method: :patch %>
+  <% end %>
+  <% if @task.first_iteration.success? %>
+    <p>Session closed.</p>
+  <% end %>
+  <% if @task.first_iteration.approved? || @task.first_iteration.success? %>
+    <div class="cmd-terminal"><%= render partial: "lines", locals: { lines: @lines } %></div>
+  <% end %>
 <% end %>

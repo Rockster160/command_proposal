@@ -17,6 +17,10 @@ class ::CommandProposal::TasksController < ApplicationController
 
   def show
     @task = ::CommandProposal::Task.find(params[:id])
+    @lines = @task.iterations.order(created_at: :asc)
+    if @task.console?
+      @lines = @lines.where.not(id: @task.first_iteration.id)
+    end
 
     if params.key?(:iteration)
       @iteration = @task.iterations.find(params[:iteration])
@@ -43,6 +47,7 @@ class ::CommandProposal::TasksController < ApplicationController
     # Cannot create the iteration until the task is created, so save then update
     if @task.save && @task.update(task_params)
       if @task.console?
+        @task.iterations.create(requester: command_user) # Blank iteration to track approval
         redirect_to @task
       else
         redirect_to [:edit, @task]

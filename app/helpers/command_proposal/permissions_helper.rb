@@ -15,7 +15,11 @@ module CommandProposal
     def has_approval?(task)
       return true unless cmd_config.approval_required?
 
-      task&.approved?
+      if task&.console?
+        task.first_iteration&.approved?
+      else
+        task&.approved?
+      end
     end
 
     def command_user(user=nil)

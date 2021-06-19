@@ -24,12 +24,13 @@ module CommandProposal
         when :approve then command_approve
         when :run then command_run
         when :stop then command_stop
+        when :close then command_close
         end
       end
 
       def command_request
         check_can_command?
-        if @iteration.complete?
+        if @iteration.complete? && (@iteration.task? || @iteration.function?)
           # Creates a new iteration with the same code so we don't lose results
           @task.user = @user # Sets the task user to assign as the requester
           @task.update(code: @iteration.code)
@@ -58,6 +59,13 @@ module CommandProposal
         check_can_command?
 
         @iteration.update(status: :stop)
+      end
+
+      def command_close
+        check_can_command?
+
+        @task.first_iteration.update(status: :success)
+        ::CommandProposal.sessions.delete("task-#{@task.id}")
       end
 
       def check_can_command?

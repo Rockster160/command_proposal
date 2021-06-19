@@ -27,11 +27,7 @@ class ::CommandProposal::Task < ApplicationRecord
   delegate :status, to: :current_iteration, allow_nil: true
 
   def approved?
-    if console?
-      first_iteration&.approved?
-    else
-      current_iteration&.approved?
-    end
+    current_iteration&.approved?
   end
 
   def first_iteration
