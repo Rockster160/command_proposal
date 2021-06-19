@@ -1,0 +1,36 @@
+<div class="cmd-terminal"><%= CommandProposal::CommandFormatter.to_html_lines @task.code %></div>
+
+<% if @task.result.present? %>
+  <h3>Results</h3>
+  <div class="cmd-terminal"><%= CommandProposal::CommandFormatter.to_html_lines @task.result %></div>
+<% end %>
+
+<% case @task.status&.to_sym %>
+<% when :created, :failed, :stopped %>
+  <%= link_to "Request Access", "" %>
+<% when :approved %>
+  <%= link_to "Run!", "" %>
+<% when :started %>
+  <%= link_to "Stop (With warning about outside of transaction)", "" %>
+<% when :success %>
+  <%= link_to "Request Re-Run Access", "" %>
+<% end %>
+
+<table>
+  <thead>
+    <th>Timestamp / Link</th>
+    <th>Status</th>
+    <th># Comments</th>
+    <th>Diff</th>
+  </thead>
+  <tbody>
+    <% @task.iterations.order(created_at: :desc).each do |iteration| %>
+      <tr>
+        <td><%= link_to iteration.created_at.strftime("%b %-d %Y at %H:%M"), task_path(@task, iteration: iteration) %></td>
+        <td><%= iteration.status %></td>
+        <td><%= iteration.comments.count %></td>
+        <td><%= link_to "Diff", task_path(@task, iteration: @iteration, diff: iteration) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

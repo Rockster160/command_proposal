@@ -21,6 +21,7 @@ class ::CommandProposal::Task < ApplicationRecord
 
   delegate :line_count, to: :current_iteration, allow_nil: true
   delegate :code, to: :current_iteration, allow_nil: true
+  delegate :result, to: :current_iteration, allow_nil: true
   delegate :status, to: :current_iteration, allow_nil: true
 
   def approved?

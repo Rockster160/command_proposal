@@ -7,6 +7,10 @@ module ::CommandProposal::ParamsHelper
     params[:order] == "desc" ? "asc" : "desc"
   end
 
+  def current_params(merged={})
+    params.except(:action, :controller, :host, :port).to_unsafe_h.merge(merged)
+  end
+
   def truthy?(val)
     val.to_s.downcase.in?(["true", "t", "1"])
   end

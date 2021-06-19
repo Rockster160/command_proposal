@@ -3,47 +3,11 @@
 </script>
 
 <%= link_to "Edit", edit_task_path(@task) %>
-<h3><%= @task.name %></h3>
+<h2><%= @task.name %></h2>
 <p><%= @task.description %></p>
-<% if @iteration.present? %>
-  <div class="cmd-terminal">
-    <% @task.iterations.order(:created_at).each do |iteration| %>
-      <div class="line"><%=
-        iteration.code
-        %><% if iteration.result?
-          %><div class="result"><%= iteration.result %></div><%
-        end
-      %></div>
-    <% end %>
-  </div>
-<% end %>
-<br>
 
 <% if @task.console? %>
-  <!-- Closing > offset to get rid of spacing issues. -->
-  <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>"
-    ><div class="lines"></div
-    ><div contenteditable="true" autofocus=true class="line input"></div
-    ><span class="caret hidden"></span
-  ></div>
+  <%= render partial: "console_show" %>
 <% else %>
-  <div class="cmd-terminal" contenteditable="true" autofocus=true><div class="line"></div></div>
+  <%= render partial: "function_show" %>
 <% end %>
-
-
-<%#= link_to "Run", iteration_path(@task.current_iteration), class: "btn", method: :patch %>
-
-<%
-=begin
-
-if running
-  option to stop
-
-if already run
-  show previous results
-  show option to request to run again
-
-show previous runs
-
-=end
-%>

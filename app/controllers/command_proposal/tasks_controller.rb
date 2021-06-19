@@ -8,6 +8,7 @@ class ::CommandProposal::TasksController < ApplicationController
 
   def index
     @tasks = ::CommandProposal::Task.includes(:iterations).order(last_executed_at: :desc)
+    @tasks = @tasks.where(session_type: params[:filter]) if params[:filter].present?
   end
 
   def show
@@ -18,13 +19,13 @@ class ::CommandProposal::TasksController < ApplicationController
   def new
     @task = ::CommandProposal::Task.new
 
-    render partial: "form"
+    render "form"
   end
 
   def edit
     @task = ::CommandProposal::Task.find(params[:id])
 
-    render partial: "form"
+    render "form"
   end
 
   def create
@@ -34,10 +35,14 @@ class ::CommandProposal::TasksController < ApplicationController
     if @task.save && @task.update(task_params)
       ::CommandProposal.configuration.proposal_callback&.call(@task.last_run)
 
-      redirect_to @task
+      if @task.console?
+        redirect_to @task
+      else
+        redirect_to [:edit, @task]
+      end
     else
       # TODO: Display errors
-      render partial: "form"
+      render "form"
     end
   end
 
@@ -48,7 +53,7 @@ class ::CommandProposal::TasksController < ApplicationController
       redirect_to @task
     else
       # TODO: Display errors
-      render partial: "form"
+      render "form"
     end
   end
 
@@ -59,7 +64,12 @@ class ::CommandProposal::TasksController < ApplicationController
       :name,
       :description,
       :code,
-    )
+      :code_html,
+    ).tap do |whitelist|
+      if whitelist.key?(:code_html)
+        whitelist[:code] = ::CommandProposal::CommandFormatter.to_text_lines whitelist.delete(:code_html)
+      end
+    end
   end
 
 #   def index

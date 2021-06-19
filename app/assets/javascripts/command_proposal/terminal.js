@@ -1,41 +1,18 @@
 // Add tab / shift-tab for changing indents
 docReady(function() {
-  var terminal = document.querySelector(".cmd-terminal")
+  terminal = document.querySelector(".cmd-terminal")
+  var open = "<div class=\"line\">"
+  var close = "</div>"
+  var empty_line = open + "<br>" + close
 
   if (terminal) {
-    // terminal.addEventListener("keydown", function(evt) {
-    //   // Disable shift+enter
-    //   if (evt.key == "Enter" && evt.shiftKey) {
-    //     evt.preventDefault()
-    //   }
-    // })
-
     terminal.addEventListener("keydown", handleInput)
     terminal.addEventListener("keyup", handleInput)
     terminal.addEventListener("input", handleInput)
     terminal.addEventListener("paste", handleInput)
-    // terminal.addEventListener("paste", function(evt) {
-    //   // before paste
-    //   let paste = (evt.clipboardData || window.clipboardData).getData("text")
-    //   // paste = paste.replaceAll("\n", "</div><div class=\"line\">")
-    //
-    //   const selection = window.getSelection()
-    //   if (!selection.rangeCount) return false
-    //   selection.deleteFromDocument()
-    //   paste.split("\n").forEach(function(paste_line) {
-    //     // console.log(paste_line)
-    //     // insertNodeAtCaret(document.createTextNode(paste_line))
-    //     // var e = new KeyboardEvent("keypress")
-    //     // e.keyCode = 13
-    //     // e.which = 13
-    //     // e.key = "Enter"
-    //     // terminal.dispatchEvent(e)
-    //     // Simulate enter
-    //     selection.getRangeAt(0).insertNode(document.createTextNode(paste_line))
-    //   })
-    //
-    //   evt.preventDefault()
-    // })
+    terminal.addEventListener("blur", function() {
+      document.querySelector("#task_code_html").value = terminal.innerHTML
+    })
 
     function getCaretIndex(element) {
       var position = 0
@@ -89,7 +66,7 @@ docReady(function() {
         } // Defeat Safari bug
 
         if (elem.innerHTML == "") {
-          elem.innerHTML = "<div class=\"line\"><br></div>"
+          elem.innerHTML = empty_line
         }
       // }, 0)
     }
@@ -111,9 +88,6 @@ docReady(function() {
       if (!newHtml.match(/<div class=\"line\">[^(<\/div)]*?<div class=\"line\">/gi)) { return }
       console.log("Nest found!");
 
-      var open = "<div class=\"line\">"
-      var close = "</div>"
-
       newHtml = newHtml.replaceAll(/<\/?br>/gi, "<>" + token + "<>")
       // newHtml = newHtml.replaceAll(/<div class="line">[\s\n]*?<\/?br>[\s\n]*?<\/div>/gi, "<>" + token + "<>")
 
@@ -121,8 +95,6 @@ docReady(function() {
       var lines = (newHtml.match(inner_tag_regexp) || []).map(function(line_match) {
         return line_match.substr(1, line_match.length-2) || ""
       })
-      var open = "<div class=\"line\">"
-      var close = "</div>"
 
       var joined_lines = open + lines.join(close + open) + close
 
@@ -131,15 +103,14 @@ docReady(function() {
     // terminal.innerHTML = unnestLines()
 
     function handleNewLines(evt) {
-      // Find .line followed by .line (not /div) and remove it and next /div
-      // Remove all spaces before .line?
       // console.log("1", getCaretIndex(terminal));
       setTimeout(function() {
         if (terminal.innerHTML.indexOf("\n") >= 0) {
           var newline_count = (terminal.innerHTML.match(new RegExp("\n", "g")) || []).length
           var idx = getCaretIndex(terminal)
 
-          terminal.innerHTML = terminal.innerHTML.replaceAll("\n", "</div><div class=\"line\">")
+          terminal.innerHTML = terminal.innerHTML.replaceAll("\n", close + open)
+          // terminal.innerHTML = terminal.innerHTML.replaceAll(open + close, empty_line)
 
           // console.log("2", getCaretIndex(terminal));
           setCaretIndex(terminal, idx - newline_count - 1)

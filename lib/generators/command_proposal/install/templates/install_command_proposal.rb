@@ -4,7 +4,7 @@ class InstallCommandProposal < ActiveRecord::Migration[5.0]
       # has_many :iterations
       t.text :name
       t.text :description
-      t.integer :session_type # [line, session, function]
+      t.integer :session_type, default: :task # [task, console, function]
       t.datetime :last_executed_at
 
       t.timestamps
@@ -16,7 +16,7 @@ class InstallCommandProposal < ActiveRecord::Migration[5.0]
       t.text :args
       t.text :code
       t.text :result
-      t.integer :status # [created approved started failed success]
+      t.integer :status, default: :created # [created approved started failed success]
       t.belongs_to :requester
       t.belongs_to :approver
       t.datetime :approved_at

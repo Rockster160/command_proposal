@@ -1,0 +1,17 @@
+<% case @task.status&.to_sym %>
+<% when :approved %>
+  <%# Closing > offset to get rid of spacing issues. %>
+  <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>"
+    ><div class="lines"></div
+    ><div contenteditable="true" autofocus=true class="line input"></div
+    ><span class="caret hidden"></span
+  ></div>
+<% when :create %>
+  <%= link_to "Request Access", "" %>
+<% else %>
+  <div class="cmd-terminal">
+    <% @task.iterations.order(created_at: :asc).each do |iteration| %>
+      <div class="line"><%= iteration.code %><div class="result"><%= iteration.result %></div></div>
+    <% end %>
+  </div>
+<% end %>

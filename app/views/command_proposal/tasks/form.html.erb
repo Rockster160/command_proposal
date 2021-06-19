@@ -43,7 +43,8 @@
       <% if @task.persisted? && (@task.task? || @task.function?) %>
         <div class="form-field">
           <%= f.label :code %>
-          <%= f.text_area :code, class: :terminal, rows: [@task.line_count.to_i + 1, 10].max %>
+          <div class="cmd-terminal" contenteditable="true" autofocus=true><%= ::CommandProposal::CommandFormatter.to_html_lines @task.code %></div>
+          <input type="hidden" name="task[code_html]" id="task_code_html">
         </div>
       <% end %>
 
