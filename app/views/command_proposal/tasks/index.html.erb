@@ -1,8 +1,8 @@
 <%= link_to "New Command", new_task_path %>
 
-<%= link_to "Tasks", current_params(filter: :task), class: :btn %>
-<%= link_to "Functions", current_params(filter: :function), class: :btn %>
-<%= link_to "Consoles", current_params(filter: :console), class: :btn %>
+<%= link_to "Tasks", toggled_param(filter: :task), class: :btn %>
+<%= link_to "Functions", toggled_param(filter: :function), class: :btn %>
+<%= link_to "Consoles", toggled_param(filter: :console), class: :btn %>
 
 <table>
   <thead>
