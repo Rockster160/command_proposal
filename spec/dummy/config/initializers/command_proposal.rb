@@ -13,7 +13,7 @@ class DummyCallerBack
 end
 
 ::CommandProposal.configure do |config|
-  # config.user_class = User
+  # config.user_class = nil
   config.proposal_callback = Proc.new { |iteration|
     DummyCallerBack.proposal(iteration)
   }

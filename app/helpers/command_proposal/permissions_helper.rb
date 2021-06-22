@@ -7,6 +7,7 @@ module CommandProposal
     end
 
     def can_approve?(iteration)
+      return true unless cmd_config.approval_required?
       return if iteration.nil?
 
       command_user.try("#{cmd_config.role_scope}?") && iteration.requester&.id != command_user&.id
@@ -23,7 +24,12 @@ module CommandProposal
     end
 
     def command_user(user=nil)
-      @command_user ||= user || send(cmd_config.controller_var)
+      @command_user ||= begin
+        cmd_user = user
+
+        return cmd_user unless cmd_config.approval_required?
+        cmd_user || send(cmd_config.controller_var)
+      end
     end
 
     def cmd_config

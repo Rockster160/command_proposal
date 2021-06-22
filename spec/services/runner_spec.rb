@@ -23,7 +23,7 @@ RSpec.describe ::CommandProposal::Services::Runner do
   }
 
   context "without approval" do
-    it "does not run the function" do
+    it "does not run the task" do
       expect(subject).to_not receive(:run)
       expect(DummyCallerBack).not_to receive(:success)
       expect(DummyCallerBack).not_to receive(:failed)
@@ -35,12 +35,12 @@ RSpec.describe ::CommandProposal::Services::Runner do
     end
   end
 
-  context "runs the function" do
+  context "runs the task" do
     before do
       iteration.update(status: :approved)
     end
 
-    it "shows the output of the function" do
+    it "shows the output of the task" do
       expect(subject).to receive(:run).and_call_original
       expect(DummyCallerBack).to receive(:success)
       expect(DummyCallerBack).not_to receive(:failed)
@@ -60,6 +60,7 @@ RSpec.describe ::CommandProposal::Services::Runner do
     it "retains local vars" do
       runner = ::CommandProposal::Services::Runner.new
 
+      expect(DummyCallerBack).to receive(:success)
       runner.execute(iteration)
       iteration.reload
 
@@ -69,6 +70,7 @@ RSpec.describe ::CommandProposal::Services::Runner do
       iteration2 = task.current_iteration
       iteration2.update(status: :approved)
 
+      expect(DummyCallerBack).to receive(:success)
       runner.execute(iteration2)
       iteration2.reload
 
@@ -79,6 +81,7 @@ RSpec.describe ::CommandProposal::Services::Runner do
       runner = ::CommandProposal::Services::Runner.new
 
       iteration.update(code: "def doit; 5; end")
+      expect(DummyCallerBack).to receive(:success)
       runner.execute(iteration)
       iteration.reload
 
@@ -88,6 +91,7 @@ RSpec.describe ::CommandProposal::Services::Runner do
       iteration2 = task.current_iteration
       iteration2.update(status: :approved)
 
+      expect(DummyCallerBack).to receive(:success)
       runner.execute(iteration2)
       iteration2.reload
 
