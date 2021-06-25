@@ -1,13 +1,14 @@
-<script type="text/javascript">
-  display_caret_block = false
-</script>
+<div class="cmd-wrapper">
+  <%= link_to "Edit", edit_task_path(@task) %>
 
-<%= link_to "Edit", edit_task_path(@task) %>
-<h2><%= @task.name %></h2>
-<p><%= @task.description %></p>
+  <h2><%= @task.name %></h2>
+  <% if @task.description.present? %>
+    <p><%= @task.description %></p>
+  <% end %>
 
-<% if @task.console? %>
-  <%= render partial: "console_show" %>
-<% else %>
-  <%= render partial: "function_show" %>
-<% end %>
+  <% if @task.console? %>
+    <%= render partial: "console_show" %>
+  <% else %>
+    <%= render partial: "function_show" %>
+  <% end %>
+</div>

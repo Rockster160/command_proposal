@@ -1,5 +1,5 @@
-.cmd-console {  }
 .cmd-terminal, .cmd-console {
+  margin: 5px 0;
   font-size: 0;
   display: block;
   position: relative;
@@ -86,4 +86,7 @@
     background: lime;
     color: black;
   }
+}
+.cmd-terminal {
+  white-space: pre-wrap;
 }

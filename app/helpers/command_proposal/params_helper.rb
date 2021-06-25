@@ -29,4 +29,32 @@ module ::CommandProposal::ParamsHelper
   def true_param?(*param_keys)
     truthy?(params&.dig(*param_keys))
   end
+
+  def humanized_duration(seconds)
+    remaining = seconds.round
+    str_parts = []
+
+    durations = {
+      W: 7 * 24 * 60 * 60,
+      D: 24 * 60 * 60,
+      H: 60 * 60,
+      M: 60,
+      S: 1,
+    }
+
+    durations.each do |label, length|
+      count_at_length = 0
+
+      while remaining > length do
+        remaining -= length
+        count_at_length += 1
+      end
+
+      next if count_at_length == 0
+
+      str_parts.push("#{count_at_length}#{label}")
+    end
+
+    str_parts.join(" ")
+  end
 end

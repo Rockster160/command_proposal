@@ -1,28 +1,30 @@
-<%= link_to "New Command", new_task_path %>
+<div class="cmd-wrapper">
+  <%= link_to "New Command", new_task_path %>
 
-<%= link_to "Tasks", toggled_param(filter: :task), class: :btn %>
-<%= link_to "Functions", toggled_param(filter: :function), class: :btn %>
-<%= link_to "Consoles", toggled_param(filter: :console), class: :btn %>
+  <%= link_to "Tasks", toggled_param(filter: :task), class: :btn %>
+  <%= link_to "Functions", toggled_param(filter: :function), class: :btn %>
+  <%= link_to "Consoles", toggled_param(filter: :console), class: :btn %>
 
-<table>
-  <thead>
-    <th>Name</th>
-    <th>Desc</th>
-    <th>Status</th>
-    <th>Type</th>
-    <th>Last Run</th>
-    <th>Run by</th>
-  </thead>
-  <tbody>
-    <% @tasks.each do |task| %>
-      <tr>
-        <td><%= link_to task.name.presence || "Task #{task.id}", task_path(task) %></td>
-        <td><%= task.description %></td>
-        <td><%= task.status %></td>
-        <td><%= task.session_type %></td>
-        <td><%= task.current_iteration_at&.strftime("%b %-d, %y %H:%M").presence || "N/A" %></td>
-        <td><%= task.current_iteration_by.presence || "N/A" %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <table class="cmd-table">
+    <thead>
+      <th>Name</th>
+      <th>Desc</th>
+      <th>Status</th>
+      <th>Type</th>
+      <th>Last Run</th>
+      <th>Run by</th>
+    </thead>
+    <tbody>
+      <% @tasks.each do |task| %>
+        <tr>
+          <td><%= link_to task.name.presence || "Task #{task.id}", task_path(task) %></td>
+          <td><%= task.description.truncate(100) %></td>
+          <td><%= task.status&.capitalize || "Pending" %></td>
+          <td><%= task.session_type.capitalize %></td>
+          <td><%= task.current_iteration_at&.strftime("%b %-d, %y %H:%M") %></td>
+          <td><%= task.current_iteration_by %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -44,6 +44,12 @@ class ::CommandProposal::Iteration < ApplicationRecord
     created?
   end
 
+  def duration
+    return unless (completed_at? || stopped_at?) && started_at?
+
+    (completed_at || stopped_at) - started_at
+  end
+
   def line_count
     return 0 if code.blank?
 
