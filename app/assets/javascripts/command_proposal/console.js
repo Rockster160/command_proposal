@@ -46,6 +46,7 @@ docReady(function() {
       }
 
       if (evt.ctrlKey && evt.key == "c") {
+        prev_cmd_idx = undefined
         prev_entry = console_input.textContent
         console_input.textContent = ""
       }
@@ -212,6 +213,7 @@ docReady(function() {
       console_input.textContent = ""
       lines.appendChild(line)
       prev_entry = undefined
+      prev_cmd_idx = undefined
 
       runConsoleCode(line)
     }
@@ -223,14 +225,15 @@ docReady(function() {
       queue = queue.then(async function() {
         $.rails.refreshCSRFTokens()
 
-        var code = line.textContent
+        var params = { code: line.textContent, task_id: console.dataset.task }
+
         var res = await fetch(console.dataset.exeUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "X-CSRF-Token": $.rails.csrfToken()
           },
-          body: JSON.stringify({ code: code, task_id: console.dataset.task })
+          body: JSON.stringify(params)
         }).then(function(res) {
           if (res.ok) {
             return res.json()

@@ -43,7 +43,8 @@ class ::CommandProposal::IterationsController < ApplicationController
     @iteration = ::CommandProposal::Iteration.find(params[:id])
 
     begin
-      alter_command if params.key?(:command)
+      @iteration.update(iteration_params)
+      alter_command if params.dig(:iteration, :command).present?
     rescue ::CommandProposal::Services::CommandInterpreter::Error => e
       return redirect_to error_tasks_path, alert: e.message
     end
@@ -53,18 +54,18 @@ class ::CommandProposal::IterationsController < ApplicationController
 
   private
 
-  # def task_params
-  #   params.require(:task).permit(
-  #     :name,
-  #     :description,
-  #     :code,
-  #   )
-  # end
+  def iteration_params
+    {}.tap do |whitelist|
+      if params.dig(:iteration, :args).present?
+        whitelist[:args] = params.dig(:iteration, :args).permit!.to_h
+      end
+    end
+  end
 
   def alter_command
     ::CommandProposal::Services::CommandInterpreter.command(
       @iteration,
-      params[:command],
+      params.dig(:iteration, :command),
       current_user
     )
   end

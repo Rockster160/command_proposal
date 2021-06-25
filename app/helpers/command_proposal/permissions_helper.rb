@@ -23,6 +23,10 @@ module CommandProposal
       end
     end
 
+    def current_is_author?(iteration)
+      command_user&.id == iteration&.requester&.id
+    end
+
     def command_user(user=nil)
       @command_user ||= begin
         cmd_user = user

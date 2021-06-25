@@ -30,11 +30,21 @@ module CommandProposal
 
       def command_request
         check_can_command?
-        if @iteration.complete? && (@iteration.task? || @iteration.function?)
-          # Creates a new iteration with the same code so we don't lose results
-          @task.user = @user # Sets the task user to assign as the requester
-          @task.update(code: @iteration.code)
-          @iteration = @task.current_iteration
+        if @iteration.complete?
+          previous_iteration = @iteration
+          if @task.task? || @task.function?
+            # Creates a new iteration with the same code so we don't lose results
+            @task.user = @user # Sets the task user to assign as the requester
+            @task.update(code: @iteration.code)
+            @iteration = @task.current_iteration
+          end
+
+          if @task.function? && previous_iteration.approved_at?
+            pulled_params = previous_iteration.attributes.slice("approved_at", "approver")
+            pulled_params[:status] = :approved
+
+            @iteration.update(pulled_params)
+          end
         end
 
         ::CommandProposal.configuration.proposal_callback&.call(@iteration)
@@ -44,14 +54,14 @@ module CommandProposal
         error!("Command is not ready for approval.") unless @iteration.pending?
         check_can_command? && check_can_approve?
 
-        @iteration.update(status: :approved, approver: @user)
+        @iteration.update(status: :approved, approver: @user, approved_at: Time.current)
       end
 
       def command_run
         check_can_command?
         error!("Cannot run without approval.") unless has_approval?(@task)
 
-        # Should be async
+        # TODO: Should be async
         ::CommandProposal::Services::Runner.new.execute(@iteration)
       end
 

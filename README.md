@@ -49,7 +49,8 @@ Add config as desired:
         # `iteration.result`
         # `iteration.status`
         # `iteration.author`
-        # `iteration.approver`
+        # `iteration.requester_name`
+        # `iteration.approver_name`
         # `iteration.approved_at`
         # `iteration.started_at`
         # `iteration.completed_at`

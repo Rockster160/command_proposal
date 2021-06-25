@@ -35,11 +35,11 @@ module ::CommandProposal::ParamsHelper
     str_parts = []
 
     durations = {
-      W: 7 * 24 * 60 * 60,
-      D: 24 * 60 * 60,
-      H: 60 * 60,
-      M: 60,
-      S: 1,
+      w: 7 * 24 * 60 * 60,
+      d: 24 * 60 * 60,
+      h: 60 * 60,
+      m: 60,
+      s: 1,
     }
 
     durations.each do |label, length|
@@ -55,6 +55,7 @@ module ::CommandProposal::ParamsHelper
       str_parts.push("#{count_at_length}#{label}")
     end
 
+    return "< 1s" if str_parts.none?
     str_parts.join(" ")
   end
 end

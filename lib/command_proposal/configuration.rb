@@ -16,12 +16,10 @@ module CommandProposal
 
     def initialize
       # Required
-      if Object.const_defined?("User")
-        @user_class = User
-        @role_scope = :admin
-        @user_name = :name
-        @controller_var = "current_#{@user_class.name.downcase}"
-      end
+      @user_class_name = "User"
+      @role_scope = :admin
+      @user_name = :name
+      @controller_var = "current_#{@user_class_name.downcase}"
 
       # Default
       @approval_required = true

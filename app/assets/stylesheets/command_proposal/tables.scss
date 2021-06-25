@@ -3,10 +3,14 @@
   table-layout: fixed;
   width: 100%;
 
-  tr:nth-child(odd) td {
-    background: lightgrey;
+  tr:nth-child(odd) {
+    th, td {
+      background: lightgrey;
+    }
   }
-  th,td {
+  // Hack to stop the header from being highlighted, need high specificity.
+  thead tr:nth-child(1) th { background-color: transparent; }
+  th, td {
     border: 1px solid grey;
   }
   th {

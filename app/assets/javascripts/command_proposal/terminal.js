@@ -58,17 +58,15 @@ docReady(function() {
     }
 
     function fixEmptyEditor(event) {
-      // setTimeout(function() {
-        var evt = event || window.event
-        var elem = evt.target || evt.srcElement
-        if (elem.nodeType == 3) {
-          elem = elem.parentNode
-        } // Defeat Safari bug
+      var evt = event || window.event
+      var elem = evt.target || evt.srcElement
+      if (elem.nodeType == 3) {
+        elem = elem.parentNode
+      } // Defeat Safari bug
 
-        if (elem.innerHTML == "") {
-          elem.innerHTML = empty_line
-        }
-      // }, 0)
+      if (elem.innerHTML == "") {
+        elem.innerHTML = empty_line
+      }
     }
 
     function generateToken() {
@@ -89,7 +87,6 @@ docReady(function() {
       console.log("Nest found!");
 
       newHtml = newHtml.replaceAll(/<\/?br>/gi, "<>" + token + "<>")
-      // newHtml = newHtml.replaceAll(/<div class="line">[\s\n]*?<\/?br>[\s\n]*?<\/div>/gi, "<>" + token + "<>")
 
       var inner_tag_regexp = />[^<>]+?</ig
       var lines = (newHtml.match(inner_tag_regexp) || []).map(function(line_match) {
@@ -100,28 +97,17 @@ docReady(function() {
 
       terminal.innerHTML =  joined_lines.replaceAll(token, "<br>")
     }
-    // terminal.innerHTML = unnestLines()
 
     function handleNewLines(evt) {
-      // console.log("1", getCaretIndex(terminal));
       setTimeout(function() {
         if (terminal.innerHTML.indexOf("\n") >= 0) {
           var newline_count = (terminal.innerHTML.match(new RegExp("\n", "g")) || []).length
           var idx = getCaretIndex(terminal)
 
           terminal.innerHTML = terminal.innerHTML.replaceAll("\n", close + open)
-          // terminal.innerHTML = terminal.innerHTML.replaceAll(open + close, empty_line)
 
-          // console.log("2", getCaretIndex(terminal));
           setCaretIndex(terminal, idx - newline_count - 1)
-          // setCaretIndex(terminal, idx)
         }
-        // if (terminal.innerHTML.indexOf("<br>") >= 0) {
-        //   terminal.innerHTML = terminal.innerHTML.replaceAll("<br>", "")
-        // }
-        //
-        // if (terminal.innerHTML.indexOf("\n") >= 0) {
-        // }
       }, 0)
     }
   }

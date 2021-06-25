@@ -40,6 +40,11 @@
     <% end %>
 
     <% if @task.persisted? && (@task.task? || @task.function?) %>
+      <% if @task.function? %>
+        <p>Use <code>params[:key]</code> to reference values that can be passed in. UI will provide fields when running.</p>
+        <p>NOTE: All params will come through as strings.</p>
+      <% end %>
+
       <div class="cmd-field">
         <%= f.label :code %>
         <div class="cmd-terminal" contenteditable="true" autofocus=true><%= ::CommandProposal::CommandFormatter.to_html_lines @task.code %></div>

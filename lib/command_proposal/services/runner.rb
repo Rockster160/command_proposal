@@ -36,6 +36,12 @@ module CommandProposal
 
       def run
         begin
+          @session.eval("params = #{@iteration.args || {}}.with_indifferent_access")
+        rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
+          return @iteration.result = results_from_exception(e)
+        end
+
+        begin
           stored_stdout = $stdout
           $stdout = StringIO.new
           result = @session.eval(@iteration.code).inspect # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
@@ -49,6 +55,7 @@ module CommandProposal
           $stdout = stored_stdout
         end
 
+        # Not using presence because we want to maintain other empty objects such as [] and {}
         output = nil if output == ""
 
         @iteration.result = [output, "#{result || 'nil'}"].compact.join("\n")

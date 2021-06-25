@@ -14,8 +14,10 @@
 # ADD: iteration_count?
 
 require "command_proposal/service/external_belong"
+require "command_proposal/service/json_wrapper"
 
 class ::CommandProposal::Iteration < ApplicationRecord
+  serialize :args, ::CommandProposal::Service::JSONWrapper
   include ::CommandProposal::Service::ExternalBelong
 
   has_many :comments
@@ -35,6 +37,10 @@ class ::CommandProposal::Iteration < ApplicationRecord
 
   delegate :name, to: :task
   delegate :description, to: :task
+
+  def params
+    code.scan(/params\[[:\"\'](.*?)[\'\"]?\]/).flatten
+  end
 
   def complete?
     success? || failed? || stopped?
