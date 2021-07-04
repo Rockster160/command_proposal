@@ -16,7 +16,7 @@
       <td><%= @iteration&.approver_name %></td>
       <td><%= @iteration&.status&.capitalize %></td>
       <% if @iteration&.started_at.present? %>
-        <td><%= @iteration.started_at.strftime("%b %-d, %y %H:%M") %></td>
+        <td><%= @iteration.started_at.strftime("%b %-d, %Y at %H:%M") %></td>
       <% end %>
       <% if @iteration&.duration.present? %>
         <td><%= humanized_duration(@iteration.duration) %></td>
@@ -25,32 +25,26 @@
   </tbody>
 </table>
 
-<% if @iteration.args.present? %>
-  <table class="cmd-table">
-    <tbody>
-      <% @iteration.args.each do |arg_k, arg_v| %>
-        <tr>
-          <th><%= arg_k %></th>
-          <td><%= arg_v %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>
-
 <%= form_for @iteration do |f| %>
-  <% if @task.function? && @iteration.params.any? && @iteration.approved? && current_is_author?(@iteration) %>
-    <% @iteration.params.each do |param_key| %>
-      <label for="iteration[args][<%= param_key %>]"><%= param_key %></label>
-      <input type="text" name="iteration[args][<%= param_key %>]" value="">
-    <% end %>
-  <% end %>
-
-  <div class="cmd-terminal"><%= CommandProposal::CommandFormatter.to_html_lines @iteration&.code %></div>
-
   <% if @iteration&.result.present? %>
     <h3>Results: <%= @iteration.success? ? "Success!" : "Failed!" %></h3>
-    <div class="cmd-terminal"><%= CommandProposal::CommandFormatter.to_html_lines @iteration.result %></div>
+  <% end %>
+
+  <% if @iteration.args.present? %>
+    <table class="cmd-table">
+      <tbody>
+        <% @iteration.args.each do |arg_k, arg_v| %>
+          <tr>
+            <th><%= arg_k %></th>
+            <td><%= arg_v %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+  <% if @iteration&.result.present? %>
+    <div class="cmd-terminal"><%= ::CommandProposal::CommandFormatter.to_html_lines @iteration.result %></div>
   <% end %>
 
   <% if current_is_author?(@iteration) %>
@@ -60,13 +54,16 @@
       <%= f.submit "Request Access" %>
     <% when :approved %>
       <%= f.hidden_field :command, value: :run %>
-      <%= f.submit "Run!" %>
+      <%= f.submit "Execute" %>
+      <%= f.submit "Cancel", formaction: url_for([@iteration, iteration: {command: :cancel}]) %>
     <% when :started %>
       <%= f.hidden_field :command, value: :stop %>
       <%= f.submit "Stop (With warning about outside of transaction)" %>
     <% when :success %>
-      <%= f.hidden_field :command, value: :request %>
-      <%= f.submit "Request Re-Run Access" %>
+      <% unless @task.function? %>
+        <%= f.hidden_field :command, value: :request %>
+        <%= f.submit "Request Re-Run Access" %>
+      <% end %>
     <% end %>
   <% elsif can_approve?(@iteration) %>
     <% if @iteration.approved? %>
@@ -77,6 +74,30 @@
     <% end %>
   <% end %>
 <% end %>
+
+<% if @task.function? %>
+  <%= form_for @iteration do |f| %>
+    <% if @iteration.params.any? && (@iteration.pending? || @iteration.complete?) %>
+      <div class="form-field">
+        <% @iteration.params.each do |param_key| %>
+          <label for="iteration[args][<%= param_key %>]"><%= param_key %></label>
+          <input type="text" name="iteration[args][<%= param_key %>]" value="">
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @iteration.approved_at? %>
+       <%= f.hidden_field :command, value: :run %>
+      <%= f.submit "Execute" %>
+    <% else %>
+       <%= f.hidden_field :command, value: :request %>
+      <%= f.submit "Request Access" %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<div class="cmd-terminal"><%= ::CommandProposal::CommandFormatter.to_html_lines @iteration&.code %></div>
+
 <% if @task.iterations.many? %>
   <table class="cmd-table">
     <thead>
@@ -88,7 +109,7 @@
     <tbody>
       <% @task.iterations.where.not(id: @iteration&.id).order(created_at: :desc).each do |iteration| %>
         <tr>
-          <td><%= link_to iteration.created_at.strftime("%b %-d %Y at %H:%M"), task_path(@task, iteration: iteration) %></td>
+          <td><%= link_to iteration.created_at.strftime("%b %-d, %Y at %H:%M"), task_path(@task, iteration: iteration) %></td>
           <td><%= iteration.status.capitalize %></td>
           <td><%= iteration.comments.count %></td>
           <!-- <td><%= link_to "Diff", task_path(@task, iteration: @iteration, diff: iteration) %></td> -->

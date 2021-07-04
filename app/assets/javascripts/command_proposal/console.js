@@ -9,6 +9,8 @@ docReady(function() {
     var prev_cmd_idx = undefined, prev_entry = undefined
     var caret = document.querySelector(".caret")
     var commands = getPrevCommands()
+    // Caret block is neat, but not very cross-browser compatible and has some functional issues.
+    var display_caret_block = false
 
     if (display_caret_block) {
       caret.classList.remove("hidden")

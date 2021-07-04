@@ -6,15 +6,16 @@ module CommandProposal
       class Error < StandardError; end
       include ::CommandProposal::PermissionsHelper
 
-      def self.command(iteration, command, user)
-        new(iteration, command, user).command
+      def self.command(iteration, command, user, params={})
+        new(iteration, command, user, params).command
       end
 
-      def initialize(iteration, command, user)
+      def initialize(iteration, command, user, params={})
         @iteration = iteration
         @task = iteration.task
         @command = command.to_s.to_sym
         @user = user
+        @params = params
         command_user(@user) if @user.present?
       end
 
@@ -23,27 +24,27 @@ module CommandProposal
         when :request then command_request
         when :approve then command_approve
         when :run then command_run
+        when :cancel then command_cancel
         when :stop then command_stop
         when :close then command_close
         end
+
+        @iteration
       end
 
       def command_request
         check_can_command?
-        if @iteration.complete?
+        if @iteration.complete? && (@task.task? || @task.function?)
           previous_iteration = @iteration
-          if @task.task? || @task.function?
-            # Creates a new iteration with the same code so we don't lose results
-            @task.user = @user # Sets the task user to assign as the requester
-            @task.update(code: @iteration.code)
-            @iteration = @task.current_iteration
-          end
+          # Creates a new iteration with the same code so we don't lose results
+          @task.user = @user # Sets the task user to assign as the requester
+          @task.update(code: @iteration.code)
+          @iteration = @task.current_iteration
 
           if @task.function? && previous_iteration.approved_at?
-            pulled_params = previous_iteration.attributes.slice("approved_at", "approver")
-            pulled_params[:status] = :approved
-
-            @iteration.update(pulled_params)
+            @params.merge!(previous_iteration.attributes.slice("approved_at", "approver"))
+            @params.merge!(status: :approved)
+            return # Don't trigger the callback
           end
         end
 
@@ -59,10 +60,18 @@ module CommandProposal
 
       def command_run
         check_can_command?
+        command_request if @task.function? && @iteration.approved_at? && @iteration.complete?
         error!("Cannot run without approval.") unless has_approval?(@task)
+        @iteration.update(@params)
 
         # TODO: Should be async
         ::CommandProposal::Services::Runner.new.execute(@iteration)
+      end
+
+      def command_cancel
+        check_can_command?
+
+        @iteration.update(status: :cancelled)
       end
 
       def command_stop

@@ -46,6 +46,25 @@ class ::CommandProposal::Task < ApplicationRecord
     current_iteration&.requester_name
   end
 
+  def started_at
+    if console?
+      # Second iteration because the first is a blank placeholder
+      ordered_iterations.second&.started_at
+    else
+      first_iteration&.started_at
+    end
+  end
+
+  def completed_at
+    current_iteration&.completed_at
+  end
+
+  def duration
+    return unless started_at.present? && completed_at.present?
+
+    completed_at - started_at
+  end
+
   def code=(new_code)
     iterations.create(code: new_code, requester: user)
   end

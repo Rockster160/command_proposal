@@ -1,31 +1,63 @@
-<% if command_user&.id == @iteration&.requester&.id %>
-  <% case @task.first_iteration.status.to_sym %>
-  <% when :approved %>
-    <%# Closing > offset to get rid of spacing issues. %>
-    <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= iterations_path %>"
-      ><div class="lines"><%= render partial: "lines", locals: { lines: @lines, skip_empty: true }
-      %></div
-      ><div contenteditable="true" autofocus=true class="line input"></div
-      ><span class="caret hidden"></span
-    ></div>
+<table class="cmd-table">
+  <thead>
+    <th>Requester</th>
+    <th>Approver</th>
+    <th>Status</th>
+    <% if @task.started_at.present? %>
+      <th>Started</th>
+    <% end %>
+    <% if @task.duration.present? %>
+      <th>Duration</th>
+    <% end %>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= @iteration&.requester_name %></td>
+      <td><%= @iteration&.approver_name %></td>
+      <td><%= @iteration&.status&.capitalize %></td>
+      <% if @task&.started_at.present? %>
+        <td><%= @task.started_at.strftime("%b %-d, %Y at %H:%M") %></td>
+      <% end %>
+      <% if @task&.duration.present? %>
+        <td><%= humanized_duration(@task.duration) %></td>
+      <% end %>
+    </tr>
+  </tbody>
+</table>
 
-    <%= link_to "Close Session", [@iteration, command: :close], method: :patch %>
-  <% when :created, nil %>
-    <%= link_to "Request Access", [@iteration, command: :request], method: :patch %>
+<%= form_for @iteration do |f| %>
+  <% if command_user&.id == @iteration&.requester&.id %>
+    <% case @task.first_iteration.status.to_sym %>
+    <% when :approved %>
+      <%# Closing > offset to get rid of spacing issues. %>
+      <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= task_iterations_path(@task) %>"
+        ><div class="lines"><%= render partial: "lines", locals: { lines: @lines, skip_empty: true }
+        %></div
+        ><div contenteditable="true" autofocus=true class="line input"></div
+        ><span class="caret hidden"></span
+      ></div>
+
+        <%= f.hidden_field :command, value: :close %>
+        <%= f.submit "Close Session" %>
+    <% when :created, nil %>
+      <%= f.hidden_field :command, value: :request %>
+      <%= f.submit "Request Access" %>
+    <% else %>
+      <% if @task.first_iteration.success? %>
+        <p>Session closed.</p>
+      <% end %>
+      <div class="cmd-terminal"><%= render partial: "lines", locals: { lines: @lines } %></div>
+    <% end %>
   <% else %>
+    <% if can_approve?(@iteration) && @iteration.pending? %>
+      <%= f.hidden_field :command, value: :approve %>
+      <%= f.submit "Approve!" %>
+    <% end %>
     <% if @task.first_iteration.success? %>
       <p>Session closed.</p>
     <% end %>
-    <div class="cmd-terminal"><%= render partial: "lines", locals: { lines: @lines } %></div>
-  <% end %>
-<% else %>
-  <% if can_approve?(@iteration) && @iteration.pending? %>
-    <%= link_to "Approve!", [@iteration, command: :approve], method: :patch %>
-  <% end %>
-  <% if @task.first_iteration.success? %>
-    <p>Session closed.</p>
-  <% end %>
-  <% if @task.first_iteration.approved? || @task.first_iteration.success? %>
-    <div class="cmd-terminal"><%= render partial: "lines", locals: { lines: @lines } %></div>
+    <% if @task.first_iteration.approved? || @task.first_iteration.success? %>
+      <div class="cmd-terminal"><%= render partial: "lines", locals: { lines: @lines } %></div>
+    <% end %>
   <% end %>
 <% end %>

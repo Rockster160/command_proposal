@@ -43,7 +43,6 @@ class ::CommandProposal::IterationsController < ApplicationController
     @iteration = ::CommandProposal::Iteration.find(params[:id])
 
     begin
-      @iteration.update(iteration_params)
       alter_command if params.dig(:iteration, :command).present?
     rescue ::CommandProposal::Services::CommandInterpreter::Error => e
       return redirect_to error_tasks_path, alert: e.message
@@ -66,7 +65,8 @@ class ::CommandProposal::IterationsController < ApplicationController
     ::CommandProposal::Services::CommandInterpreter.command(
       @iteration,
       params.dig(:iteration, :command),
-      current_user
+      current_user,
+      iteration_params
     )
   end
 
