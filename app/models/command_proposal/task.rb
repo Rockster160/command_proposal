@@ -47,16 +47,11 @@ class ::CommandProposal::Task < ApplicationRecord
   end
 
   def started_at
-    if console?
-      # Second iteration because the first is a blank placeholder
-      ordered_iterations.second&.started_at
-    else
-      first_iteration&.started_at
-    end
+    iterations.minimum(:started_at)
   end
 
   def completed_at
-    current_iteration&.completed_at
+    iterations.maximum(:completed_at)
   end
 
   def duration
