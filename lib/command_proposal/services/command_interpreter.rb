@@ -60,12 +60,17 @@ module CommandProposal
 
       def command_run
         check_can_command?
-        command_request if @task.function? && @iteration.approved_at? && @iteration.complete?
-        error!("Cannot run without approval.") unless has_approval?(@task)
-        @iteration.update(@params)
 
-        # TODO: Should be async
-        ::CommandProposal::Services::Runner.new.execute(@iteration)
+        # Rollback the create/update if anything fails
+        ActiveRecord::Base.transaction do
+          command_request if @task.function? && @iteration.approved_at? && @iteration.complete?
+          @iteration.update(@params)
+
+          error!("Cannot run without approval.") unless has_approval?(@task)
+        end
+
+        # ::CommandProposal::Services::Runner.new.execute(@iteration)
+        ::CommandProposal::CommandRunnerJob.perform_later(@iteration.id)
       end
 
       def command_cancel

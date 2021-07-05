@@ -19,9 +19,9 @@ class ::CommandProposal::RunnersController < ApplicationController
       return render(text: e.message, status: :bad_request)
     end
 
+    sleep 0.2
     5.times do |t|
-      sleep 1
-      next unless @iteration.reload.complete?
+      next sleep(1) unless @iteration.reload.complete?
 
       return render(text: @iteration.reload.result, status: status_to_code)
     end
