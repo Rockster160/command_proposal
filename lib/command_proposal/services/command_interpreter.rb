@@ -42,7 +42,7 @@ module CommandProposal
           @iteration = @task.current_iteration
 
           if @task.function? && previous_iteration.approved_at?
-            @params.merge!(previous_iteration.attributes.slice("approved_at", "approver"))
+            @params.merge!(previous_iteration.attributes.slice("approved_at", "approver_id"))
             @params.merge!(status: :approved)
             return # Don't trigger the callback
           end
@@ -69,7 +69,6 @@ module CommandProposal
           error!("Cannot run without approval.") unless has_approval?(@task)
         end
 
-        # ::CommandProposal::Services::Runner.new.execute(@iteration)
         ::CommandProposal::CommandRunnerJob.perform_later(@iteration.id)
       end
 
@@ -81,6 +80,7 @@ module CommandProposal
 
       def command_stop
         check_can_command?
+        return if @iteration.complete?
 
         @iteration.update(status: :stop)
       end

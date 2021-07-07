@@ -6,7 +6,6 @@ module CommandProposal
 
       text_lines.gsub("\r", "").split("\n").map do |line|
         line = line.gsub("<", "&lt;").gsub(">", "&gt;")
-        puts "\e[33m[LINE]#{line.presence || "</br>"}\e[0m"
         "<div class=\"line\">#{line.presence || "</br>"}</div>"
       end.compact.join("").html_safe
     end

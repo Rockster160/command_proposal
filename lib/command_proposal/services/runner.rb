@@ -41,30 +41,51 @@ module CommandProposal
           return @iteration.result = results_from_exception(e)
         end
 
-        begin
-          stored_stdout = $stdout
-          $stdout = StringIO.new
-          # Thread and continue to save the values
-          result = @session.eval(@iteration.code).inspect # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
-        rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
-          @iteration.status = :failed
+        stored_stdout = $stdout
+        $stdout = StringIO.new
+        result = nil # Init var for scope
 
-          result = results_from_exception(e)
-        ensure
-          output = $stdout.try(:string)
+        running_thread = Thread.new do
+          begin
+            result = @session.eval(@iteration.code).inspect # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
+          rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
+            @iteration.status = :failed
 
-          $stdout = stored_stdout
+            result = results_from_exception(e)
+          end
         end
 
-        # Not using presence because we want to maintain other empty objects such as [] and {}
-        output = nil if output == ""
+        sleep 0.2
+        while running_thread.status.present?
+          @iteration.reload
 
+          if $stdout.try(:string) != @iteration.result
+            @iteration.update(result: $stdout.try(:string).dup)
+          end
+
+          running_thread.exit if @iteration.stop?
+
+          sleep 1
+        end
+
+        output = $stdout.try(:string)
+        output = nil if output == ""
+        # Not using presence because we want to maintain other empty objects such as [] and {}
+
+        $stdout = stored_stdout
         @iteration.result = [output, "#{result || 'nil'}"].compact.join("\n")
       end
 
       def complete
         @iteration.completed_at = Time.current
-        @iteration.status = :success unless @iteration.failed?
+        if @iteration.stop? || @iteration.stopped?
+          @iteration.result += "\n\n~~~~~ STOPPED ~~~~~"
+          @iteration.status = :stopped
+        elsif @iteration.failed?
+          # No-op
+        else
+          @iteration.status = :success
+        end
         @iteration.save!
 
         if @iteration.success?

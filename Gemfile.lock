@@ -181,6 +181,7 @@ PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
+  activejob
   command_proposal!
   pg
   pry-rails

@@ -52,9 +52,14 @@ class ::CommandProposal::Iteration < ApplicationRecord
   end
 
   def duration
-    return unless (completed_at? || stopped_at?) && started_at?
+    return unless started_at?
 
-    (completed_at || stopped_at) - started_at
+    (completed_at || stopped_at || Time.current) - started_at
+  end
+
+  def force_reset
+    # Debugging method. Should never actually be called.
+    update(status: :approved, result: nil, completed_at: nil, stopped_at: nil, started_at: nil)
   end
 
   def line_count

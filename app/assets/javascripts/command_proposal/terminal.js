@@ -53,6 +53,7 @@ docReady(function() {
 
     function handleInput(evt) {
       fixEmptyEditor(evt)
+      handleKeyOverrides(evt)
       handleNewLines()
       unnestLines()
     }
@@ -67,6 +68,34 @@ docReady(function() {
       if (elem.innerHTML == "") {
         elem.innerHTML = empty_line
       }
+    }
+
+    function handleKeyOverrides(event) {
+      var evt = event || window.event
+
+      if (evt.key == "Tab") {
+        if (evt.shiftKey) {
+          removeIndent()
+        } else {
+          addIndent()
+        }
+
+        event.preventDefault()
+        event.stopPropagation()
+        return false
+      }
+    }
+
+    function addIndent() {
+      var focusedParent = document.getSelection().focusNode.parentNode
+
+      // focusedParent.innerHTML = "  " + focusedParent.innerHTML
+    }
+
+    function removeIndent() {
+      var focusedParent = document.getSelection().focusNode.parentNode
+
+      // focusedParent.innerHTML = focusedParent.innerHTML.replace(/$  /, "")
     }
 
     function generateToken() {

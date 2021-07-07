@@ -14,22 +14,18 @@
     <tr>
       <td><%= @iteration&.requester_name %></td>
       <td><%= @iteration&.approver_name %></td>
-      <td><%= @iteration&.status&.capitalize %></td>
+      <td data-iteration-status><%= @iteration&.status&.capitalize %></td>
       <% if @iteration&.started_at.present? %>
         <td><%= @iteration.started_at.strftime("%b %-d, %Y at %H:%M") %></td>
       <% end %>
       <% if @iteration&.duration.present? %>
-        <td><%= humanized_duration(@iteration.duration) %></td>
+        <td data-iteration-duration><%= humanized_duration(@iteration.duration) %></td>
       <% end %>
     </tr>
   </tbody>
 </table>
 
 <%= form_for @iteration do |f| %>
-  <% if @iteration&.result.present? %>
-    <h3>Results: <%= @iteration.success? ? "Success!" : "Failed!" %></h3>
-  <% end %>
-
   <% if @iteration.args.present? %>
     <table class="cmd-table">
       <tbody>
@@ -43,8 +39,8 @@
     </table>
   <% end %>
 
-  <% if @iteration&.result.present? %>
-    <div class="cmd-terminal"><%= ::CommandProposal::CommandFormatter.to_html_lines @iteration.result %></div>
+  <% if @iteration&.result.present? || @iteration&.started_at? %>
+    <div class="cmd-terminal" data-status="<%= @iteration.status %>" data-feed="<%= task_runner_path(@task, @iteration) %>"><%= ::CommandProposal::CommandFormatter.to_html_lines(@iteration.result) %></div>
   <% end %>
 
   <% if current_is_author?(@iteration) %>
@@ -96,7 +92,7 @@
   <% end %>
 <% end %>
 
-<div class="cmd-terminal"><%= ::CommandProposal::CommandFormatter.to_html_lines @iteration&.code %></div>
+<div class="cmd-terminal"><%= ::CommandProposal::CommandFormatter.to_html_lines(@iteration&.code) %></div>
 
 <% if @task.iterations.many? %>
   <table class="cmd-table">
