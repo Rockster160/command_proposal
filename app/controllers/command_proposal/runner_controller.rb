@@ -44,7 +44,7 @@ class ::CommandProposal::RunnerController < ApplicationController
     when :success then :ok
     when :started then :accepted
     when :failed then :unprocessable_entity
-    when :stop, :stopped then :bad_request
+    when :stop, :stopped then :ok
     else :not_implemented
     end
     # created
@@ -78,7 +78,6 @@ class ::CommandProposal::RunnerController < ApplicationController
       format.html { render(json: iteration_json(html: true), status: status_to_code) }
       format.json { render(json: iteration_json, status: status_to_code) }
     end
-
   end
 
   def iteration_json(opts={})

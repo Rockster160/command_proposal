@@ -25,18 +25,20 @@ docReady(function() {
           throw new Error("Server error")
         }
       }).catch(function(err) {
+        console.log("err:", err);
         return {
           error: err,
         }
       })
 
       var json = await res
+      console.log(json);
 
       terminal.innerHTML = json.html
       document.querySelector("td[data-iteration-status]").innerText = json.status
       document.querySelector("td[data-iteration-duration]").innerText = json.duration
 
-      if (json.status == "started") {
+      if (json.status == "started" || json.status == "stop") {
         setTimeout(function() { pingFeed(terminal) }, 1000)
       }
     })

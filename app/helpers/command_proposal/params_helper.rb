@@ -8,7 +8,7 @@ module ::CommandProposal::ParamsHelper
   end
 
   def current_params(merged={})
-    params.except(:action, :controller, :host, :port).to_unsafe_h.merge(merged)
+    params.except(:action, :controller, :host, :port, :authenticity_token, :utf8).to_unsafe_h.merge(merged)
   end
 
   def toggled_param(toggle_h)

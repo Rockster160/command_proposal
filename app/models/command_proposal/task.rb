@@ -10,6 +10,10 @@ class ::CommandProposal::Task < ApplicationRecord
   has_many :iterations
   has_many :ordered_iterations, -> { order(created_at: :desc) }, class_name: "CommandProposal::Iteration"
 
+  scope :search, ->(text) {
+    where("name ILIKE :q OR description ILIKE :q", q: "%#{text}%")
+  }
+
   enum session_type: {
     # Task will have multiple iterations that are all essentially the same just with code changes
     task:     0,

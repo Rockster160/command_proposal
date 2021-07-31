@@ -10,8 +10,13 @@ class ::CommandProposal::TasksController < ApplicationController
 
   layout "application"
 
+  def search
+    redirect_to tasks_path(current_params)
+  end
+
   def index
     @tasks = ::CommandProposal::Task.includes(:iterations).order(last_executed_at: :desc)
+    @tasks = @tasks.search(params[:search]) if params[:search].present?
     @tasks = @tasks.where(session_type: params[:filter]) if params[:filter].present?
   end
 

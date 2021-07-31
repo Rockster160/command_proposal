@@ -5,6 +5,10 @@
   <%= link_to "Functions", toggled_param(filter: :function), class: :btn %>
   <%= link_to "Consoles", toggled_param(filter: :console), class: :btn %>
 
+  <%= form_for "", url: search_tasks_path(current_params.except(:search)) do |f| %>
+    <%= text_field_tag :search, params[:search] %>
+  <% end %>
+
   <table class="cmd-table">
     <thead>
       <th>Name</th>
