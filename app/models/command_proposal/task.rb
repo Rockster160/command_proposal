@@ -1,5 +1,6 @@
 # has_many :iterations
 # text :name
+# text :friendly_id
 # text :description
 # integer :session_type
 # datetime :last_executed_at
@@ -21,14 +22,21 @@ class ::CommandProposal::Task < ApplicationRecord
     console:  1,
     # Function iterations are much like tasks
     function: 2,
+    # Modules are included in tasks and not run independently
+    module:   3,
   }
 
   after_initialize -> { self.session_type ||= :task }
+  before_save -> { self.friendly_id = to_param }
 
   delegate :line_count, to: :current_iteration, allow_nil: true
   delegate :code, to: :current_iteration, allow_nil: true
   delegate :result, to: :current_iteration, allow_nil: true
   delegate :status, to: :current_iteration, allow_nil: true
+
+  def to_param
+    friendly_id || generate_friendly_id
+  end
 
   def approved?
     current_iteration&.approved?
@@ -66,5 +74,19 @@ class ::CommandProposal::Task < ApplicationRecord
 
   def code=(new_code)
     iterations.create(code: new_code, requester: user)
+  end
+
+  private
+
+  def generate_friendly_id
+    temp_id = name.downcase.gsub(/\s+/, "_").gsub(/[^a-z_]/, "")
+
+    loop do
+      duplicate_names = self.class.where(friendly_id: temp_id).where.not(id: id)
+
+      return temp_id if duplicate_names.none?
+
+      temp_id = "#{temp_id}_#{duplicate_names.count}"
+    end
   end
 end

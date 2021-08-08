@@ -21,7 +21,7 @@ class ::CommandProposal::TasksController < ApplicationController
   end
 
   def show
-    @task = ::CommandProposal::Task.find(params[:id])
+    @task = ::CommandProposal::Task.find_by!(friendly_id: params[:id])
     @lines = @task.iterations.includes(:comments).order(created_at: :asc)
     if @task.console?
       @lines = @lines.where.not(id: @task.first_iteration.id)
@@ -41,7 +41,7 @@ class ::CommandProposal::TasksController < ApplicationController
   end
 
   def edit
-    @task = ::CommandProposal::Task.find(params[:id])
+    @task = ::CommandProposal::Task.find_by!(friendly_id: params[:id])
 
     render "form"
   end
@@ -64,7 +64,7 @@ class ::CommandProposal::TasksController < ApplicationController
   end
 
   def update
-    @task = ::CommandProposal::Task.find(params[:id])
+    @task = ::CommandProposal::Task.find_by!(friendly_id: params[:id])
 
     if @task.update(task_params)
       redirect_to @task

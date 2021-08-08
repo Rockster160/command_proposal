@@ -89,7 +89,7 @@ module CommandProposal
         check_can_command?
 
         @task.first_iteration.update(status: :success)
-        ::CommandProposal.sessions.delete("task-#{@task.id}")
+        ::CommandProposal.sessions.delete("task:#{@task.first_iteration.id}")
       end
 
       def check_can_command?

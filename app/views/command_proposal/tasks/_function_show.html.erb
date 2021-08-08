@@ -49,9 +49,15 @@
       <%= f.hidden_field :command, value: :request %>
       <%= f.submit "Request Access" %>
     <% when :approved %>
-      <%= f.hidden_field :command, value: :run %>
-      <%= f.submit "Execute" %>
-      <%= f.submit "Cancel", formaction: url_for([@iteration, iteration: {command: :cancel}]) %>
+      <% if @task.module? %>
+        <p>Include this module in other commands by using <code>bring :<%= @task.friendly_id %></code></p>
+      <% elsif @task.function? %>
+        <%# Nothing %>
+      <% else %>
+        <%= f.hidden_field :command, value: :run %>
+        <%= f.submit "Execute" %>
+        <%= f.submit "Cancel", formaction: url_for([@iteration, iteration: {command: :cancel}]) %>
+      <% end %>
     <% when :started %>
       <%= f.hidden_field :command, value: :stop %>
       <%= f.submit "Stop (With warning about outside of transaction)" %>
@@ -83,11 +89,8 @@
     <% end %>
 
     <% if @iteration.approved_at? %>
-       <%= f.hidden_field :command, value: :run %>
+      <%= f.hidden_field :command, value: :run %>
       <%= f.submit "Execute" %>
-    <% else %>
-       <%= f.hidden_field :command, value: :request %>
-      <%= f.submit "Request Access" %>
     <% end %>
   <% end %>
 <% end %>

@@ -12,16 +12,16 @@ class ::CommandProposal::IterationsController < ApplicationController
   def create
     return error!("You do not have permission to run commands.") unless can_command?
 
-    @task = ::CommandProposal::Task.find(params[:task_id])
+    @task = ::CommandProposal::Task.find_by!(friendly_id: params[:task_id])
     # Should rescue/catch and render json
     return error!("Can only run commands on type: :console") unless @task.console?
     return error!("Session has not been approved.") unless has_approval?(@task)
 
     if @task.iterations.many?
-      runner = ::CommandProposal.sessions["task-#{params[:task_id]}"]
+      runner = ::CommandProposal.sessions["task:#{@task.current_iteration.id}"]
     elsif @task.iterations.one?
       runner = ::CommandProposal::Services::Runner.new
-      ::CommandProposal.sessions["task-#{params[:task_id]}"] = runner
+      ::CommandProposal.sessions["task:#{@task.current_iteration.id}"] = runner
     end
 
     return error!("Session has expired. Please start a new session.") if runner.nil?

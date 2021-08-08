@@ -9,14 +9,14 @@ class ::CommandProposal::RunnerController < ApplicationController
   before_action :authorize!, except: :error
 
   def show
-    @task = ::CommandProposal::Task.find(params[:task_id])
+    @task = ::CommandProposal::Task.find_by!(friendly_id: params[:task_id])
     @iteration = ::CommandProposal::Iteration.find(params[:id])
 
     iteration_response
   end
 
   def create
-    @task = ::CommandProposal::Task.find(params[:task_id])
+    @task = ::CommandProposal::Task.find_by!(friendly_id: params[:task_id])
     # Error unless @task.function?
     # Error unless iteration is ready to be run
     @iteration = @task.current_iteration
@@ -43,7 +43,7 @@ class ::CommandProposal::RunnerController < ApplicationController
     case @iteration.status.to_sym
     when :success then :ok
     when :started then :accepted
-    when :failed then :unprocessable_entity
+    when :failed then :ok
     when :stop, :stopped then :ok
     else :not_implemented
     end

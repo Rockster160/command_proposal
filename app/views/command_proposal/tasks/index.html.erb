@@ -4,6 +4,7 @@
   <%= link_to "Tasks", toggled_param(filter: :task), class: :btn %>
   <%= link_to "Functions", toggled_param(filter: :function), class: :btn %>
   <%= link_to "Consoles", toggled_param(filter: :console), class: :btn %>
+  <%= link_to "Modules", toggled_param(filter: :module), class: :btn %>
 
   <%= form_for "", url: search_tasks_path(current_params.except(:search)) do |f| %>
     <%= text_field_tag :search, params[:search] %>

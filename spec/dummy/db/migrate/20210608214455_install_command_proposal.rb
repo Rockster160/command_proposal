@@ -3,6 +3,7 @@ class InstallCommandProposal < ActiveRecord::Migration[5.0]
     create_table :command_proposal_tasks do |t|
       # has_many :iterations
       t.text :name
+      t.text :friendly_id
       t.text :description
       t.integer :session_type # [line, session, function]
       t.datetime :last_executed_at

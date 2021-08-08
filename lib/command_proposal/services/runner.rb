@@ -1,7 +1,5 @@
 require "pry"
 
-# def doit; puts "hi"; 3; end; doit
-
 module CommandProposal
   module Services
     class Runner
@@ -12,14 +10,21 @@ module CommandProposal
         @session = session
       end
 
-      def execute(iteration)
+      def execute(iteration, inline=false)
         @iteration = iteration
+        @inline = inline
         prepare
 
         run
 
         complete
         @iteration = nil
+      end
+
+      def quick_run(iteration)
+        raise CommandProposal::Error, ":#{iteration.task.friendly_id} does not have approval to run." unless iteration.approved?
+
+        @session.eval(iteration.code)
       end
 
       private
@@ -36,7 +41,7 @@ module CommandProposal
 
       def run
         begin
-          @session.eval("params = #{@iteration.args || {}}.with_indifferent_access")
+          @session.eval("#{bring_function};params = #{@iteration.args || {}}.with_indifferent_access")
         rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
           return @iteration.result = results_from_exception(e)
         end
@@ -47,6 +52,8 @@ module CommandProposal
 
         running_thread = Thread.new do
           begin
+            # Run bring functions in here so we can capture any string outputs
+            # OR! Run the full runner and instead of saving to an iteration, return the string for prepending here
             result = @session.eval(@iteration.code).inspect # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
           rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
             @iteration.status = :failed
@@ -74,6 +81,10 @@ module CommandProposal
 
         $stdout = stored_stdout
         @iteration.result = [output, "#{result || 'nil'}"].compact.join("\n")
+      end
+
+      def bring_function
+        "def bring(*func_names); func_names.each { |f| self.quick_run(::CommandProposal::Task.find_by!(friendly_id: f).current_iteration) }; end"
       end
 
       def complete

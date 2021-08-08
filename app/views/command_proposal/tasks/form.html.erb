@@ -21,25 +21,31 @@
         <p>
           <%= f.radio_button :session_type, :task %>
           <%= f.label :session_type, value: :task do %>
-            Task - Batch of code that typically only needs to be executed once. (Can be re-run if needed)
+            Task - Batch of code that typically only needs to be executed once. Requires approval for every new run.
           <% end %>
         </p>
         <p>
           <%= f.radio_button :session_type, :console %>
           <%= f.label :session_type, value: :console do %>
-            Console - Starts a session that allows line-by-line commands to be executed.
+            Console - Starts a session that allows line-by-line commands to be executed. Requires approval only to begin session.
           <% end %>
         </p>
         <p>
           <%= f.radio_button :session_type, :function %>
           <%= f.label :session_type, value: :function do %>
-            Function - Reusable batch of code, can accept arguments
+            Function - Reusable batch of code, can accept arguments. Only requires approval on code changes.
+          <% end %>
+        </p>
+        <p>
+          <%= f.radio_button :session_type, :module %>
+          <%= f.label :session_type, value: :module do %>
+            Module - An includable batch of code that can give accessible methods to a function or task. Requires approval on code changes.
           <% end %>
         </p>
       </div>
     <% end %>
 
-    <% if @task.persisted? && (@task.task? || @task.function?) %>
+    <% if @task.persisted? && !@task.console? %>
       <% if @task.function? %>
         <p>Use <code>params[:key]</code> to reference values that can be passed in. UI will provide fields when running.</p>
         <p>NOTE: All params will come through as strings.</p>
