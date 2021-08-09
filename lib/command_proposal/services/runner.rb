@@ -35,6 +35,7 @@ module CommandProposal
 
       def prepare
         raise CommandProposal::Error, "Cannot run task without approval" unless @iteration.approved?
+        raise CommandProposal::Error, "Modules cannot be run independently" if @iteration.task.module?
 
         @iteration.update(started_at: Time.current, status: :started)
       end
