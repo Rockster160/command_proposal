@@ -6,9 +6,5 @@
     <p><%= @task.description %></p>
   <% end %>
 
-  <% if @task.console? %>
-    <%= render partial: "console_show" %>
-  <% else %>
-    <%= render partial: "function_show" %>
-  <% end %>
+  <%= render partial: "#{@task.session_type}_show" %>
 </div>

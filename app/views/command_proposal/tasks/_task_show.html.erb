@@ -8,14 +8,23 @@
   <% if current_is_author?(@iteration) %>
 
     <% case @iteration.status&.to_sym %>
-    <% when :created, :failed, :stopped %>
+    <% when :created, :stopped %>
       <%= f.hidden_field :command, value: :request %>
       <%= f.submit "Request Access" %>
+    <% when :failed %>
+      <p>Edit task to attempt to run again.</p>
+    <% when :approved %>
+      <%= f.hidden_field :command, value: :run %>
+      <%= f.submit "Execute" %>
+      <%= f.submit "Cancel", formaction: url_for([@iteration, iteration: {command: :cancel}]) %>
     <% when :started %>
       <%= f.hidden_field :command, value: :stop %>
       <%= f.submit "Stop (With warning about outside of transaction)" %>
+    <% when :success %>
+      <%= f.hidden_field :command, value: :request %>
+      <%= f.submit "Request Re-Run Access" %>
     <% end %>
-
+    
   <% elsif can_approve?(@iteration) %>
 
     <% if @iteration.approved? %>
@@ -25,22 +34,6 @@
       <%= f.submit "Approve!" %>
     <% end %>
 
-  <% end %>
-<% end %>
-
-<%= form_for @iteration do |f| %>
-  <% if @iteration.params.any? && (@iteration.pending? || @iteration.complete?) %>
-    <div class="form-field">
-      <% @iteration.params.each do |param_key| %>
-        <label for="iteration[args][<%= param_key %>]"><%= param_key %></label>
-        <input type="text" name="iteration[args][<%= param_key %>]" value="">
-      <% end %>
-    </div>
-  <% end %>
-
-  <% if @iteration.approved_at? %>
-    <%= f.hidden_field :command, value: :run %>
-    <%= f.submit "Execute" %>
   <% end %>
 <% end %>
 

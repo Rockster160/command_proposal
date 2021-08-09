@@ -1,32 +1,8 @@
-<table class="cmd-table">
-  <thead>
-    <th>Requester</th>
-    <th>Approver</th>
-    <th>Status</th>
-    <% if @task.started_at.present? %>
-      <th>Started</th>
-    <% end %>
-    <% if @task.duration.present? %>
-      <th>Duration</th>
-    <% end %>
-  </thead>
-  <tbody>
-    <tr>
-      <td><%= @iteration&.requester_name %></td>
-      <td><%= @iteration&.approver_name %></td>
-      <td><%= @iteration&.status&.capitalize %></td>
-      <% if @task&.started_at.present? %>
-        <td><%= @task.started_at.strftime("%b %-d, %Y at %H:%M") %></td>
-      <% end %>
-      <% if @task&.duration.present? %>
-        <td><%= humanized_duration(@task.duration) %></td>
-      <% end %>
-    </tr>
-  </tbody>
-</table>
+<%= render partial: "task_detail_table" %>
 
 <%= form_for @iteration do |f| %>
   <% if command_user&.id == @iteration&.requester&.id %>
+
     <% case @task.first_iteration.status.to_sym %>
     <% when :approved %>
       <%# Closing > offset to get rid of spacing issues. %>
@@ -48,7 +24,9 @@
       <% end %>
       <div class="cmd-terminal"><%= render partial: "lines", locals: { lines: @lines } %></div>
     <% end %>
+
   <% else %>
+
     <% if can_approve?(@iteration) && @iteration.pending? %>
       <%= f.hidden_field :command, value: :approve %>
       <%= f.submit "Approve!" %>
@@ -59,5 +37,6 @@
     <% if @task.first_iteration.approved? || @task.first_iteration.success? %>
       <div class="cmd-terminal"><%= render partial: "lines", locals: { lines: @lines } %></div>
     <% end %>
+
   <% end %>
 <% end %>

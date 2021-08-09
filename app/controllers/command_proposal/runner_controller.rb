@@ -28,10 +28,10 @@ class ::CommandProposal::RunnerController < ApplicationController
     end
 
     sleep 0.2
-    3.times do |t|
-      next sleep(1) unless @iteration.reload.complete?
+    5.times do |t|
+      break if @iteration.reload.complete?
 
-      return iteration_response
+      sleep(0.5)
     end
 
     iteration_response
@@ -44,7 +44,6 @@ class ::CommandProposal::RunnerController < ApplicationController
     when :success then :ok
     when :started then :accepted
     when :failed then :ok
-    when :stop, :stopped then :ok
     else :not_implemented
     end
     # created
