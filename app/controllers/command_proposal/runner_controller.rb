@@ -1,12 +1,12 @@
-require_dependency "command_proposal/application_controller"
+require_dependency "command_proposal/engine_controller"
 require "command_proposal/services/command_interpreter"
 
-class ::CommandProposal::RunnerController < ApplicationController
+class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
   include ::CommandProposal::ParamsHelper
   include ::CommandProposal::PermissionsHelper
 
   skip_before_action :verify_authenticity_token
-  before_action :authorize!, except: :error
+  before_action :authorize_command!, except: :error
 
   def show
     @task = ::CommandProposal::Task.find_by!(friendly_id: params[:task_id])
@@ -59,7 +59,6 @@ class ::CommandProposal::RunnerController < ApplicationController
   def run_iteration
     ::CommandProposal::Services::CommandInterpreter.command(
       @iteration,
-      # approval_required? :request : :run
       :run,
       current_user,
       iteration_params
@@ -95,7 +94,7 @@ class ::CommandProposal::RunnerController < ApplicationController
     end
   end
 
-  def authorize!
+  def authorize_command!
     return if can_command?
 
     render text: "Sorry, you are not authorized to do that."

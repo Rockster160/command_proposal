@@ -1,7 +1,7 @@
-require_dependency "command_proposal/application_controller"
+require_dependency "command_proposal/engine_controller"
 require "command_proposal/services/command_interpreter"
 
-class ::CommandProposal::IterationsController < ApplicationController
+class ::CommandProposal::IterationsController < ::CommandProposal::EngineController
   include ::CommandProposal::ParamsHelper
   helper ::CommandProposal::ParamsHelper
   include ::CommandProposal::PermissionsHelper

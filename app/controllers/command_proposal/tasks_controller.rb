@@ -1,12 +1,12 @@
-require_dependency "command_proposal/application_controller"
+require_dependency "command_proposal/engine_controller"
 
-class ::CommandProposal::TasksController < ApplicationController
+class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   include ::CommandProposal::ParamsHelper
   helper ::CommandProposal::ParamsHelper
   include ::CommandProposal::PermissionsHelper
   helper ::CommandProposal::PermissionsHelper
 
-  before_action :authorize!, except: :error
+  before_action :authorize_command!, except: :error
 
   layout "application"
 
@@ -92,7 +92,7 @@ class ::CommandProposal::TasksController < ApplicationController
     end
   end
 
-  def authorize!
+  def authorize_command!
     return if can_command?
 
     redirect_to main_app.root_path, alert: "Sorry, you are not authorized to access this page."

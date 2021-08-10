@@ -26,6 +26,8 @@ class ::CommandProposal::Task < ApplicationRecord
     module:   3,
   }
 
+  validates :name, presence: true
+
   after_initialize -> { self.session_type ||= :task }
   before_save -> { self.friendly_id = to_param }
 
@@ -79,6 +81,7 @@ class ::CommandProposal::Task < ApplicationRecord
   private
 
   def generate_friendly_id
+    return if name.blank?
     temp_id = name.downcase.gsub(/\s+/, "_").gsub(/[^a-z_]/, "")
 
     loop do

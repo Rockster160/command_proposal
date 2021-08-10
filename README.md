@@ -32,39 +32,15 @@ Install and run the migrations:
     rails generate command_proposal:install
     rails db:migrate
 
-Add config as desired:
+Include assets:
 
-    ::CommandProposal.configure do |config|
-      config.user_class = User # Defaults to `User` - change if your base user class has a different model name
-      config.role_scope = :admin # Scope for your user class that determines users who are permitted to interact with commands (highly recommended to make this very exclusive, as any users in this scope will be able to interact with your database directly)
-      config.user_name = :name # Method to call to display a user's name
-      config.proposal_callback = Proc.new { |iteration|
-        # Callback code for when a new command is proposed.
-        # `iteration` can be used for showing current information.
-        # Methods available:
-        # `iteration.name`
-        # `iteration.description`
-        # `iteration.args`
-        # `iteration.code`
-        # `iteration.result`
-        # `iteration.status`
-        # `iteration.author`
-        # `iteration.requester_name`
-        # `iteration.approver_name`
-        # `iteration.approved_at`
-        # `iteration.started_at`
-        # `iteration.completed_at`
-        # `iteration.stopped_at`
-        # Route to find the current iteration:
-        # Rails.application.routes.url_helpers.command_path(iteration)
-      }
-      config.success_callback = Proc.new { |iteration|
-        # Callback code for when a running command executes successfully
-      }
-      config.failed_callback = Proc.new { |iteration|
-        # Callback code for when a running command fails to complete
-      }
-    end
+    //= require command_proposal
+    *= require command_proposal
+
+Install and run the migrations:
+
+    rails generate command_proposal:install
+    rails db:migrate
 
 ## Usage
 

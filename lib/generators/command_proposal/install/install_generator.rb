@@ -19,6 +19,10 @@ module CommandProposal
       def copy_migrations
         migration_template "install_command_proposal.rb", "db/migrate/install_command_proposal.rb"
       end
+
+      def create_initializer_file
+        copy_file "initializer.rb", "config/initializers/command_proposal.rb"
+      end
     end
   end
 end

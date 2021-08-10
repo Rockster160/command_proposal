@@ -1,13 +1,13 @@
 <div class="cmd-wrapper">
-  <%= form_for(@task) do |f| %>
-    <div class="cmd-field">
-      <% if @task.persisted? %>
-        <a href="<%= task_path(@task) %>" class="btn">&larr; Back to Task</a>
-      <% else %>
-        <a href="<%= tasks_path %>" class="btn">&larr; Back to Tasks</a>
-      <% end %>
-    </div>
+  <% if @task.persisted? %>
+    <a href="<%= task_path(@task) %>">&larr; Back to <%= @task.session_type.capitalize %></a>
+    <h2>Edit <%= @task.name.presence || "Command" %></h2>
+  <% else %>
+    <a href="<%= tasks_path %>">&larr; Back to Command</a>
+    <h2>New Command</h2>
+  <% end %>
 
+  <%= form_for(@task) do |f| %>
     <div class="cmd-field">
       <%= f.text_field :name, placeholder: "Title" %>
     </div>

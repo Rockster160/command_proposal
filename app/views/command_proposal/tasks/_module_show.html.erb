@@ -8,7 +8,7 @@
       <%= f.hidden_field :command, value: :request %>
       <%= f.submit "Request Access" %>
     <% when :approved %>
-      <p>Include this module in other commands by using <code>bring :<%= @task.friendly_id %></code></p>
+      <p>Include this module in other commands by using <code>bring :<%= @task.friendly_id %></code> at the top of the file.</p>
     <% end %>
 
   <% elsif can_approve?(@iteration) %>

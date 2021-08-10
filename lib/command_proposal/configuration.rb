@@ -2,7 +2,7 @@ module CommandProposal
   class Configuration
     attr_accessor(
       # Required
-      :user_class,
+      :user_class_name,
       :role_scope,
       :user_name,
       :controller_var,
@@ -11,7 +11,7 @@ module CommandProposal
       # Optional
       :proposal_callback,
       :success_callback,
-      :failed_callback
+      :failed_callback,
     )
 
     def initialize
@@ -28,6 +28,10 @@ module CommandProposal
       @proposal_callback = nil
       @success_callback = nil
       @failed_callback = nil
+    end
+
+    def user_class
+      @user_class ||= @user_class_name.constantize
     end
 
     def approval_required?
