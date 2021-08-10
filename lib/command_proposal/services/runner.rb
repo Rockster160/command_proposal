@@ -1,5 +1,3 @@
-require "pry"
-
 module CommandProposal
   module Services
     class Runner
