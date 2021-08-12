@@ -1,8 +1,8 @@
 <%= render partial: "task_detail_table" %>
 
-<%= form_for @iteration do |f| %>
+<%= form_for @iteration, url: command_proposal.url_for(@iteration) do |f| %>
   <% if @iteration&.result.present? || @iteration&.started_at? %>
-    <div class="cmd-terminal" data-status="<%= @iteration.status %>" data-feed="<%= task_runner_path(@task, @iteration) %>"><%= ::CommandProposal::CommandFormatter.to_html_lines(@iteration.result) %></div>
+    <textarea class="cmd-terminal" readonly=true data-status="<%= @iteration.status %>" data-feed="<%= command_proposal.task_runner_path(@task, @iteration) %>"><%= @iteration&.result %></textarea>
   <% end %>
 
   <% if current_is_author?(@iteration) %>
@@ -24,7 +24,7 @@
       <%= f.hidden_field :command, value: :request %>
       <%= f.submit "Request Re-Run Access" %>
     <% end %>
-    
+
   <% elsif can_approve?(@iteration) %>
 
     <% if @iteration.approved? %>
@@ -37,6 +37,6 @@
   <% end %>
 <% end %>
 
-<div class="cmd-terminal"><%= ::CommandProposal::CommandFormatter.to_html_lines(@iteration&.code) %></div>
+<textarea class="cmd-terminal" readonly=true><%= @iteration&.code %></textarea>
 
 <% render partial: "past_iterations_list" %>

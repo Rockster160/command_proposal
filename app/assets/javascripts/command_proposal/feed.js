@@ -32,14 +32,15 @@ docReady(function() {
       })
 
       var json = await res
-      console.log(json);
 
-      terminal.innerHTML = json.html
+      terminal.nextElementSibling.CodeMirror.doc.setValue(json.result || "")
       document.querySelector("td[data-iteration-status]").innerText = json.status
       document.querySelector("td[data-iteration-duration]").innerText = json.duration
 
       if (json.status == "started" || json.status == "stop") {
         setTimeout(function() { pingFeed(terminal) }, 1000)
+      } else {
+        document.querySelector(".stop-btn").remove()
       }
     })
   }

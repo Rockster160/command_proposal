@@ -1,12 +1,12 @@
 <div class="cmd-wrapper">
-  <%= link_to "New Command", new_task_path %>
+  <%= link_to "New Command", command_proposal.new_task_path %>
 
   <%= link_to "Tasks", toggled_param(filter: :task), class: :btn %>
   <%= link_to "Functions", toggled_param(filter: :function), class: :btn %>
   <%= link_to "Consoles", toggled_param(filter: :console), class: :btn %>
   <%= link_to "Modules", toggled_param(filter: :module), class: :btn %>
 
-  <%= form_for "", url: search_tasks_path(current_params.except(:search)) do |f| %>
+  <%= form_for "", url: command_proposal.search_tasks_path(current_params.except(:search)) do |f| %>
     <div class="cmd-flex-row">
       <%= text_field_tag :search, params[:search], placeholder: "Search" %>
       <%= f.submit "Search" %>

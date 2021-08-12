@@ -14,11 +14,11 @@ module ::CommandProposal::ParamsHelper
   def toggled_param(toggle_h)
     toggle_key = toggle_h.keys.first
     toggle_val = toggle_h.values.first
-
+    
     if params[toggle_key].to_s == toggle_val.to_s
-      current_params.except(toggle_key)
+      command_proposal.url_for(current_params.except(toggle_key))
     else
-      current_params(toggle_h)
+      command_proposal.url_for(current_params(toggle_h))
     end
   end
 

@@ -1,34 +1,8 @@
 <%= render partial: "task_detail_table" %>
 
-<%= form_for @iteration do |f| %>
-  <% if @iteration&.result.present? || @iteration&.started_at? %>
-    <div class="cmd-terminal" data-status="<%= @iteration.status %>" data-feed="<%= task_runner_path(@task, @iteration) %>"><%= ::CommandProposal::CommandFormatter.to_html_lines(@iteration.result) %></div>
-  <% end %>
+<textarea class="cmd-terminal" readonly=true><%= @iteration.code %></textarea>
 
-  <% if current_is_author?(@iteration) %>
-
-    <% case @iteration.status&.to_sym %>
-    <% when :created, :failed, :stopped %>
-      <%= f.hidden_field :command, value: :request %>
-      <%= f.submit "Request Access" %>
-    <% when :started %>
-      <%= f.hidden_field :command, value: :stop %>
-      <%= f.submit "Stop (With warning about outside of transaction)" %>
-    <% end %>
-
-  <% elsif can_approve?(@iteration) %>
-
-    <% if @iteration.approved? %>
-      <p>Approved. Ready to run.</p>
-    <% elsif @iteration.pending? %>
-      <%= f.hidden_field :command, value: :approve %>
-      <%= f.submit "Approve!" %>
-    <% end %>
-
-  <% end %>
-<% end %>
-
-<%= form_for @iteration do |f| %>
+<%= form_for @iteration, url: command_proposal.url_for(@iteration), html: { id: "edit-form-1" } do |f| %>
   <% if @iteration.params.any? && (@iteration.pending? || @iteration.complete?) %>
     <div class="form-field">
       <% @iteration.params.each do |param_key| %>
@@ -44,6 +18,32 @@
   <% end %>
 <% end %>
 
-<div class="cmd-terminal"><%= ::CommandProposal::CommandFormatter.to_html_lines(@iteration&.code) %></div>
+<%= form_for @iteration, url: command_proposal.url_for(@iteration), html: { id: "edit-form-2" } do |f| %>
+  <% if @iteration&.result.present? || @iteration&.started_at? %>
+    <textarea class="cmd-terminal" readonly=true data-status="<%= @iteration.status %>" data-feed="<%= command_proposal.task_runner_path(@task, @iteration) %>"><%= @iteration&.result %></textarea>
+  <% end %>
+
+  <% if current_is_author?(@iteration) %>
+
+    <% case @iteration.status&.to_sym %>
+    <% when :created, :failed, :stopped %>
+      <%= f.hidden_field :command, value: :request %>
+      <%= f.submit "Request Access" %>
+    <% when :started %>
+      <%= f.hidden_field :command, value: :stop %>
+      <%= f.submit "Stop (With warning about outside of transaction)", class: "stop-btn" %>
+    <% end %>
+
+  <% elsif can_approve?(@iteration) %>
+
+    <% if @iteration.approved? %>
+      <p>Approved. Ready to run.</p>
+    <% elsif @iteration.pending? %>
+      <%= f.hidden_field :command, value: :approve %>
+      <%= f.submit "Approve!" %>
+    <% end %>
+
+  <% end %>
+<% end %>
 
 <% render partial: "past_iterations_list" %>

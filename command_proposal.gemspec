@@ -20,6 +20,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rails", ">= 5.0"
 
   spec.add_development_dependency "rspec-rails"
-  spec.add_development_dependency "rubocop", "~> 0.80"
   spec.add_development_dependency "activejob"
 end

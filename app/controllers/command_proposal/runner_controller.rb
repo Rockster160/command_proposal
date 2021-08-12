@@ -73,7 +73,6 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
     @iteration.reload
 
     respond_to do |format|
-      format.html { render(json: iteration_json(html: true), status: status_to_code) }
       format.json { render(json: iteration_json, status: status_to_code) }
     end
   end
@@ -84,10 +83,6 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
       status: @iteration.status,
       duration: humanized_duration(@iteration.duration),
     }.tap do |response|
-      if opts[:html].present?
-        response[:html] = ::CommandProposal::CommandFormatter.to_html_lines(@iteration.result)
-      end
-
       if @iteration.started?
         response[:endpoint] = task_runner_path(@task, @iteration)
       end

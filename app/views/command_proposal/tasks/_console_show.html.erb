@@ -1,16 +1,15 @@
 <%= render partial: "task_detail_table" %>
 
-<%= form_for @iteration do |f| %>
+<%= form_for @iteration, url: command_proposal.url_for(@iteration) do |f| %>
   <% if command_user&.id == @iteration&.requester&.id %>
 
     <% case @task.first_iteration.status.to_sym %>
     <% when :approved %>
       <%# Closing > offset to get rid of spacing issues. %>
-      <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= task_iterations_path(@task) %>"
+      <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= command_proposal.task_iterations_path(@task) %>"
         ><div class="lines"><%= render partial: "lines", locals: { lines: @lines, skip_empty: true }
         %></div
-        ><div contenteditable="true" autofocus=true class="line input"></div
-        ><span class="caret hidden"></span
+        ><div contenteditable="true" autofocus=true class="line cmd-input"></div
       ></div>
 
         <%= f.hidden_field :command, value: :close %>
@@ -22,7 +21,7 @@
       <% if @task.first_iteration.success? %>
         <p>Session closed.</p>
       <% end %>
-      <div class="cmd-terminal"><%= render partial: "lines", locals: { lines: @lines } %></div>
+      <div class="cmd-console" read-only=true><%= render partial: "lines", locals: { lines: @lines } %></div>
     <% end %>
 
   <% else %>
@@ -35,7 +34,7 @@
       <p>Session closed.</p>
     <% end %>
     <% if @task.first_iteration.approved? || @task.first_iteration.success? %>
-      <div class="cmd-terminal"><%= render partial: "lines", locals: { lines: @lines } %></div>
+      <div class="cmd-console" read-only=true><%= render partial: "lines", locals: { lines: @lines } %></div>
     <% end %>
 
   <% end %>

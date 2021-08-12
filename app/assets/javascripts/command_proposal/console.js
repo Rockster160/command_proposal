@@ -3,39 +3,19 @@ docReady(function() {
   var console = document.querySelector(".cmd-console")
 
   if (console) {
-    var console_input = document.querySelector(".cmd-console .input")
+    var console_input = document.querySelector(".cmd-console .cmd-input")
     var lines = document.querySelector(".cmd-console .lines")
     var queue = Promise.resolve()
     var prev_cmd_idx = undefined, prev_entry = undefined
-    var caret = document.querySelector(".caret")
     var commands = getPrevCommands()
-    // Caret block is neat, but not very cross-browser compatible and has some functional issues.
-    var display_caret_block = false
-
-    if (display_caret_block) {
-      caret.classList.remove("hidden")
-      console.style.caretColor = "transparent"
-    } else {
-      caret.remove()
-    }
-
-    console_input.addEventListener("blur", stopCaretFlash)
-    console_input.addEventListener("focus", function() {
-      startCaretFlash()
-      placeBlockAtCaret()
-    })
-    console_input.addEventListener("keydown", placeBlockAtCaret)
-    console_input.addEventListener("keyup", placeBlockAtCaret)
-    console_input.addEventListener("mousedown", placeBlockAtCaret)
 
     console.addEventListener("click", function(evt) {
-      if (!window.getSelection().toString().length) {
+      if (!window.getSelection().toString().length && console_input) {
         console_input.focus()
       }
     })
 
     console.addEventListener("keydown", function(evt) {
-      // console.log(evt.key)
       // evt.shiftKey
       // evt.ctrlKey
       // evt.altKey
@@ -98,60 +78,6 @@ docReady(function() {
       }
     }
 
-    function stopCaretFlash() {
-      if (!display_caret_block) { return }
-      caret.classList.remove("flash")
-    }
-
-    function startCaretFlash() {
-      if (!display_caret_block) { return }
-      caret.classList.add("flash")
-    }
-
-    function placeBlockAtCaret() {
-      if (!display_caret_block) { return }
-      setTimeout(function() {
-        caret.classList.remove("hidden")
-        caret.classList.remove("flash")
-        void caret.offsetWidth
-        caret.classList.add("flash")
-        var coords = getCaretCoordinates()
-        var offset = getOffset(console)
-        var left = coords.x - offset.left
-        var top = coords.y - offset.top
-        if (coords.x == 0 && coords.y == 0) {
-          left = offset.left
-          top = offset.top
-        }
-
-        caret.style.left = left + "px"
-        caret.style.top = top + "px"
-      }, 1)
-    }
-    placeBlockAtCaret()
-
-    function getCaretCoordinates() {
-      var x = 0, y = 0
-      if (window.getSelection) {
-        var selection = window.getSelection()
-        if (selection.rangeCount !== 0) {
-          var range = selection.getRangeAt(0).cloneRange()
-          range.collapse(true)
-          var rect = range.getClientRects()[0]
-          if (rect) {
-            x = rect.left
-            y = rect.top
-          } else {
-            var offset = getOffset(range.startContainer)
-            x = offset.left
-            y = offset.top
-          }
-        }
-      }
-
-      return { x, y }
-    }
-
     function getCaretIndex(element) {
       var position = 0
       if (window.getSelection) {
@@ -198,7 +124,7 @@ docReady(function() {
     }
 
     function getPrevCommands() {
-      return Array.prototype.map.call(document.querySelectorAll(".line:not(.input)"), function(line) {
+      return Array.prototype.map.call(document.querySelectorAll(".line:not(.cmd-input)"), function(line) {
         var text_node = Array.prototype.find.call(line.childNodes, function(node) {
           return node.nodeName == "#text"
         })

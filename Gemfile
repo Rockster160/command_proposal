@@ -4,14 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # Specify your gem's dependencies in command_proposal.gemspec.
 gemspec
 
-group :development do
-  gem 'pg'
-end
-
 group :development, :test do
+  gem 'pg'
   gem 'pry-rails'
 end
-
-
-# To use a debugger
-# gem 'byebug', group: [:development, :test]

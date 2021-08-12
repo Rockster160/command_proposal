@@ -1,6 +1,6 @@
 <%= render partial: "task_detail_table" %>
 
-<%= form_for @iteration do |f| %>
+<%= form_for @iteration, url: command_proposal.url_for(@iteration) do |f| %>
   <% if current_is_author?(@iteration) %>
 
     <% case @iteration.status&.to_sym %>
@@ -23,6 +23,6 @@
   <% end %>
 <% end %>
 
-<div class="cmd-terminal"><%= ::CommandProposal::CommandFormatter.to_html_lines(@iteration&.code) %></div>
+<textarea class="cmd-terminal" readonly=true><%= @iteration&.code %></textarea>
 
 <% render partial: "past_iterations_list" %>

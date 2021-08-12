@@ -8,8 +8,6 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
 
   before_action :authorize_command!, except: :error
 
-  layout "application"
-
   def search
     redirect_to tasks_path(current_params)
   end
@@ -22,8 +20,8 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
 
   def show
     @task = ::CommandProposal::Task.find_by!(friendly_id: params[:id])
-    @lines = @task.iterations.includes(:comments).order(created_at: :asc)
     if @task.console?
+      @lines = @task.iterations.order(created_at: :asc)
       @lines = @lines.where.not(id: @task.first_iteration.id)
     end
 
@@ -53,9 +51,9 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
     if @task.save && @task.update(task_params)
       if @task.console?
         @task.iterations.create(requester: command_user) # Blank iteration to track approval
-        redirect_to @task
+        redirect_to command_proposal.url_for(@task)
       else
-        redirect_to [:edit, @task]
+        redirect_to command_proposal.url_for([:edit, @task])
       end
     else
       # TODO: Display errors
@@ -67,7 +65,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
     @task = ::CommandProposal::Task.find_by!(friendly_id: params[:id])
 
     if @task.update(task_params)
-      redirect_to @task
+      redirect_to command_proposal.url_for(@task)
     else
       # TODO: Display errors
       render "form"
@@ -82,13 +80,8 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
       :description,
       :session_type,
       :code,
-      :code_html,
     ).tap do |whitelist|
       whitelist[:user] = command_user
-
-      if whitelist.key?(:code_html)
-        whitelist[:code] = ::CommandProposal::CommandFormatter.to_text_lines whitelist.delete(:code_html)
-      end
     end
   end
 
