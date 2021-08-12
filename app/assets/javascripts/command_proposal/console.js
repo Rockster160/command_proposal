@@ -1,21 +1,22 @@
 // Add tab / shift-tab for changing indents
 docReady(function() {
-  var console = document.querySelector(".cmd-console")
+  var cmdconsole = document.querySelector(".cmd-console")
 
-  if (console) {
+  if (cmdconsole) {
     var console_input = document.querySelector(".cmd-console .cmd-input")
     var lines = document.querySelector(".cmd-console .lines")
     var queue = Promise.resolve()
-    var prev_cmd_idx = undefined, prev_entry = undefined
+    var history_cmd_idx = undefined
+    var stored_entry = undefined
     var commands = getPrevCommands()
 
-    console.addEventListener("click", function(evt) {
+    cmdconsole.addEventListener("click", function(evt) {
       if (!window.getSelection().toString().length && console_input) {
         console_input.focus()
       }
     })
 
-    console.addEventListener("keydown", function(evt) {
+    cmdconsole.addEventListener("keydown", function(evt) {
       // evt.shiftKey
       // evt.ctrlKey
       // evt.altKey
@@ -28,11 +29,12 @@ docReady(function() {
       }
 
       if (evt.ctrlKey && evt.key == "c") {
-        prev_cmd_idx = undefined
-        prev_entry = console_input.textContent
+        history_cmd_idx = undefined
+        stored_entry = console_input.textContent
         console_input.textContent = ""
       }
 
+      if (isNaN(history_cmd_idx)) { history_cmd_idx = undefined }
       if (evt.key == "ArrowUp" && getCaretIndex(console_input) == 0) {
         handleUpKey(evt)
       }
@@ -42,33 +44,33 @@ docReady(function() {
     })
 
     function handleUpKey() {
-      if (!prev_cmd_idx) {
-        if (prev_entry) {
-          prev_cmd_idx = commands.length - 1
-          console_input.textContent = prev_entry
-
-          return
+      if (history_cmd_idx == undefined) {
+        // Not scrolling through history
+        if (console_input.textContent) {
+          // Text has been entered
+          stored_entry = console_input.textContent
         }
-
-        prev_cmd_idx = commands.length
-        prev_entry = console_input.textContent
+        // Set history index to begin scrolling
+        history_cmd_idx = commands.length
+      } else if (history_cmd_idx == 0) {
+        return
       }
 
-      prev_cmd_idx -= 1
-      console_input.textContent = commands[prev_cmd_idx]
+      history_cmd_idx -= 1
+      console_input.textContent = commands[history_cmd_idx]
     }
 
     function handleDownKey() {
-      if (prev_cmd_idx) {
+      if (history_cmd_idx != undefined) {
         var cmd = ""
-        if (prev_cmd_idx < commands.length - 1) {
-          prev_cmd_idx += 1
-          cmd = commands[prev_cmd_idx]
-        } else if (prev_entry && prev_cmd_idx == commands.length - 1) {
-          prev_cmd_idx += 1
-          cmd = prev_entry
+        if (history_cmd_idx < commands.length - 1) {
+          history_cmd_idx += 1
+          cmd = commands[history_cmd_idx]
+        } else if (stored_entry && history_cmd_idx == commands.length - 1) {
+          history_cmd_idx += 1
+          cmd = stored_entry
         } else {
-          prev_cmd_idx = undefined
+          history_cmd_idx = undefined
         }
 
         console_input.textContent = cmd
@@ -140,8 +142,8 @@ docReady(function() {
 
       console_input.textContent = ""
       lines.appendChild(line)
-      prev_entry = undefined
-      prev_cmd_idx = undefined
+      stored_entry = undefined
+      history_cmd_idx = undefined
 
       runConsoleCode(line)
     }
@@ -153,9 +155,9 @@ docReady(function() {
       queue = queue.then(async function() {
         $.rails.refreshCSRFTokens()
 
-        var params = { code: line.textContent, task_id: console.dataset.task }
+        var params = { code: line.textContent, task_id: cmdconsole.dataset.task }
 
-        var res = await fetch(console.dataset.exeUrl, {
+        var res = await fetch(cmdconsole.dataset.exeUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

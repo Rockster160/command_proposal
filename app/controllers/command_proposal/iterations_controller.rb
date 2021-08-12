@@ -18,10 +18,10 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
     return error!("Session has not been approved.") unless has_approval?(@task)
 
     if @task.iterations.many?
-      runner = ::CommandProposal.sessions["task:#{@task.current_iteration.id}"]
+      runner = ::CommandProposal.sessions["task:#{@task.id}"]
     elsif @task.iterations.one?
       runner = ::CommandProposal::Services::Runner.new
-      ::CommandProposal.sessions["task:#{@task.current_iteration.id}"] = runner
+      ::CommandProposal.sessions["task:#{@task.id}"] = runner
     end
 
     return error!("Session has expired. Please start a new session.") if runner.nil?
