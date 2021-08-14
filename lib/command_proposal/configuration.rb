@@ -15,11 +15,11 @@ module CommandProposal
     )
 
     def initialize
-      # Required
-      @user_class_name = "User"
-      @role_scope = :admin
-      @user_name = :name
-      @controller_var = "current_#{@user_class_name.downcase}"
+      # Required (if approval needed)
+      @user_class_name = nil
+      @role_scope = nil
+      @user_name = nil
+      @controller_var = nil
 
       # Default
       @approval_required = true
@@ -31,7 +31,7 @@ module CommandProposal
     end
 
     def user_class
-      @user_class ||= @user_class_name.constantize
+      @user_class ||= @user_class_name&.constantize
     end
 
     def approval_required?

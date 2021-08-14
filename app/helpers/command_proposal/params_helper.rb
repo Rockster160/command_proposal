@@ -8,13 +8,13 @@ module ::CommandProposal::ParamsHelper
   end
 
   def current_params(merged={})
-    params.except(:action, :controller, :host, :port, :authenticity_token, :utf8).to_unsafe_h.merge(merged)
+    params.except(:action, :controller, :host, :port, :authenticity_token, :utf8, :commit).to_unsafe_h.merge(merged)
   end
 
   def toggled_param(toggle_h)
     toggle_key = toggle_h.keys.first
     toggle_val = toggle_h.values.first
-    
+
     if params[toggle_key].to_s == toggle_val.to_s
       command_proposal.url_for(current_params.except(toggle_key))
     else

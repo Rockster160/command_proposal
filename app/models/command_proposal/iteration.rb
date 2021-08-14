@@ -26,14 +26,13 @@ class ::CommandProposal::Iteration < ApplicationRecord
   external_belongs_to :approver
 
   enum status: {
-    created:   0,
-    approved:  1,
-    started:   2,
-    failed:    3,
-    cancelled: 4,
-    stop:      5, # Running, but told to stop
-    stopped:   6,
-    success:   7,
+    created:    0,
+    approved:   1,
+    started:    2,
+    failed:     3,
+    cancelling: 4, # Running, but told to stop
+    cancelled:  5,
+    success:    6,
   }
 
   delegate :name, to: :task
@@ -44,7 +43,7 @@ class ::CommandProposal::Iteration < ApplicationRecord
   end
 
   def complete?
-    success? || failed? || stopped?
+    success? || failed? || cancelled?
   end
 
   def pending?

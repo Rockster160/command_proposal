@@ -50,9 +50,8 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
     # approved
     # started
     # failed
+    # cancelling
     # cancelled
-    # stop
-    # stopped
     # success
   end
 
@@ -60,7 +59,7 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
     ::CommandProposal::Services::CommandInterpreter.command(
       @iteration,
       :run,
-      current_user,
+      command_user,
       iteration_params
     )
   end
@@ -84,7 +83,7 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
       duration: humanized_duration(@iteration.duration),
     }.tap do |response|
       if @iteration.started?
-        response[:endpoint] = task_runner_path(@task, @iteration)
+        response[:endpoint] = command_proposal.task_runner_path(@task, @iteration)
       end
     end
   end

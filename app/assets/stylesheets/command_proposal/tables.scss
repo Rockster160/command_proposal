@@ -1,3 +1,62 @@
+.cmd-index-table {
+  .cmd-index-table-row {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    width: 100%;
+    padding: 5px 0;
+    margin: 5px 0;
+
+    &:hover {
+      background: lightgrey;
+    }
+    .cmd-index-col {
+      &.cmd-col-status {
+        width: 100px;
+      }
+      &.cmd-col-title {
+        width: 100%;
+      }
+      &.cmd-col-type {
+        width: 120px;
+      }
+      &.cmd-col-info {
+        width: 200px;
+        padding-right: 10px;
+      }
+
+      .cmd-status {
+        text-align: center;
+        font-size: 20px;
+      }
+      .cmd-name {}
+      .cmd-duration {
+        font-size: 10px;
+        vertical-align: bottom;
+      }
+      .cmd-desc {
+        padding-left: 20px;
+        color: grey;
+        font-size: 12px;
+      }
+      .cmd-type {
+        color: grey;
+        font-size: 12px;
+        text-align: right;
+      }
+      .cmd-timestamp {
+        text-align: right;
+      }
+      .cmd-author {
+        text-align: right;
+        color: grey;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+
 .cmd-table {
   border-collapse: collapse;
   table-layout: fixed;
@@ -5,18 +64,22 @@
 
   tr:nth-child(odd) {
     th, td {
-      background: lightgrey;
+      // background: lightgrey;
     }
   }
   // Hack to stop the header from being highlighted, need high specificity.
   thead tr:nth-child(1) th { background-color: transparent; }
   th, td {
-    border: 1px solid grey;
+    text-align: left;
+    // border: 1px solid grey;
+    padding: 3px;
   }
   th {
-    padding: 5px;
+    // padding: 5px;
+    font-size: 12px;
+    color: grey;
   }
   td {
-    padding: 3px;
+    // padding: 3px;
   }
 }

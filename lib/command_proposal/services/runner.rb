@@ -35,6 +35,7 @@ module CommandProposal
         raise CommandProposal::Error, "Cannot run task without approval" unless @iteration.approved?
         raise CommandProposal::Error, "Modules cannot be run independently" if @iteration.task.module?
 
+        @iteration.task.update(last_executed_at: Time.current)
         @iteration.update(started_at: Time.current, status: :started)
       end
 
@@ -53,7 +54,7 @@ module CommandProposal
           begin
             # Run bring functions in here so we can capture any string outputs
             # OR! Run the full runner and instead of saving to an iteration, return the string for prepending here
-            result = @session.eval(@iteration.code).inspect # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
+            result = @session.eval("_ = (#{@iteration.code})").inspect # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
           rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
             @iteration.status = :failed
 
@@ -69,7 +70,7 @@ module CommandProposal
             @iteration.update(result: $stdout.try(:string).dup)
           end
 
-          running_thread.exit if @iteration.stop?
+          running_thread.exit if @iteration.cancelling?
 
           sleep 1
         end
@@ -88,9 +89,9 @@ module CommandProposal
 
       def complete
         @iteration.completed_at = Time.current
-        if @iteration.stop? || @iteration.stopped?
-          @iteration.result += "\n\n~~~~~ STOPPED ~~~~~"
-          @iteration.status = :stopped
+        if @iteration.cancelling? || @iteration.cancelled?
+          @iteration.result += "\n\n~~~~~ CANCELLED ~~~~~"
+          @iteration.status = :cancelled
         elsif @iteration.failed?
           # No-op
         else
@@ -108,7 +109,11 @@ module CommandProposal
       def results_from_exception(exc)
         klass = exc.class
         msg = exc.try(:message) || exc.try(:body) || exc.to_s
-        msg.gsub!(/ for \#\<CommandProposal.*/, "") # Remove proposal context
+        # Remove proposal context
+        msg.gsub!(/ for \#\<CommandProposal.*/, "")
+        msg.gsub!(/(::)?CommandProposal::Services::Runner(::)?/, "")
+        # Remove gem lines
+        msg.gsub!(/\/?((\w|(\\ ))*\/)*command_proposal\/services(\/(\w|(\\ ))*)*\.\w+\:\d+\: /, "")
         info = gather_exception_info(exc)
 
         ["#{klass}: #{msg}", info.presence].compact.join("\n")

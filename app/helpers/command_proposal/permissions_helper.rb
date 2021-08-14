@@ -10,16 +10,16 @@ module CommandProposal
       return true unless cmd_config.approval_required?
       return if iteration.nil?
 
-      command_user.try("#{cmd_config.role_scope}?") && iteration.requester&.id != command_user&.id
+      command_user.try("#{cmd_config.role_scope}?") && !current_is_author?(iteration)
     end
 
     def has_approval?(task)
       return true unless cmd_config.approval_required?
 
       if task&.console?
-        task.first_iteration&.approved?
+        task.first_iteration&.approved_at?
       else
-        task&.approved?
+        task&.approved_at?
       end
     end
 
@@ -29,10 +29,13 @@ module CommandProposal
 
     def command_user(user=nil)
       @command_user ||= begin
-        cmd_user = user
-
-        return cmd_user unless cmd_config.approval_required?
-        cmd_user || send(cmd_config.controller_var)
+        if user.present?
+          user
+        elsif cmd_config.controller_var.blank?
+          nil
+        else
+          try(cmd_config.controller_var)
+        end
       end
     end
 

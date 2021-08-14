@@ -25,7 +25,7 @@ module CommandProposal
         when :approve then command_approve
         when :run then command_run
         when :cancel then command_cancel
-        when :stop then command_stop
+        when :cancel then command_cancel
         when :close then command_close
         end
 
@@ -74,21 +74,15 @@ module CommandProposal
 
       def command_cancel
         check_can_command?
-
-        @iteration.update(status: :cancelled)
-      end
-
-      def command_stop
-        check_can_command?
         return if @iteration.complete?
 
-        @iteration.update(status: :stop)
+        @iteration.update(status: :cancelling)
       end
 
       def command_close
         check_can_command?
 
-        @task.first_iteration.update(status: :success)
+        @task.first_iteration.update(status: :success, completed_at: Time.current)
         ::CommandProposal.sessions.delete("task:#{@task.id}")
       end
 

@@ -5,15 +5,17 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   helper ::CommandProposal::ParamsHelper
   include ::CommandProposal::PermissionsHelper
   helper ::CommandProposal::PermissionsHelper
+  helper ::CommandProposal::IconsHelper
 
   before_action :authorize_command!, except: :error
 
   def search
-    redirect_to tasks_path(current_params)
+    redirect_to command_proposal.tasks_path(current_params)
   end
 
   def index
-    @tasks = ::CommandProposal::Task.includes(:iterations).order(last_executed_at: :desc)
+    @tasks = ::CommandProposal::Task.includes(:iterations)
+    @tasks = @tasks.order(Arel.sql("COALESCE(command_proposal_tasks.last_executed_at, command_proposal_tasks.created_at) DESC"))
     @tasks = @tasks.search(params[:search]) if params[:search].present?
     @tasks = @tasks.where(session_type: params[:filter]) if params[:filter].present?
   end
@@ -23,6 +25,9 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
     if @task.console?
       @lines = @task.iterations.order(created_at: :asc)
       @lines = @lines.where.not(id: @task.first_iteration.id)
+      @iteration = @task.first_iteration
+
+      return # Don't execute the rest of the function
     end
 
     if params.key?(:iteration)
@@ -33,7 +38,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   end
 
   def new
-    @task = ::CommandProposal::Task.new
+    @task = ::CommandProposal::Task.new(session_type: params[:session_type])
 
     render "form"
   end
@@ -88,6 +93,6 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   def authorize_command!
     return if can_command?
 
-    redirect_to main_app.root_path, alert: "Sorry, you are not authorized to access this page."
+    redirect_to command_proposal.error_tasks_path, alert: "Sorry, you are not authorized to access this page."
   end
 end

@@ -18,6 +18,10 @@ module CommandProposal
     @configuration ||= ::CommandProposal::Configuration.new
   end
 
+  def self.routes
+    ::CommandProposal::Engine.routes.url_helpers
+  end
+
   def self.reset
     @configuration = ::CommandProposal::Configuration.new
   end

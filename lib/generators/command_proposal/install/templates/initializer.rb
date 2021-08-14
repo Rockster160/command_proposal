@@ -2,7 +2,12 @@
   # Change if your base user class has a different model name
   config.user_class_name = "User"
 
-  # Scope for your user class that determines users who are permitted to interact with commands (highly recommended to make this very exclusive, as any users in this scope will be able to interact with your database directly)
+  # Helper method used by controllers to identify the currently logged in account.
+  config.controller_var = :current_user
+
+  # Scope for your user class that determines users who are permitted to interact with commands
+  # It is highly recommended to make this very exclusive, as any users in this scope will be able
+  # to interact with your database directly.
   config.role_scope = :admin
 
   # Method called to display a user's name
@@ -28,16 +33,16 @@
 
   # Called when a command is proposed for review
   config.proposal_callback = Proc.new { |proposal|
-    # proposal_path = Rails.application.routes.url_helpers.command_url(iteration)
-    # Slack.notify("#{proposal.requester_name} has proposed #{proposal.name}.\n<Click Here|#{proposal_url}> to view this proposal and approve.")
+    # task_url = ::CommandProposal.routes.tasks_url(proposal.task)
+    # Slack.notify("#{proposal.requester_name} has proposed #{proposal.name}.\n<Click Here|#{task_url}> to view this proposal and approve.")
   }
   # Called when a command runs and completes successfully
   config.success_callback = Proc.new { |iteration|
-    # proposal_path = Rails.application.routes.url_helpers.command_url(iteration)
-    # Slack.notify("The task #{proposal.name} has completed in #{proposal.duration}s.\n<Click Here|#{proposal_url}> to view the results.")
+    # task_url = ::CommandProposal.routes.tasks_url(iteration.task)
+    # Slack.notify("The task #{proposal.name} has completed in #{proposal.duration}s.\n<Click Here|#{task_url}> to view the results.")
   }
   config.failed_callback = Proc.new { |iteration|
-    # proposal_path = Rails.application.routes.url_helpers.command_url(iteration)
-    # Slack.notify("The task #{proposal.name} has completed in #{proposal.duration}s.\n<Click Here|#{proposal_url}> to view what went wrong.")
+    # task_url = ::CommandProposal.routes.tasks_url(iteration.task)
+    # Slack.notify("The task #{proposal.name} has completed in #{proposal.duration}s.\n<Click Here|#{task_url}> to view what went wrong.")
   }
 end

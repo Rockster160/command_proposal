@@ -2,10 +2,10 @@
   <thead>
     <th>Requester</th>
     <th>Approver</th>
-    <th>Status</th>
     <% if @iteration&.started_at.present? %>
       <th>Started</th>
     <% end %>
+    <th>Status</th>
     <% if @iteration&.duration.present? %>
       <th>Duration</th>
     <% end %>
@@ -14,10 +14,10 @@
     <tr>
       <td><%= @iteration&.requester_name %></td>
       <td><%= @iteration&.approver_name %></td>
-      <td data-iteration-status><%= @iteration&.status&.capitalize %></td>
       <% if @iteration&.started_at.present? %>
-        <td><%= @iteration.started_at.strftime("%b %-d, %Y at %H:%M") %></td>
+        <td><%= @iteration.started_at.strftime("%b %-d '%y, %-l:%M%P") %></td>
       <% end %>
+      <td data-iteration-status><%= @iteration&.status&.capitalize %></td>
       <% if @iteration&.duration.present? %>
         <td data-iteration-duration><%= humanized_duration(@iteration.duration) %></td>
       <% end %>
@@ -25,7 +25,7 @@
   </tbody>
 </table>
 
-<% if @iteration.args.present? %>
+<% if @iteration&.args.present? %>
   <table class="cmd-table">
     <tbody>
       <% @iteration.args.each do |arg_k, arg_v| %>

@@ -26,12 +26,17 @@
   <% if current_is_author?(@iteration) %>
 
     <% case @iteration.status&.to_sym %>
-    <% when :created, :failed, :stopped %>
-      <%= f.hidden_field :command, value: :request %>
-      <%= f.submit "Request Access" %>
+    <% when :created, :failed, :cancelled %>
+      <% if can_approve?(@iteration) %>
+        <%= f.hidden_field :command, value: :approve %>
+        <%= f.submit "Approve!" %>
+      <% else %>
+        <%= f.hidden_field :command, value: :request %>
+        <%= f.submit "Request Access" %>
+      <% end %>
     <% when :started %>
-      <%= f.hidden_field :command, value: :stop %>
-      <%= f.submit "Stop (With warning about outside of transaction)", class: "stop-btn" %>
+      <%= f.hidden_field :command, value: :cancel %>
+      <%= f.submit "CANCEL!", class: "cancel-btn", data: { confirm: "WARNING: Cancelling a command mid-process can be dangerous. Any processes that have already run will not be rolled back. Do you wish to continue?" } %>
     <% end %>
 
   <% elsif can_approve?(@iteration) %>

@@ -1,38 +1,43 @@
 <div class="cmd-wrapper">
-  <%= link_to "New Command", command_proposal.new_task_path %>
+  <%= link_to "New Command", command_proposal.new_task_path(session_type: params[:filter] || :task) %> <br>
 
-  <%= link_to "Tasks", toggled_param(filter: :task), class: :btn %>
-  <%= link_to "Functions", toggled_param(filter: :function), class: :btn %>
-  <%= link_to "Consoles", toggled_param(filter: :console), class: :btn %>
-  <%= link_to "Modules", toggled_param(filter: :module), class: :btn %>
+  Filter:
+  <% ::CommandProposal::Task.session_types.each_with_index do |(session_type, _session_enum), idx| %>
+    <%= "|" if idx > 0 %>
+    <% selected = params[:filter] == session_type.to_s %>
+    <%= link_to selected ? ">[#{session_type.capitalize}]" : session_type.capitalize, toggled_param(filter: session_type) %>
+  <% end %>
 
   <%= form_for "", url: command_proposal.search_tasks_path(current_params.except(:search)) do |f| %>
     <div class="cmd-flex-row">
-      <%= text_field_tag :search, params[:search], placeholder: "Search" %>
+      <%= text_field_tag :search, params[:search], placeholder: "Search", class: "cmd-search" %>
       <%= f.submit "Search" %>
     </div>
   <% end %>
 
-  <table class="cmd-table">
-    <thead>
-      <th>Name</th>
-      <th>Desc</th>
-      <th>Status</th>
-      <th>Type</th>
-      <th>Last Run</th>
-      <th>Author</th>
-    </thead>
-    <tbody>
-      <% @tasks.each do |task| %>
-        <tr>
-          <td><%= link_to task.name, task_path(task) %></td>
-          <td><%= task.description&.truncate(100) %></td>
-          <td><%= task.status&.capitalize || "Pending" %></td>
-          <td><%= task.session_type.capitalize %></td>
-          <td><%= task.current_iteration_at&.strftime("%b %-d, %y %H:%M") %></td>
-          <td><%= task.current_iteration_by %></td>
-        </tr>
+  <div class="cmd-index-table">
+    <% @tasks.each do |task| %>
+      <%= link_to command_proposal.task_path(task), class: "cmd-index-table-row" do %>
+        <div class="cmd-index-col cmd-col-status">
+          <div class="cmd-status" data-status="<%= task.status %>"><i class="<%= icon(task.status) %>"></i></div>
+        </div>
+        <div class="cmd-index-col cmd-col-title">
+          <div>
+            <span class="cmd-name"><%= task.name %></span>
+            <% if task.duration.present? %>
+              <span class="cmd-duration"><%= humanized_duration(task.duration) %><%= "..." unless task.primary_iteration.complete? %></span>
+            <% end %>
+          </div>
+          <div class="cmd-desc"><%= task.description %></div>
+        </div>
+        <div class="cmd-index-col cmd-col-type">
+          <div class="cmd-type"><%= task.session_type.capitalize %></div>
+        </div>
+        <div class="cmd-index-col cmd-col-info">
+          <div class="cmd-timestamp"><%= task.last_executed_at&.strftime("%b %-d '%y, %-l:%M%P") || "Never Run" %></div>
+          <div class="cmd-author"><%= task.current_iteration_by %></div>
+        </div>
       <% end %>
-    </tbody>
-  </table>
+    <% end %>
+  </div>
 </div>

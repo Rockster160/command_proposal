@@ -5,8 +5,13 @@
 
     <% case @iteration.status&.to_sym %>
     <% when :created %>
-      <%= f.hidden_field :command, value: :request %>
-      <%= f.submit "Request Access" %>
+      <% if can_approve?(@iteration) %>
+        <%= f.hidden_field :command, value: :approve %>
+        <%= f.submit "Approve!" %>
+      <% else %>
+        <%= f.hidden_field :command, value: :request %>
+        <%= f.submit "Request Access" %>
+      <% end %>
     <% when :approved %>
       <p>Include this module in other commands by using <code>bring :<%= @task.friendly_id %></code> at the top of the file.</p>
     <% end %>

@@ -20,11 +20,14 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
     if @task.iterations.many?
       runner = ::CommandProposal.sessions["task:#{@task.id}"]
     elsif @task.iterations.one?
+      # Track console details in first iteration
+      @task.first_iteration.update(started_at: Time.current, status: :started)
       runner = ::CommandProposal::Services::Runner.new
       ::CommandProposal.sessions["task:#{@task.id}"] = runner
     end
 
     return error!("Session has expired. Please start a new session.") if runner.nil?
+
 
     @task.user = command_user # Separate from update to ensure it's set first
     @task.update(code: params[:code]) # Creates a new iteration
@@ -65,7 +68,7 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
     ::CommandProposal::Services::CommandInterpreter.command(
       @iteration,
       params.dig(:iteration, :command),
-      current_user,
+      command_user,
       iteration_params
     )
   end

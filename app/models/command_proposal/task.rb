@@ -34,7 +34,8 @@ class ::CommandProposal::Task < ApplicationRecord
   delegate :line_count, to: :current_iteration, allow_nil: true
   delegate :code, to: :current_iteration, allow_nil: true
   delegate :result, to: :current_iteration, allow_nil: true
-  delegate :status, to: :current_iteration, allow_nil: true
+  delegate :status, to: :primary_iteration, allow_nil: true
+  delegate :duration, to: :primary_iteration, allow_nil: true
 
   def to_param
     friendly_id || generate_friendly_id
@@ -52,6 +53,10 @@ class ::CommandProposal::Task < ApplicationRecord
     ordered_iterations.first
   end
 
+  def primary_iteration
+    console? ? first_iteration : current_iteration
+  end
+
   def current_iteration_at
     current_iteration&.completed_at
   end
@@ -66,12 +71,6 @@ class ::CommandProposal::Task < ApplicationRecord
 
   def completed_at
     iterations.maximum(:completed_at)
-  end
-
-  def duration
-    return unless started_at.present? && completed_at.present?
-
-    completed_at - started_at
   end
 
   def code=(new_code)

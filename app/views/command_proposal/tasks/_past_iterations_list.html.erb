@@ -1,17 +1,17 @@
 <% if @task.iterations.many? %>
   <table class="cmd-table">
     <thead>
-      <th>Timestamp / Link</th>
       <th>Status</th>
-      <th># Comments</th>
+      <th>Timestamp / Link</th>
+      <!-- <th># Comments</th> -->
       <!-- <th>Diff</th> -->
     </thead>
     <tbody>
       <% @task.iterations.where.not(id: @iteration&.id).order(created_at: :desc).each do |iteration| %>
         <tr>
-          <td><%= link_to iteration.created_at.strftime("%b %-d, %Y at %H:%M"), command_proposal.task_path(@task, iteration: iteration) %></td>
           <td><%= iteration.status.capitalize %></td>
-          <td><%= iteration.comments.count %></td>
+          <td><%= link_to iteration.created_at.strftime("%b %-d, %Y at %H:%M"), command_proposal.task_path(@task, iteration: iteration) %></td>
+          <!-- <td><%= iteration.comments.count %></td> -->
           <!-- <td><%= link_to "Diff", command_proposal.task_path(@task, iteration: @iteration, diff: iteration) %></td> -->
         </tr>
       <% end %>

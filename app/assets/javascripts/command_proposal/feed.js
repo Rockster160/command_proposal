@@ -37,10 +37,10 @@ docReady(function() {
       document.querySelector("td[data-iteration-status]").innerText = json.status
       document.querySelector("td[data-iteration-duration]").innerText = json.duration
 
-      if (json.status == "started" || json.status == "stop") {
+      if (json.status == "started" || json.status == "cancelling") {
         setTimeout(function() { pingFeed(terminal) }, 1000)
       } else {
-        document.querySelector(".stop-btn").remove()
+        document.querySelector(".cancel-btn").remove()
       }
     })
   }
