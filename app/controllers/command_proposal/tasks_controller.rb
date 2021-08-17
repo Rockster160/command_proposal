@@ -10,7 +10,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   before_action :authorize_command!, except: :error
 
   def search
-    redirect_to command_proposal.tasks_path(current_params)
+    redirect_to cmd_path(:tasks, current_params)
   end
 
   def index
@@ -56,9 +56,9 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
     if @task.save && @task.update(task_params)
       if @task.console?
         @task.iterations.create(requester: command_user) # Blank iteration to track approval
-        redirect_to command_proposal.url_for(@task)
+        redirect_to cmd_path(@task)
       else
-        redirect_to command_proposal.url_for([:edit, @task])
+        redirect_to cmd_path(:edit, @task)
       end
     else
       # TODO: Display errors
@@ -70,7 +70,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
     @task = ::CommandProposal::Task.find_by!(friendly_id: params[:id])
 
     if @task.update(task_params)
-      redirect_to command_proposal.url_for(@task)
+      redirect_to cmd_path(@task)
     else
       # TODO: Display errors
       render "form"
@@ -93,6 +93,6 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   def authorize_command!
     return if can_command?
 
-    redirect_to command_proposal.error_tasks_path, alert: "Sorry, you are not authorized to access this page."
+    redirect_to cmd_path(:error, :tasks), alert: "Sorry, you are not authorized to access this page."
   end
 end

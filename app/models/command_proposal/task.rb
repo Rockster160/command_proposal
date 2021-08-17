@@ -6,6 +6,7 @@
 # datetime :last_executed_at
 
 class ::CommandProposal::Task < ApplicationRecord
+  self.table_name = :command_proposal_tasks
   attr_accessor :user
 
   has_many :iterations

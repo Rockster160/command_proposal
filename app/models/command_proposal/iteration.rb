@@ -17,6 +17,7 @@ require "command_proposal/service/external_belong"
 require "command_proposal/service/json_wrapper"
 
 class ::CommandProposal::Iteration < ApplicationRecord
+  self.table_name = :command_proposal_iterations
   serialize :args, ::CommandProposal::Service::JSONWrapper
   include ::CommandProposal::Service::ExternalBelong
 

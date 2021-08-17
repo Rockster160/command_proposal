@@ -83,7 +83,7 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
       duration: humanized_duration(@iteration.duration),
     }.tap do |response|
       if @iteration.started?
-        response[:endpoint] = command_proposal.task_runner_path(@task, @iteration)
+        response[:endpoint] = runner_path(@task, @iteration)
       end
     end
   end

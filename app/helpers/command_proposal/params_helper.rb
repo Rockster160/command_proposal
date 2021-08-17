@@ -16,9 +16,9 @@ module ::CommandProposal::ParamsHelper
     toggle_val = toggle_h.values.first
 
     if params[toggle_key].to_s == toggle_val.to_s
-      command_proposal.url_for(current_params.except(toggle_key))
+      cmd_path(:tasks, current_params.except(toggle_key))
     else
-      command_proposal.url_for(current_params(toggle_h))
+      cmd_path(:tasks, current_params(toggle_h))
     end
   end
 

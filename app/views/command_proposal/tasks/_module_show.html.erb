@@ -1,6 +1,6 @@
 <%= render partial: "task_detail_table" %>
 
-<%= form_for @iteration, url: command_proposal.url_for(@iteration) do |f| %>
+<%= form_for @iteration, url: cmd_path(@iteration) do |f| %>
   <% if current_is_author?(@iteration) %>
 
     <% case @iteration.status&.to_sym %>

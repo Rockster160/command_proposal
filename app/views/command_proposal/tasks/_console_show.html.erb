@@ -1,12 +1,12 @@
 <%= render partial: "task_detail_table" %>
 
-<%= form_for @iteration, url: command_proposal.url_for(@iteration) do |f| %>
+<%= form_for @iteration, url: cmd_path(@iteration) do |f| %>
   <% if current_is_author?(@iteration) %>
 
     <% case @task.first_iteration.status.to_sym %>
     <% when :approved, :started %>
       <%# Closing > offset to get rid of spacing issues. %>
-      <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= command_proposal.task_iterations_path(@task) %>"
+      <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= cmd_path(@task, :task_iterations) %>"
         ><div class="lines"><%= render partial: "lines", locals: { lines: @lines, skip_empty: true }
         %></div
         ><div contenteditable="true" autofocus=true class="line cmd-input"></div

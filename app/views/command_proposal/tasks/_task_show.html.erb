@@ -1,9 +1,9 @@
 <%= render partial: "task_detail_table" %>
 
 <% if @iteration.present? %>
-  <%= form_for @iteration, url: command_proposal.url_for(@iteration) do |f| %>
+  <%= form_for @iteration, url: cmd_path(@iteration) do |f| %>
     <% if @iteration&.result.present? || @iteration&.started_at? %>
-      <textarea class="cmd-terminal" readonly=true data-status="<%= @iteration.status %>" data-feed="<%= command_proposal.task_runner_path(@task, @iteration) %>"><%= @iteration&.result %></textarea>
+      <textarea class="cmd-terminal" readonly=true data-status="<%= @iteration.status %>" data-feed="<%= runner_path(@task, @iteration) %>"><%= @iteration&.result %></textarea>
     <% end %>
 
     <% if current_is_author?(@iteration) %>

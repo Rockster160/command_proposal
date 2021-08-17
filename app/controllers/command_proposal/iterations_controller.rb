@@ -48,10 +48,10 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
     begin
       alter_command if params.dig(:iteration, :command).present?
     rescue ::CommandProposal::Services::CommandInterpreter::Error => e
-      return redirect_to command_proposal.error_tasks_path, alert: e.message
+      return redirect_to cmd_path(:tasks, :error), alert: e.message
     end
 
-    redirect_to command_proposal.url_for(@iteration.task)
+    redirect_to cmd_path(@iteration.task)
   end
 
   private
