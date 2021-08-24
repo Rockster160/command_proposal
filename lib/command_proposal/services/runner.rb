@@ -99,10 +99,12 @@ module CommandProposal
         end
         @iteration.save!
 
+        return if @iteration.task.console? # Don't notify for every console entry
+        proposal = ::CommandProposal::Service::ProposalPresenter.new(@iteration)
         if @iteration.success?
-          ::CommandProposal.configuration.success_callback&.call(@iteration)
+          ::CommandProposal.configuration.success_callback&.call(proposal)
         else
-          ::CommandProposal.configuration.failed_callback&.call(@iteration)
+          ::CommandProposal.configuration.failed_callback&.call(proposal)
         end
       end
 

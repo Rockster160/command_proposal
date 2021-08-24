@@ -16,15 +16,16 @@
   # Callbacks for proposal state changes
   # `proposal` is the current proposal
   # Methods available:
+  # `proposal.url`
+  # `proposal.type`
   # `proposal.name`
   # `proposal.description`
   # `proposal.args`
   # `proposal.code`
   # `proposal.result`
   # `proposal.status`
-  # `proposal.author`
-  # `proposal.requester_name`
-  # `proposal.approver_name`
+  # `proposal.requester`
+  # `proposal.approver`
   # `proposal.approved_at`
   # `proposal.started_at`
   # `proposal.completed_at`
@@ -33,16 +34,14 @@
 
   # Called when a command is proposed for review
   config.proposal_callback = Proc.new { |proposal|
-    # task_url = ::CommandProposal.routes.tasks_url(proposal.task)
-    # Slack.notify("#{proposal.requester_name} has proposed #{proposal.name}.\n<Click Here|#{task_url}> to view this proposal and approve.")
+    # Slack.notify("#{proposal.requester} has proposed #{proposal.name}.\n<Click Here|#{proposal.url}> to view this proposal and approve.")
   }
   # Called when a command runs and completes successfully
   config.success_callback = Proc.new { |iteration|
-    # task_url = ::CommandProposal.routes.tasks_url(iteration.task)
-    # Slack.notify("The task #{proposal.name} has completed in #{proposal.duration}s.\n<Click Here|#{task_url}> to view the results.")
+    # Slack.notify("The task #{proposal.name} has completed in #{proposal.duration}s.\n<Click Here|#{proposal.url}> to view the results.")
   }
+  # Called when a command runs but fails to complete
   config.failed_callback = Proc.new { |iteration|
-    # task_url = ::CommandProposal.routes.tasks_url(iteration.task)
-    # Slack.notify("The task #{proposal.name} has completed in #{proposal.duration}s.\n<Click Here|#{task_url}> to view what went wrong.")
+    # Slack.notify("The task #{proposal.name} has failed!\n<Click Here|#{proposal.url}> to see what went wrong.")
   }
 end

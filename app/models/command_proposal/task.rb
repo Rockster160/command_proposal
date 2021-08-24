@@ -43,7 +43,7 @@ class ::CommandProposal::Task < ApplicationRecord
   end
 
   def approved?
-    current_iteration&.approved?
+    primary_iteration&.approved_at?
   end
 
   def first_iteration

@@ -5,6 +5,13 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
   include ::CommandProposal::ParamsHelper
   include ::CommandProposal::PermissionsHelper
 
+  begin
+    # Skip load if app attempts to do that
+    skip_load_and_authorize_resource
+  rescue NameError => e
+    nil
+  end
+
   skip_before_action :verify_authenticity_token
   before_action :authorize_command!, except: :error
 
@@ -25,13 +32,6 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
       @iteration = run_iteration
     rescue ::CommandProposal::Services::CommandInterpreter::Error => e
       return render(text: e.message, status: :bad_request)
-    end
-
-    sleep 0.2
-    5.times do |t|
-      break if @iteration.reload.complete?
-
-      sleep(0.5)
     end
 
     iteration_response

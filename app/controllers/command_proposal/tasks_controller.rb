@@ -51,6 +51,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
 
   def create
     @task = ::CommandProposal::Task.new(task_params.except(:code))
+    @task.user = command_user
 
     # Cannot create the iteration until the task is created, so save then update
     if @task.save && @task.update(task_params)
@@ -68,6 +69,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
 
   def update
     @task = ::CommandProposal::Task.find_by!(friendly_id: params[:id])
+    @task.user = command_user
 
     if @task.update(task_params)
       redirect_to cmd_path(@task)
@@ -80,14 +82,12 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   private
 
   def task_params
-    params.require(:task).permit(
+    params.require(:command_proposal_task).permit(
       :name,
       :description,
       :session_type,
       :code,
-    ).tap do |whitelist|
-      whitelist[:user] = command_user
-    end
+    )
   end
 
   def authorize_command!

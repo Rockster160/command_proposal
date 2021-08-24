@@ -3,7 +3,6 @@ require "command_proposal/version"
 require "command_proposal/engine"
 require "command_proposal/services/runner"
 
-# ::CommandProposal::SESSIONS
 module CommandProposal
   class Error < StandardError; end
   def self.sessions
@@ -16,10 +15,6 @@ module CommandProposal
 
   def self.configuration
     @configuration ||= ::CommandProposal::Configuration.new
-  end
-
-  def self.routes
-    ::CommandProposal::Engine.routes.url_helpers
   end
 
   def self.reset

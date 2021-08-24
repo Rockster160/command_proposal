@@ -46,7 +46,7 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
     @iteration = ::CommandProposal::Iteration.find(params[:id])
 
     begin
-      alter_command if params.dig(:iteration, :command).present?
+      alter_command if params.dig(:command_proposal_iteration, :command).present?
     rescue ::CommandProposal::Services::CommandInterpreter::Error => e
       return redirect_to cmd_path(:tasks, :error), alert: e.message
     end
@@ -58,8 +58,8 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
 
   def iteration_params
     {}.tap do |whitelist|
-      if params.dig(:iteration, :args).present?
-        whitelist[:args] = params.dig(:iteration, :args).permit!.to_h
+      if params.dig(:command_proposal_iteration, :args).present?
+        whitelist[:args] = params.dig(:command_proposal_iteration, :args).permit!.to_h
       end
     end
   end
@@ -67,7 +67,7 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
   def alter_command
     ::CommandProposal::Services::CommandInterpreter.command(
       @iteration,
-      params.dig(:iteration, :command),
+      params.dig(:command_proposal_iteration, :command),
       command_user,
       iteration_params
     )

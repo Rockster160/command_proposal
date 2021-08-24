@@ -48,7 +48,8 @@ module CommandProposal
           end
         end
 
-        ::CommandProposal.configuration.proposal_callback&.call(@iteration)
+        proposal = ::CommandProposal::Service::ProposalPresenter.new(@iteration)
+        ::CommandProposal.configuration.proposal_callback&.call(proposal)
       end
 
       def command_approve
@@ -81,6 +82,7 @@ module CommandProposal
 
       def command_close
         check_can_command?
+        return unless @iteration.task.console?
 
         @task.first_iteration.update(status: :success, completed_at: Time.current)
         ::CommandProposal.sessions.delete("task:#{@task.id}")
