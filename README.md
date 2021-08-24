@@ -37,10 +37,12 @@ Include assets:
     //= require command_proposal
     *= require command_proposal
 
-Install and run the migrations:
+Ensure your environment files have a host set:
 
-    rails generate command_proposal:install
-    rails db:migrate
+    config.action_mailer.default_url_options = {
+      host: "localhost",
+      port: 3000
+    }
 
 ## Usage
 

@@ -16,11 +16,7 @@ module CommandProposal
     def has_approval?(task)
       return true unless cmd_config.approval_required?
 
-      if task&.console?
-        task.first_iteration&.approved_at?
-      else
-        task&.approved_at?
-      end
+      task&.approved?
     end
 
     def current_is_author?(iteration)

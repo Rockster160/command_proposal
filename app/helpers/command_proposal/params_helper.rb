@@ -31,6 +31,8 @@ module ::CommandProposal::ParamsHelper
   end
 
   def humanized_duration(seconds)
+    return "N/A" if seconds.blank?
+
     remaining = seconds.round
     str_parts = []
 

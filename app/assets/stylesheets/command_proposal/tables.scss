@@ -6,6 +6,7 @@
     width: 100%;
     padding: 5px 0;
     margin: 5px 0;
+    border-radius: 10px;
 
     &:hover {
       background: lightgrey;
@@ -62,24 +63,14 @@
   table-layout: fixed;
   width: 100%;
 
-  tr:nth-child(odd) {
-    th, td {
-      // background: lightgrey;
-    }
-  }
   // Hack to stop the header from being highlighted, need high specificity.
   thead tr:nth-child(1) th { background-color: transparent; }
   th, td {
     text-align: left;
-    // border: 1px solid grey;
     padding: 3px;
   }
   th {
-    // padding: 5px;
     font-size: 12px;
     color: grey;
-  }
-  td {
-    // padding: 3px;
   }
 }

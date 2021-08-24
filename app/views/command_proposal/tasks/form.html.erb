@@ -9,11 +9,11 @@
 
   <%= form_for(@task, url: cmd_path(@task)) do |f| %>
     <div class="cmd-field">
-      <%= f.text_field :name, placeholder: "Title" %>
+      <%= f.text_field :name, placeholder: "Title", class: "cmd-input" %>
     </div>
 
     <div class="cmd-field">
-      <%= f.text_area :description, placeholder: "Description" %>
+      <%= f.text_area :description, placeholder: "Description", class: "cmd-input" %>
     </div>
 
     <% unless @task.persisted? %>
