@@ -6,5 +6,4 @@ gemspec
 
 group :development, :test do
   gem 'pg'
-  gem 'pry-rails'
 end

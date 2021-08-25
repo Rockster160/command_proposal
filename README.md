@@ -23,10 +23,6 @@ Or install it yourself as:
 
     $ gem install command_proposal
 
-Mount the engine in your routes:
-
-    mount ::CommandProposal::Engine => "/commands"
-
 Install and run the migrations:
 
     rails generate command_proposal:install
@@ -34,8 +30,15 @@ Install and run the migrations:
 
 Include assets:
 
+    # In application.js
     //= require command_proposal
+
+    # In application.css
     *= require command_proposal
+
+Mount the engine in your routes:
+
+    mount ::CommandProposal::Engine => "/commands"
 
 Ensure your environment files have a host set:
 
@@ -57,6 +60,13 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/command_proposal. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/command_proposal/blob/master/CODE_OF_CONDUCT.md).
+
+## TODO
+
+- [ ] Pagination on various pages. (paginate tasks on tasks#index, paginate history on tasks#show)
+- [ ] Ability for devs to leave comments on individual lines of code.
+- [ ] Diff buttons - should be able to compare history with other iterations.
+- [ ] Top level users that can bypass approval
 
 ## License
 

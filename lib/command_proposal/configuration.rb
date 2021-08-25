@@ -15,14 +15,14 @@ module CommandProposal
     )
 
     def initialize
+      # Default
+      @approval_required = true
+
       # Required (if approval needed)
       @user_class_name = nil
       @role_scope = nil
       @user_name = nil
       @controller_var = nil
-
-      # Default
-      @approval_required = true
 
       # Optional
       @proposal_callback = nil
