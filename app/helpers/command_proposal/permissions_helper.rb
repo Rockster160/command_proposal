@@ -30,7 +30,7 @@ module CommandProposal
         elsif cmd_config.controller_var.blank?
           nil
         else
-          try(cmd_config.controller_var)
+          send(cmd_config.controller_var)
         end
       end
     end
