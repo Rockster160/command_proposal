@@ -80,6 +80,13 @@ class ::CommandProposal::Task < ApplicationRecord
 
   private
 
+  def reserved_names
+    [
+      "new",
+      "edit",
+    ]
+  end
+
   def generate_friendly_id
     return if name.blank?
     temp_id = name.downcase.gsub(/\s+/, "_").gsub(/[^a-z_]/, "")
@@ -87,7 +94,7 @@ class ::CommandProposal::Task < ApplicationRecord
     loop do
       duplicate_names = self.class.where(friendly_id: temp_id).where.not(id: id)
 
-      return temp_id if duplicate_names.none?
+      return temp_id if duplicate_names.none? && reserved_names.exclude?(temp_id)
 
       temp_id = "#{temp_id}_#{duplicate_names.count}"
     end
