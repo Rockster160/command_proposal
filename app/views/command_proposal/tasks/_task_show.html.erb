@@ -2,7 +2,7 @@
 
 <% if @iteration.present? %>
   <%= form_for @iteration, url: cmd_path(@iteration) do |f| %>
-    <% if @iteration&.result.present? || @iteration&.started_at? %>
+    <% if @iteration&.started_at? %>
       <textarea class="cmd-terminal" readonly=true data-status="<%= @iteration.status %>" data-feed="<%= runner_path(@task, @iteration) %>"><%= @iteration&.result %></textarea>
     <% end %>
 
@@ -43,6 +43,7 @@
   <% end %>
 <% end %>
 
+<br>
 <textarea class="cmd-terminal" readonly=true><%= @iteration&.code %></textarea>
 
 <%= render partial: "past_iterations_list" %>

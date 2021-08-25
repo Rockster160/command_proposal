@@ -38,6 +38,10 @@ class ::CommandProposal::Task < ApplicationRecord
   delegate :status, to: :primary_iteration, allow_nil: true
   delegate :duration, to: :primary_iteration, allow_nil: true
 
+  def lines
+    iterations.order(created_at: :asc).where.not(id: first_iteration.id)
+  end
+
   def to_param
     friendly_id || generate_friendly_id
   end

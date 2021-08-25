@@ -23,8 +23,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   def show
     @task = ::CommandProposal::Task.find_by!(friendly_id: params[:id])
     if @task.console?
-      @lines = @task.iterations.order(created_at: :asc)
-      @lines = @lines.where.not(id: @task.first_iteration.id)
+      @lines = @task.lines
       @iteration = @task.first_iteration
 
       return # Don't execute the rest of the function

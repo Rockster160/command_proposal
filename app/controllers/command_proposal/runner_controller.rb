@@ -41,9 +41,7 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
 
   def status_to_code
     case @iteration.status.to_sym
-    when :success then :ok
-    when :started then :accepted
-    when :failed then :ok
+    when :success, :started, :approved, :failed then :ok
     else :not_implemented
     end
     # created
@@ -84,6 +82,12 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
     }.tap do |response|
       if @iteration.started?
         response[:endpoint] = runner_path(@task, @iteration)
+      end
+      if @task.console?
+        response[:result_html] = ApplicationController.render(
+          partial: "command_proposal/tasks/lines",
+          locals: { lines: @task.lines }
+        )
       end
     end
   end

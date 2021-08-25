@@ -1,9 +1,10 @@
 docReady(function() {
-  var terminals = document.querySelectorAll(".cmd-terminal")
+  var terminals = document.querySelectorAll(".cmd-terminal, .cmd-console")
   var queue = Promise.resolve()
 
   terminals.forEach(function(terminal) {
-    if (terminal.dataset.status == "started") {
+    console.log(terminal.dataset.status);
+    if (terminal.dataset.status == "started" || terminal.dataset.status == "approved") {
       pingFeed(terminal)
     }
   })
@@ -26,21 +27,24 @@ docReady(function() {
         }
       }).catch(function(err) {
         console.log("err:", err);
-        return {
-          error: err,
-        }
       })
 
       var json = await res
 
-      terminal.nextElementSibling.CodeMirror.doc.setValue(json.result || "")
+      if (terminal.nextElementSibling && terminal.nextElementSibling.CodeMirror) {
+        terminal.nextElementSibling.CodeMirror.doc.setValue(json.result || "")
+      } else {
+        terminal.innerHTML = json.result_html
+      }
       document.querySelector("td[data-iteration-status]").innerText = json.status
       document.querySelector("td[data-iteration-duration]").innerText = json.duration
 
-      if (json.status == "started" || json.status == "cancelling") {
+      if (json.status == "started" || json.status == "approved" || json.status == "cancelling") {
         setTimeout(function() { pingFeed(terminal) }, 1000)
       } else {
-        document.querySelector(".cancel-btn").remove()
+        if (document.querySelector(".cancel-btn")) {
+          document.querySelector(".cancel-btn").remove()
+        }
       }
     })
   }

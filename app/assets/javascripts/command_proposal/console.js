@@ -3,7 +3,7 @@ docReady(function() {
   var cmdconsole = document.querySelector(".cmd-console")
 
   if (cmdconsole) {
-    var console_input = document.querySelector(".cmd-console .cmd-input")
+    var console_input = document.querySelector(".cmd-console .cmd-entry")
     var lines = document.querySelector(".cmd-console .lines")
     var queue = Promise.resolve()
     var history_cmd_idx = undefined

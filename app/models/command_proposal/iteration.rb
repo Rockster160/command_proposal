@@ -38,6 +38,7 @@ class ::CommandProposal::Iteration < ApplicationRecord
 
   delegate :name, to: :task
   delegate :description, to: :task
+  delegate :session_type, to: :task
 
   def params
     code.scan(/params\[[:\"\'](.*?)[\'\"]?\]/).flatten

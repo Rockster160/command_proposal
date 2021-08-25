@@ -2,25 +2,17 @@
   <thead>
     <th>Requester</th>
     <th>Approver</th>
-    <% if @iteration&.started_at.present? %>
-      <th>Started</th>
-    <% end %>
+    <th>Started</th>
     <th>Status</th>
-    <% if @iteration&.duration.present? %>
-      <th>Duration</th>
-    <% end %>
+    <th>Duration</th>
   </thead>
   <tbody>
     <tr>
       <td><%= @iteration&.requester_name %></td>
       <td><%= @iteration&.approver_name %></td>
-      <% if @iteration&.started_at.present? %>
-        <td><%= @iteration.started_at.strftime("%b %-d '%y, %-l:%M%P") %></td>
-      <% end %>
+      <td><%= @iteration&.started_at&.strftime("%b %-d '%y, %-l:%M%P") %></td>
       <td data-iteration-status><%= @iteration&.status&.capitalize %></td>
-      <% if @iteration&.duration.present? %>
-        <td data-iteration-duration><%= humanized_duration(@iteration.duration) %></td>
-      <% end %>
+      <td data-iteration-duration><%= humanized_duration(@iteration&.duration) %></td>
     </tr>
   </tbody>
 </table>
