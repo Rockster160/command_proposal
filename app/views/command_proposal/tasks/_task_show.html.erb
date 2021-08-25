@@ -2,6 +2,12 @@
 
 <% if @iteration.present? %>
   <%= form_for @iteration, url: cmd_path(@iteration) do |f| %>
+    <% @iteration.brings.each do |bring_module| %>
+      <% needs_approval_str = " -- Module needs approval before running Task" unless bring_module.approved? %>
+      <%= link_to "Module: #{bring_module.name}#{needs_approval_str}", cmd_path("#{bring_module.friendly_id}") %>
+      <br>
+    <% end %>
+
     <% if @iteration&.started_at? %>
       <textarea class="cmd-terminal" readonly=true data-status="<%= @iteration.status %>" data-feed="<%= runner_path(@task, @iteration) %>"><%= @iteration&.result %></textarea>
     <% end %>

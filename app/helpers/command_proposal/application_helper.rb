@@ -3,6 +3,7 @@ module CommandProposal
     # In order to keep the regular app's routes working in the base template, we have to manually
     #   render the engine routes. Built a helper for this because it's long and nasty otherwise.
     def cmd_path(*args)
+      return string_path(*args) if args.first.is_a?(String)
       model_names = [:tasks, :iterations, :comments, :task, :iteration, :comment]
       host = nil
       args.map! { |arg|
@@ -22,6 +23,10 @@ module CommandProposal
       rescue NoMethodError => e
         raise "Error generating route! Please make sure `default_url_options` are set."
       end
+    end
+
+    def string_path(*args)
+      [router.command_proposal_tasks_url + args.shift, args.to_param.presence].compact.join("?")
     end
 
     # Runner controller doesn't map to a model, so needs special handling

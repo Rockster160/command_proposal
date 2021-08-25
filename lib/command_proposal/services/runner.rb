@@ -62,7 +62,6 @@ module CommandProposal
           end
         end
 
-        sleep 0.2
         while running_thread.status.present?
           @iteration.reload
 
@@ -84,7 +83,7 @@ module CommandProposal
       end
 
       def bring_function
-        "def bring(*func_names); func_names.each { |f| self.quick_run(::CommandProposal::Task.find_by!(friendly_id: f).current_iteration) }; end"
+        "def bring(*func_names); func_names.each { |f| self.quick_run(::CommandProposal::Task.module.find_by!(friendly_id: f).current_iteration) }; end"
       end
 
       def complete
@@ -140,7 +139,7 @@ module CommandProposal
         }.presence || []
         error_info += ["\n>> App Trace"] + app_trace if app_trace.any?
 
-        error_info.join("\n")
+        error_info.uniq.join("\n")
       end
 
       def full_trace_from_exception(exception)

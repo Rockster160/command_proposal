@@ -44,6 +44,13 @@ class ::CommandProposal::Iteration < ApplicationRecord
     code.scan(/params\[[:\"\'](.*?)[\'\"]?\]/).flatten
   end
 
+  def brings
+    bring_str = code.scan(/bring.*?\n/).flatten.first
+    return [] unless bring_str.present?
+
+    ::CommandProposal::Task.module.where(friendly_id: bring_str.scan(/\s+\:(\w+),?/).flatten)
+  end
+
   def complete?
     success? || failed? || cancelled?
   end

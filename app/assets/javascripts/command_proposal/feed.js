@@ -1,9 +1,8 @@
 docReady(function() {
-  var terminals = document.querySelectorAll(".cmd-terminal, .cmd-console")
+  var terminals = document.querySelectorAll("[data-feed]")
   var queue = Promise.resolve()
 
   terminals.forEach(function(terminal) {
-    console.log(terminal.dataset.status);
     if (terminal.dataset.status == "started" || terminal.dataset.status == "approved") {
       pingFeed(terminal)
     }

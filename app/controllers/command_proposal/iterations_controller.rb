@@ -51,6 +51,8 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
       return redirect_to cmd_path(:tasks, :error), alert: e.message
     end
 
+    sleep 0.2
+
     redirect_to cmd_path(@iteration.task)
   end
 
