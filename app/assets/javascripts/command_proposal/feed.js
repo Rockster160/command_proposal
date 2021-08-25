@@ -1,9 +1,10 @@
 docReady(function() {
   var terminals = document.querySelectorAll("[data-feed]")
   var queue = Promise.resolve()
+  var continue_statuses = ["started", "approved", "cancelling"]
 
   terminals.forEach(function(terminal) {
-    if (terminal.dataset.status == "started" || terminal.dataset.status == "approved") {
+    if (continue_statuses.includes(terminal.dataset.status)) {
       pingFeed(terminal)
     }
   })
@@ -38,7 +39,7 @@ docReady(function() {
       document.querySelector("td[data-iteration-status]").innerText = json.status
       document.querySelector("td[data-iteration-duration]").innerText = json.duration
 
-      if (json.status == "started" || json.status == "approved" || json.status == "cancelling") {
+      if (continue_statuses.includes(json.status)) {
         setTimeout(function() { pingFeed(terminal) }, 1000)
       } else {
         if (document.querySelector(".cancel-btn")) {

@@ -39,20 +39,6 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
 
   private
 
-  def status_to_code
-    case @iteration.status.to_sym
-    when :success, :started, :approved, :failed then :ok
-    else :not_implemented
-    end
-    # created
-    # approved
-    # started
-    # failed
-    # cancelling
-    # cancelled
-    # success
-  end
-
   def run_iteration
     ::CommandProposal::Services::CommandInterpreter.command(
       @iteration,
@@ -70,7 +56,7 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
     @iteration.reload
 
     respond_to do |format|
-      format.json { render(json: iteration_json, status: status_to_code) }
+      format.json { render(json: iteration_json, status: :ok) }
     end
   end
 
