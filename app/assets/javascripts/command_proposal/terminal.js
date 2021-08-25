@@ -1,4 +1,4 @@
-docReady(function() {
+cmdDocReady(function() {
   var terminals = document.querySelectorAll(".cmd-terminal")
 
   function setReadOnlyUI(cm) {

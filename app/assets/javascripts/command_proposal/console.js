@@ -1,11 +1,11 @@
 // Add tab / shift-tab for changing indents
-docReady(function() {
+cmdDocReady(function() {
   var cmdconsole = document.querySelector(".cmd-console")
 
   if (cmdconsole) {
     var console_input = document.querySelector(".cmd-console .cmd-entry")
     var lines = document.querySelector(".cmd-console .lines")
-    var queue = Promise.resolve()
+    var queue = new CommandQueue
     var history_cmd_idx = undefined
     var stored_entry = undefined
     var commands = getPrevCommands()
@@ -152,43 +152,38 @@ docReady(function() {
       if (/^[\s\n]*$/.test(line.textContent)) { return }
 
       commands.push(line.textContent)
-      queue = queue.then(async function() {
+      queue.add(function(evt) {
         $.rails.refreshCSRFTokens()
 
         var params = { code: line.textContent, task_id: cmdconsole.dataset.task }
 
-        var res = await fetch(cmdconsole.dataset.exeUrl, {
-          method: "POST",
+        var client = new HttpClient()
+        client.post(cmdconsole.dataset.exeUrl, {
           headers: {
             "Content-Type": "application/json",
             "X-CSRF-Token": $.rails.csrfToken()
           },
-          body: JSON.stringify(params)
-        }).then(function(res) {
-          if (res.ok) {
-            return res.json()
-          } else {
-            throw new Error("Server error")
-          }
-        }).catch(function(err) {
-          return {
-            error: err,
+          body: JSON.stringify(params),
+          done: function(res, status, req) {
+            if (status == 200) {
+              var json = JSON.parse(res)
+              var result = document.createElement("div")
+              result.classList.add("result")
+
+              if (json.error) {
+                result.classList.add("cmd-error")
+                result.textContent = json.error
+              } else {
+                result.textContent = json.result
+              }
+
+              line.appendChild(result)
+            } else {
+              console.log("Error: ", res, req);
+            }
+            evt.finish()
           }
         })
-
-        var json = await res
-
-        var result = document.createElement("div")
-        result.classList.add("result")
-
-        if (json.error) {
-          result.classList.add("cmd-error")
-          result.textContent = json.error
-        } else {
-          result.textContent = json.result
-        }
-
-        line.appendChild(result)
       })
     }
   }
