@@ -1,7 +1,8 @@
 <div class="cmd-wrapper">
   <%= link_to "New Command", cmd_path(:new, :task, session_type: params[:filter] || :task) %> <br>
   <br>
-  <% ::CommandProposal::Task.session_types.each_with_index do |(session_type, _session_enum), idx| %><%=
+  <%= link_to "All", cmd_path(:tasks, current_params.except(:filter)), class: "cmd-tab #{:active unless params.key?(:filter)}"
+  %><% ::CommandProposal::Task.session_types.each_with_index do |(session_type, _session_enum), idx| %><%=
     selected = params[:filter] == session_type.to_s
     # Offset closing RB tags to fix spacing issues
     link_to session_type.capitalize, toggled_param(filter: session_type), class: "cmd-tab #{:active if selected}"

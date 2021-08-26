@@ -20,7 +20,7 @@ module CommandProposal
       delegate :duration, to: :iteration
 
       def url(host: nil)
-        cmd_path(@iteration.task, host: host)
+        cmd_url(@iteration.task, host: host)
       end
 
       def requester

@@ -67,7 +67,7 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
       duration: humanized_duration(@iteration.duration),
     }.tap do |response|
       if @iteration.started?
-        response[:endpoint] = runner_path(@task, @iteration)
+        response[:endpoint] = runner_url(@task, @iteration)
       end
       if @task.console?
         response[:result_html] = ApplicationController.render(
