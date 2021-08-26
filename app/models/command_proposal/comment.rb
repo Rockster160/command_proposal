@@ -3,7 +3,7 @@
 # belongs_to :author
 # text :body
 
-require "command_proposal/service/external_belong"
+require_relative "service/external_belong"
 
 class ::CommandProposal::Comment < ApplicationRecord
   self.table_name = :command_proposal_comments

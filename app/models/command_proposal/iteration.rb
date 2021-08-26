@@ -13,7 +13,7 @@
 
 # ADD: iteration_count?
 
-require "command_proposal/service/external_belong"
+require_relative "service/external_belong"
 require "command_proposal/service/json_wrapper"
 
 class ::CommandProposal::Iteration < ApplicationRecord
