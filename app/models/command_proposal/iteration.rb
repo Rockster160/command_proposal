@@ -13,8 +13,8 @@
 
 # ADD: iteration_count?
 
-require_relative "service/external_belong"
-require "command_proposal/service/json_wrapper"
+require_dependency "command_proposal/service/external_belong"
+require_dependency "command_proposal/service/json_wrapper"
 
 class ::CommandProposal::Iteration < ApplicationRecord
   self.table_name = :command_proposal_iterations
