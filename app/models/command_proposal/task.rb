@@ -19,10 +19,10 @@ class ::CommandProposal::Task < ApplicationRecord
   enum session_type: {
     # Task will have multiple iterations that are all essentially the same just with code changes
     task:     0,
-    # Console iterations are actually line by line, so order matters
-    console:  1,
     # Function iterations are much like tasks
-    function: 2,
+    function: 1,
+    # Console iterations are actually line by line, so order matters
+    console:  2,
     # Modules are included in tasks and not run independently
     module:   3,
   }
