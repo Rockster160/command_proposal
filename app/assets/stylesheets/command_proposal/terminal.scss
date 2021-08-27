@@ -18,7 +18,7 @@
   .line {
     min-height: 18px;
     counter-increment: line-count;
-    font-size: 16px;
+    font-size: 14px;
     padding-left: 5px;
     position: relative;
 
@@ -26,7 +26,7 @@
       content: "[" counter(line-count) "]>";
       position: absolute;
       left: -40px;
-      top: 3px;
+      top: 2px;
       width: 40px;
       font-size: 10px;
       vertical-align: middle;

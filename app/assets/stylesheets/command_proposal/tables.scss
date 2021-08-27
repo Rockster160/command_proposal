@@ -68,6 +68,8 @@
   th, td {
     text-align: left;
     padding: 3px;
+
+    &.cmd-text-right { text-align: right; }
   }
   th {
     font-size: 12px;

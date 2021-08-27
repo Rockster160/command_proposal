@@ -34,14 +34,14 @@
 
   # Called when a command is proposed for review
   config.proposal_callback = Proc.new { |proposal|
-    # Slack.notify("#{proposal.requester} has proposed #{proposal.name}.\n<Click Here|#{proposal.url}> to view this proposal and approve.")
+    # Slack.notify("#{proposal.requester} has proposed #{proposal.name}.\n<#{proposal.url}|Click Here> to view this proposal and approve.")
   }
   # Called when a command runs and completes successfully
-  config.success_callback = Proc.new { |iteration|
-    # Slack.notify("The task #{proposal.name} has completed in #{proposal.duration}s.\n<Click Here|#{proposal.url}> to view the results.")
+  config.success_callback = Proc.new { |proposal|
+    # Slack.notify("The task #{proposal.name} has completed in #{proposal.duration}s.\n<#{proposal.url}|Click Here> to view the results.")
   }
   # Called when a command runs but fails to complete
-  config.failed_callback = Proc.new { |iteration|
-    # Slack.notify("The task #{proposal.name} has failed!\n<Click Here|#{proposal.url}> to see what went wrong.")
+  config.failed_callback = Proc.new { |proposal|
+    # Slack.notify("The task #{proposal.name} has failed!\n<#{proposal.url}|Click Here> to see what went wrong.")
   }
 end

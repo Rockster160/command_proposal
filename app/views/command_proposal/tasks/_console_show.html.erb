@@ -7,7 +7,7 @@
     <% when :approved, :started %>
       <%# Closing > offset to get rid of spacing issues. %>
       <div class="cmd-console" data-task="<%= @task.id %>" data-exe-url="<%= cmd_path(@task, :task_iterations) %>"
-        ><div class="lines"><%= render partial: "lines", locals: { lines: @lines, skip_empty: true }
+        ><div class="lines"><%= render partial: "console_lines", locals: { lines: @lines, skip_empty: true }
         %></div
         ><div contenteditable="true" autofocus=true class="line cmd-entry"></div
       ></div>
@@ -26,7 +26,7 @@
       <% if @task.first_iteration.success? %>
         <p>Session closed.</p>
       <% end %>
-      <div class="cmd-console" read-only=true><%= render partial: "lines", locals: { lines: @lines } %></div>
+      <div class="cmd-console" readonly=true><%= render partial: "console_lines", locals: { lines: @lines } %></div>
     <% end %>
 
   <% else %>
@@ -38,7 +38,7 @@
     <% if @task.first_iteration.success? %>
       <p>Session closed.</p>
     <% end %>
-    <div class="cmd-console" read-only=true data-status="<%= @iteration.status %>" data-feed="<%= runner_path(@task, @iteration) %>"><%= render partial: "lines", locals: { lines: @lines } %></div>
+    <div class="cmd-console" readonly=true data-status="<%= @iteration.status %>" data-feed="<%= runner_path(@task, @iteration) %>"><%= render partial: "console_lines", locals: { lines: @lines } %></div>
 
   <% end %>
 <% end %>

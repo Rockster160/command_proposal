@@ -5279,7 +5279,7 @@
     }
 
     // Possibly split or suppress the update based on the presence
-    // of read-only spans in its range.
+    // of readonly spans in its range.
     var split = sawReadOnlySpans && !ignoreReadOnly && removeReadOnlyRanges(doc, change.from, change.to);
     if (split) {
       for (var i = split.length - 1; i >= 0; --i)

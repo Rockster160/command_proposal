@@ -8,15 +8,16 @@ module CommandProposal
         @session = session
       end
 
-      def execute(iteration, inline=false)
+      def execute(iteration)
         @iteration = iteration
-        @inline = inline
         prepare
 
         run
 
         complete
+        proposal = ::CommandProposal::Service::ProposalPresenter.new(@iteration)
         @iteration = nil
+        proposal
       end
 
       def quick_run(iteration)
@@ -49,14 +50,16 @@ module CommandProposal
         stored_stdout = $stdout
         $stdout = StringIO.new
         result = nil # Init var for scope
+        status = nil
 
         running_thread = Thread.new do
           begin
             # Run bring functions in here so we can capture any string outputs
             # OR! Run the full runner and instead of saving to an iteration, return the string for prepending here
             result = @session.eval("_ = (#{@iteration.code})").inspect # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
+            status = :success
           rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
-            @iteration.status = :failed
+            status = :failed
 
             result = results_from_exception(e)
           end
@@ -69,7 +72,10 @@ module CommandProposal
             @iteration.update(result: $stdout.try(:string).dup)
           end
 
-          running_thread.exit if @iteration.cancelling?
+          if @iteration.cancelling?
+            running_thread.exit
+            status = :cancelled
+          end
 
           sleep 1
         end
@@ -79,6 +85,7 @@ module CommandProposal
         # Not using presence because we want to maintain other empty objects such as [] and {}
 
         $stdout = stored_stdout
+        @iteration.status = status
         @iteration.result = [output, "#{result || 'nil'}"].compact.join("\n")
       end
 
@@ -91,7 +98,7 @@ module CommandProposal
         if @iteration.cancelling? || @iteration.cancelled?
           @iteration.result += "\n\n~~~~~ CANCELLED ~~~~~"
           @iteration.status = :cancelled
-        elsif @iteration.failed?
+        elsif @iteration.status&.to_sym == :failed
           # No-op
         else
           @iteration.status = :success

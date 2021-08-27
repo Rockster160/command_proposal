@@ -1,3 +1,4 @@
+hi
 <% if @task.iterations.many? %>
   <table class="cmd-table">
     <thead>
@@ -7,9 +8,16 @@
       <!-- <th>Diff</th> -->
     </thead>
     <tbody>
+      <% primary_iteration = @task.primary_iteration %>
       <% @task.iterations.where.not(id: @iteration&.id).order(created_at: :desc).each do |iteration| %>
         <tr>
-          <td><%= link_to iteration.created_at.strftime("%b %-d, %Y at %H:%M"), cmd_path(@task, iteration: iteration.id) %></td>
+          <td>
+            <% if iteration.id == primary_iteration&.id %>
+              <%= link_to iteration.created_at.strftime("%b %-d, %Y at %H:%M"), cmd_path(@task) %>
+            <% else %>
+              <%= link_to iteration.created_at.strftime("%b %-d, %Y at %H:%M"), cmd_path(@task, iteration: iteration.id) %>
+            <% end %>
+          </td>
           <td><%= iteration.status.capitalize %></td>
           <!-- <td><%= iteration.comments.count %></td> -->
           <!-- <td><%= link_to "Diff", cmd_path(@task, iteration: @iteration.id, diff: iteration.id) %></td> -->

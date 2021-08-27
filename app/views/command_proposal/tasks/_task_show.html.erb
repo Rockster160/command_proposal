@@ -2,49 +2,51 @@
 
 <% if @iteration.present? %>
   <%= form_for @iteration, url: cmd_path(@iteration) do |f| %>
-    <% @iteration.brings.each do |bring_module| %>
-      <% needs_approval_str = " -- Module needs approval before running Task" unless bring_module.approved? %>
-      <%= link_to "Module: #{bring_module.name}#{needs_approval_str}", cmd_path("#{bring_module.friendly_id}") %>
-      <br>
+    <% unless params.key?(:iteration) %>
+      <% @iteration.brings.each do |bring_module| %>
+        <% needs_approval_str = " -- Module needs approval before running Task" unless bring_module.approved? %>
+        <%= link_to "Module: #{bring_module.name}#{needs_approval_str}", cmd_path("#{bring_module.friendly_id}") %>
+        <br>
+      <% end %>
+
+      <% if current_is_author?(@iteration) %>
+
+        <% case @iteration.status&.to_sym %>
+        <% when :created, :cancelled %>
+          <% if can_approve?(@iteration) %>
+            <%= f.hidden_field :command, value: :approve %>
+            <%= f.submit "Approve!" %>
+          <% else %>
+            <%= f.hidden_field :command, value: :request %>
+            <%= f.submit "Request Access" %>
+          <% end %>
+        <% when :failed %>
+          <p>Edit task to attempt to run again.</p>
+        <% when :approved %>
+          <%= f.hidden_field :command, value: :run %>
+          <%= f.submit "Execute" %>
+        <% when :started %>
+          <%= f.hidden_field :command, value: :cancel %>
+          <%= f.submit "CANCEL!", class: "cancel-btn", data: { confirm: "WARNING: Cancelling a command mid-process can be dangerous. Any processes that have already run will not be rolled back. Do you wish to continue?" } %>
+        <% when :success %>
+          <%= f.hidden_field :command, value: :request %>
+          <%= f.submit "Request Re-Run Access" %>
+        <% end %>
+
+      <% elsif can_approve?(@iteration) %>
+
+        <% if @iteration.approved? %>
+          <p>Approved. Ready to run.</p>
+        <% elsif @iteration.pending? %>
+          <%= f.hidden_field :command, value: :approve %>
+          <%= f.submit "Approve!" %>
+        <% end %>
+
+      <% end %>
     <% end %>
 
     <% if @iteration&.started_at? %>
-      <textarea class="cmd-terminal" readonly=true data-status="<%= @iteration.status %>" data-feed="<%= runner_path(@task, @iteration) %>"><%= @iteration&.result %></textarea>
-    <% end %>
-
-    <% if current_is_author?(@iteration) %>
-
-      <% case @iteration.status&.to_sym %>
-      <% when :created, :cancelled %>
-        <% if can_approve?(@iteration) %>
-          <%= f.hidden_field :command, value: :approve %>
-          <%= f.submit "Approve!" %>
-        <% else %>
-          <%= f.hidden_field :command, value: :request %>
-          <%= f.submit "Request Access" %>
-        <% end %>
-      <% when :failed %>
-        <p>Edit task to attempt to run again.</p>
-      <% when :approved %>
-        <%= f.hidden_field :command, value: :run %>
-        <%= f.submit "Execute" %>
-      <% when :started %>
-        <%= f.hidden_field :command, value: :cancel %>
-        <%= f.submit "CANCEL!", class: "cancel-btn", data: { confirm: "WARNING: Cancelling a command mid-process can be dangerous. Any processes that have already run will not be rolled back. Do you wish to continue?" } %>
-      <% when :success %>
-        <%= f.hidden_field :command, value: :request %>
-        <%= f.submit "Request Re-Run Access" %>
-      <% end %>
-
-    <% elsif can_approve?(@iteration) %>
-
-      <% if @iteration.approved? %>
-        <p>Approved. Ready to run.</p>
-      <% elsif @iteration.pending? %>
-        <%= f.hidden_field :command, value: :approve %>
-        <%= f.submit "Approve!" %>
-      <% end %>
-
+      <div class="cmd-console" readonly=true data-status="<%= @iteration.status %>" data-feed="<%= runner_path(@task, @iteration) %>"><%= render partial: "lines", locals: { lines: @iteration&.result } %></div>
     <% end %>
   <% end %>
 <% end %>

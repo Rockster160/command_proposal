@@ -71,8 +71,13 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
       end
       if @task.console?
         response[:result_html] = ApplicationController.render(
-          partial: "command_proposal/tasks/lines",
+          partial: "command_proposal/tasks/console_lines",
           locals: { lines: @task.lines }
+        )
+      else
+        response[:result_html] = ApplicationController.render(
+          partial: "command_proposal/tasks/lines",
+          locals: { lines: @iteration.result }
         )
       end
     end

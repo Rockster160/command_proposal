@@ -25,15 +25,15 @@
           <% end %>
         </p>
         <p>
-          <%= f.radio_button :session_type, :console %>
-          <%= f.label :session_type, value: :console do %>
-            Console - Starts a session that allows line-by-line commands to be executed. Requires approval only to begin session.
-          <% end %>
-        </p>
-        <p>
           <%= f.radio_button :session_type, :function %>
           <%= f.label :session_type, value: :function do %>
             Function - Reusable batch of code, can accept arguments. Only requires approval on code changes.
+          <% end %>
+        </p>
+        <p>
+          <%= f.radio_button :session_type, :console %>
+          <%= f.label :session_type, value: :console do %>
+            Console - Starts a session that allows line-by-line commands to be executed. Requires approval only to begin session.
           <% end %>
         </p>
         <p>

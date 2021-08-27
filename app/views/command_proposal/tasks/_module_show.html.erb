@@ -12,15 +12,11 @@
         <%= f.hidden_field :command, value: :request %>
         <%= f.submit "Request Access" %>
       <% end %>
-    <% when :approved %>
-      <p>Include this module in other commands by using <code>bring :<%= @task.friendly_id %></code> at the top of the file.</p>
     <% end %>
 
   <% elsif can_approve?(@iteration) %>
 
-    <% if @iteration.approved? %>
-      <p>Approved. Ready to include.</p>
-    <% elsif @iteration.pending? %>
+    <% if @iteration.pending? %>
       <%= f.hidden_field :command, value: :approve %>
       <%= f.submit "Approve!" %>
     <% end %>
@@ -28,6 +24,7 @@
   <% end %>
 <% end %>
 
+<p>Include this module in other commands by using <code>bring :<%= @task.friendly_id %></code> at the top of the file.</p>
 <textarea class="cmd-terminal" readonly=true><%= @iteration&.code %></textarea>
 
-<% render partial: "past_iterations_list" %>
+<%= render partial: "past_iterations_list" %>

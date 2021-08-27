@@ -25,7 +25,6 @@ module CommandProposal
         when :approve then command_approve
         when :run then command_run
         when :cancel then command_cancel
-        when :cancel then command_cancel
         when :close then command_close
         end
 

@@ -1,5 +1,5 @@
 <div class="cmd-wrapper">
-  <%= link_to "New Command", cmd_path(:new, :task, session_type: params[:filter] || :task) %> <br>
+  <%= link_to "New #{params[:filter].presence&.capitalize || 'Command'}", cmd_path(:new, :task, session_type: params[:filter] || :task) %> <br>
   <br>
   <%= link_to "All", cmd_path(:tasks, current_params.except(:filter)), class: "cmd-tab #{:active unless params.key?(:filter)}"
   %><% ::CommandProposal::Task.session_types.each_with_index do |(session_type, _session_enum), idx| %><%=
