@@ -18,7 +18,7 @@ module CommandProposal
       # Default
       @approval_required = true
 
-      # Required (if approval needed)
+      # User details - highly recommended
       @user_class_name = nil
       @role_scope = nil
       @user_name = nil

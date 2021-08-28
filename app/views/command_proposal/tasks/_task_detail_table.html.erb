@@ -8,8 +8,8 @@
   </thead>
   <tbody>
     <tr>
-      <td><%= @iteration&.requester_name %></td>
-      <td><%= @iteration&.approver_name %></td>
+      <td><%= @iteration&.requester_name.presence || "ID: #{@iteration&.requester_id}" if @iteration&.requester_id.present? %></td>
+      <td><%= @iteration&.approver_name.presence || "ID: #{@iteration&.approver_id}" if @iteration&.approver_id.present? %></td>
       <td><%= @iteration&.started_at&.strftime("%b %-d '%y, %-l:%M%P") %></td>
       <td data-iteration-status><%= @iteration&.status&.capitalize %></td>
       <td data-iteration-duration><%= humanized_duration(@iteration&.duration) %></td>

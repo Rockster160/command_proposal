@@ -1,4 +1,9 @@
 ::CommandProposal.configure do |config|
+  # Determines if a user needs a different user to approve their commands.
+  # Defaults to true, the recommended value.
+  # However, disabling in development could help with testing.
+  # config.approval_required = !Rails.env.development?
+
   # Change if your base user class has a different model name
   config.user_class_name = "User"
 
@@ -8,6 +13,8 @@
   # Scope for your user class that determines users who are permitted to interact with commands
   # It is highly recommended to make this very exclusive, as any users in this scope will be able
   # to interact with your database directly.
+  # Expected that the class will respond to `#{role_scope}` and
+  #   instances of the class respond to `#{role_scope}?`
   config.role_scope = :admin
 
   # Method called to display a user's name
