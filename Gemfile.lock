@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    command_proposal (1.0.0)
+    command_proposal (1.0.2)
       font-awesome-rails
       rails (>= 5.0)
 

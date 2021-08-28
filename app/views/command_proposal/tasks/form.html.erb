@@ -9,7 +9,7 @@
 
   <%= form_for(@task, url: cmd_path(@task)) do |f| %>
     <div class="cmd-field">
-      <%= f.text_field :name, placeholder: "Title", class: "cmd-input" %>
+      <%= f.text_field :name, placeholder: "Title", class: "cmd-input", required: true %>
     </div>
 
     <div class="cmd-field">

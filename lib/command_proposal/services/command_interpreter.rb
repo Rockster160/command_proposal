@@ -77,6 +77,9 @@ module CommandProposal
         return if @iteration.complete?
 
         @iteration.update(status: :cancelling)
+        return if ::CommandProposal.sessions.key?("task:#{@task.id}")
+
+        ::CommandProposal::Services::ShutDown.terminate(@iteration)
       end
 
       def command_close

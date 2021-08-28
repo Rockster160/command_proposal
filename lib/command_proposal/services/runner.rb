@@ -4,6 +4,12 @@ module CommandProposal
       attr_accessor :session
       # Add expiration and things like that...
 
+      def self.execute(friendly_id)
+        task = ::CommandProposal::Task.find_by!(friendly_id: friendly_id)
+
+        new.execute(task.primary_iteration)
+      end
+
       def initialize
         @session = session
       end
@@ -20,8 +26,11 @@ module CommandProposal
         proposal
       end
 
-      def quick_run(iteration)
-        raise CommandProposal::Error, ":#{iteration.task.friendly_id} does not have approval to run." unless iteration.approved?
+      def quick_run(friendly_id)
+        task = ::CommandProposal::Task.module.find_by!(friendly_id: friendly_id)
+        iteration = task&.primary_iteration
+
+        raise CommandProposal::Error, ":#{friendly_id} does not have approval to run." unless iteration&.approved?
 
         @session.eval(iteration.code)
       end
@@ -77,7 +86,7 @@ module CommandProposal
             status = :cancelled
           end
 
-          sleep 1
+          sleep 0.4
         end
 
         output = $stdout.try(:string)
@@ -90,7 +99,7 @@ module CommandProposal
       end
 
       def bring_function
-        "def bring(*func_names); func_names.each { |f| self.quick_run(::CommandProposal::Task.module.find_by!(friendly_id: f).current_iteration) }; end"
+        "def bring(*func_names); func_names.each { |f| self.quick_run(f) }; end"
       end
 
       def complete

@@ -2,6 +2,7 @@ require "command_proposal/configuration"
 require "command_proposal/version"
 require "command_proposal/engine"
 require "command_proposal/services/runner"
+require "command_proposal/services/shut_down"
 
 module CommandProposal
   class Error < StandardError; end

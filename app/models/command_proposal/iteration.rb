@@ -34,6 +34,7 @@ class ::CommandProposal::Iteration < ApplicationRecord
     cancelling: 4, # Running, but told to stop
     cancelled:  5,
     success:    6,
+    terminated: 7, # Closed via server restart
   }
 
   delegate :name, to: :task
@@ -52,11 +53,15 @@ class ::CommandProposal::Iteration < ApplicationRecord
   end
 
   def complete?
-    success? || failed? || cancelled?
+    success? || failed? || cancelled? || terminated?
   end
 
   def pending?
     created?
+  end
+
+  def running?
+    started? || cancelling?
   end
 
   def duration

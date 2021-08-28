@@ -2,17 +2,17 @@
 
 <% if @iteration.present? %>
   <%= form_for @iteration, url: cmd_path(@iteration) do |f| %>
-    <% unless params.key?(:iteration) %>
-      <% @iteration.brings.each do |bring_module| %>
-        <% needs_approval_str = " -- Module needs approval before running Task" unless bring_module.approved? %>
-        <%= link_to "Module: #{bring_module.name}#{needs_approval_str}", cmd_path("#{bring_module.friendly_id}") %>
-        <br>
-      <% end %>
+    <% @iteration.brings.each do |bring_module| %>
+      <% needs_approval_str = " -- Module needs approval before running Task" unless bring_module.approved? %>
+      <%= link_to "Module: #{bring_module.name}#{needs_approval_str}", cmd_path("#{bring_module.friendly_id}") %>
+      <br>
+    <% end %>
 
+    <% unless params.key?(:iteration) %>
       <% if current_is_author?(@iteration) %>
 
         <% case @iteration.status&.to_sym %>
-        <% when :created, :cancelled %>
+        <% when :created, :cancelled, :terminated %>
           <% if can_approve?(@iteration) %>
             <%= f.hidden_field :command, value: :approve %>
             <%= f.submit "Approve!" %>

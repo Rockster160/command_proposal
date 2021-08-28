@@ -1,6 +1,11 @@
 <%= render partial: "task_detail_table" %>
 
 <%= form_for @iteration, url: cmd_path(@iteration), html: { id: "edit-form-1" } do |f| %>
+  <% @iteration.brings.each do |bring_module| %>
+    <% needs_approval_str = " -- Module needs approval before running Task" unless bring_module.approved? %>
+    <%= link_to "Module: #{bring_module.name}#{needs_approval_str}", cmd_path("#{bring_module.friendly_id}") %>
+    <br>
+  <% end %>
   <% if @task.approved? && @iteration.params.any? %>
     <div class="form-field">
       <% @iteration.params.each do |param_key| %>
@@ -24,7 +29,7 @@
     <% if current_is_author?(@iteration) %>
 
       <% case @iteration.status&.to_sym %>
-      <% when :created, :failed, :cancelled %>
+      <% when :created, :failed, :cancelled, :terminated %>
         <% unless @iteration.approved_at? %>
           <% if can_approve?(@iteration) %>
               <%= f.hidden_field :command, value: :approve %>
