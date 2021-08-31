@@ -1,4 +1,4 @@
 <% if lines.blank? && !(skip_empty ||= false) -%><div class="line"></div><% end
--%><% lines.split("\n").each do |line|
+-%><% lines&.split("\n").each do |line|
   -%><div class="line"><%= line -%></div><%
 end -%>
