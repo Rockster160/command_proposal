@@ -19,10 +19,12 @@ module CommandProposal
         end
       }
       args << { host: host, port: nil } if host.present?
+      # args << {host: nil}
 
       begin
-        command_proposal_engine.url_for(args.compact)
+        engine.url_for(args.compact)
       rescue NoMethodError => e
+        puts "\e[33m[LOGIT]#{e.inspect}\e[0m"
         raise "Error generating route! Please make sure `config.action_mailer.default_url_options` are set."
       end
     end
@@ -40,24 +42,31 @@ module CommandProposal
     end
 
     def string_path(*args)
-      [command_proposal_engine.command_proposal_tasks_url + args.shift, args.to_param.presence].compact.join("?")
+      [engine.command_proposal_tasks_url + args.shift, args.to_param.presence].compact.join("?")
+    end
+
+    def engine
+      @engine ||= begin
+        name = `rails routes | grep command_proposal_engine`[/\w*command_proposal_engine/]
+        send(name)
+      end
     end
 
     # Runner controller doesn't map to a model, so needs special handling
     def runner_path(task, iteration=nil)
       if iteration.present?
-        command_proposal_engine.command_proposal_task_runner_path(task, iteration)
+        engine.command_proposal_task_runner_path(task, iteration)
       else
-        command_proposal_engine.command_proposal_task_runner_index_path(task)
+        engine.command_proposal_task_runner_index_path(task)
       end
     end
 
     # Runner controller doesn't map to a model, so needs special handling
     def runner_url(task, iteration=nil)
       if iteration.present?
-        command_proposal_engine.command_proposal_task_runner_url(task, iteration)
+        engine.command_proposal_task_runner_url(task, iteration)
       else
-        command_proposal_engine.command_proposal_task_runner_index_url(task)
+        engine.command_proposal_task_runner_index_url(task)
       end
     end
   end
