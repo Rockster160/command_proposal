@@ -4,5 +4,5 @@
 # gem push command_proposal-__.gem
 
 module CommandProposal
-  VERSION = '1.0.5'
+  VERSION = '1.0.6'
 end
