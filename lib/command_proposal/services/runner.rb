@@ -125,7 +125,8 @@ module CommandProposal
 
       def results_from_exception(exc)
         klass = exc.class
-        msg = exc.try(:message) || exc.try(:body) || exc.to_s
+        # Dup to avoid frozen string errors
+        msg = (exc.try(:message) || exc.try(:body) || exc.to_s).dup
         # Remove proposal context
         msg.gsub!(/ for \#\<CommandProposal.*/, "")
         msg.gsub!(/(::)?CommandProposal::Services::Runner(::)?/, "")
@@ -142,7 +143,7 @@ module CommandProposal
 
         eval_trace = backtrace.select { |row| row.include?("(eval)") }.presence || []
         eval_trace = eval_trace.map do |row|
-          eval_row_number = row[/\(eval\)\:\d+/].to_s[7..-1]
+          eval_row_number = row[/\(eval\)\:\d+/].to_s.dup[7..-1]
           next if eval_row_number.blank?
 
           error_line = @iteration.code.split("\n")[eval_row_number.to_i - 1]

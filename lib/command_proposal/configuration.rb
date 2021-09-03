@@ -26,6 +26,7 @@ module CommandProposal
 
       # Optional
       @proposal_callback = nil
+      @approval_callback = nil
       @success_callback = nil
       @failed_callback = nil
     end

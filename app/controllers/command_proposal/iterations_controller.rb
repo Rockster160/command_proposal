@@ -48,7 +48,7 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
     begin
       alter_command if params.dig(:command_proposal_iteration, :command).present?
     rescue ::CommandProposal::Services::CommandInterpreter::Error => e
-      return redirect_to cmd_path(:tasks, :error), alert: e.message
+      return redirect_to cmd_path(:error, :tasks), alert: e.message
     end
 
     sleep 0.2

@@ -56,6 +56,8 @@ module CommandProposal
         check_can_command? && check_can_approve?
 
         @iteration.update(status: :approved, approver: @user, approved_at: Time.current)
+        proposal = ::CommandProposal::Service::ProposalPresenter.new(@iteration)
+        ::CommandProposal.configuration.approval_callback&.call(proposal)
       end
 
       def command_run

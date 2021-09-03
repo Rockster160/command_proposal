@@ -19,13 +19,15 @@ module CommandProposal
         end
       }
       args << { host: host, port: nil } if host.present?
-      # args << {host: nil}
 
       begin
         engine.url_for(args.compact)
       rescue NoMethodError => e
-        puts "\e[33m[LOGIT]#{e.inspect}\e[0m"
-        raise "Error generating route! Please make sure `config.action_mailer.default_url_options` are set."
+        if e.message.match?(/\_(url|path)\'/)
+          raise e
+        else
+          raise "Error generating route! Please make sure `config.action_mailer.default_url_options` are set."
+        end
       end
     end
 

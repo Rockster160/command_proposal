@@ -43,6 +43,10 @@
   config.proposal_callback = Proc.new { |proposal|
     # Slack.notify("#{proposal.requester} has proposed #{proposal.name}.\n<#{proposal.url}|Click Here> to view this proposal and approve.")
   }
+  # Called when a command is approved
+  config.approval_callback = Proc.new { |proposal|
+    # Slack.notify("The task #{proposal.name} has been approved and is now ready to run.\n<#{proposal.url}|Click Here> to view.")
+  }
   # Called when a command runs and completes successfully
   config.success_callback = Proc.new { |proposal|
     # Slack.notify("The task #{proposal.name} has completed in #{proposal.duration}s.\n<#{proposal.url}|Click Here> to view the results.")
