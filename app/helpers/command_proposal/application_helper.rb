@@ -48,10 +48,7 @@ module CommandProposal
     end
 
     def engine
-      @engine ||= begin
-        name = `rails routes | grep command_proposal_engine`[/\w*command_proposal_engine/]
-        send(name)
-      end
+      @engine ||= send(::CommandProposal.engine_name)
     end
 
     # Runner controller doesn't map to a model, so needs special handling

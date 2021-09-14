@@ -22,6 +22,12 @@ module CommandProposal
     @configuration = ::CommandProposal::Configuration.new
   end
 
+  def self.engine_name
+    @engine_name ||= begin
+      `rails routes | grep command_proposal_engine`[/\w*command_proposal_engine/]
+    end
+  end
+
   def self.configure
     yield(configuration)
   end
