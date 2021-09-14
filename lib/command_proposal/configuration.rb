@@ -10,6 +10,7 @@ module CommandProposal
       :approval_required,
       # Optional
       :proposal_callback,
+      :approval_callback,
       :success_callback,
       :failed_callback,
     )
