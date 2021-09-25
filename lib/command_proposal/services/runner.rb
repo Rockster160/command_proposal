@@ -11,12 +11,28 @@ module CommandProposal
       end
 
       def self.command(friendly_id, user, params={})
-        ::CommandProposal::Services::CommandInterpreter.command(
+        # Hack magic because requires are not playing well with spring
+        require "command_proposal/services/command_interpreter"
+
+        params = params.to_unsafe_h if params.is_a?(ActionController::Parameters)
+
+        iteration = ::CommandProposal::Services::CommandInterpreter.command(
           ::CommandProposal::Task.find_by!(friendly_id: friendly_id).primary_iteration,
           :run,
           user,
-          params.except(:action, :controller)
+          { args: params }
         )
+
+        start = Time.current
+        wait_time = 5 # seconds
+        loop do
+          sleep 0.4
+
+          break if iteration.reload.complete?
+          break if Time.current - start > wait_time
+        end
+
+        iteration
       end
 
       def initialize
@@ -74,7 +90,7 @@ module CommandProposal
           begin
             # Run bring functions in here so we can capture any string outputs
             # OR! Run the full runner and instead of saving to an iteration, return the string for prepending here
-            result = @session.eval("_ = (#{@iteration.code})").inspect # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
+            @session.eval("_ = (#{@iteration.code})").inspect # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
             status = :success
           rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
             status = :failed
@@ -104,7 +120,7 @@ module CommandProposal
 
         $stdout = stored_stdout
         @iteration.status = status
-        @iteration.result = [output, "#{result || 'nil'}"].compact.join("\n")
+        @iteration.result = [output, result].compact.join("\n")
       end
 
       def bring_function
