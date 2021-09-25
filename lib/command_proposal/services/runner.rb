@@ -10,6 +10,15 @@ module CommandProposal
         new.execute(task.primary_iteration)
       end
 
+      def self.command(friendly_id, user, params={})
+        ::CommandProposal::Services::CommandInterpreter.command(
+          ::CommandProposal::Task.find_by!(friendly_id: friendly_id).primary_iteration,
+          :run,
+          user,
+          params.except(:action, :controller)
+        )
+      end
+
       def initialize
         @session = session
       end
