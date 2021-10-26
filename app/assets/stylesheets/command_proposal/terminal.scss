@@ -6,13 +6,9 @@
   background: #112435;
   padding: 10px 20px;
   padding-left: 40px;
-  overflow-x: auto;
-  overflow-y: visible;
   color: lime;
   font-family: monospace;
   text-align: left;
-  white-space: nowrap;
-  white-space: pre;
   counter-reset: line-count;
 
   .line {
@@ -66,7 +62,4 @@
     background: lime;
     color: black;
   }
-}
-.cmd-terminal {
-  white-space: pre-wrap;
 }
