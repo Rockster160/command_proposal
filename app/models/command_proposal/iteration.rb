@@ -70,6 +70,10 @@ class ::CommandProposal::Iteration < ApplicationRecord
     (completed_at || stopped_at || Time.current) - started_at
   end
 
+  def end_time
+    completed_at || stopped_at || Time.current
+  end
+
   def force_reset
     # Debugging method. Should never actually be called.
     update(status: :approved, result: nil, completed_at: nil, stopped_at: nil, started_at: nil)

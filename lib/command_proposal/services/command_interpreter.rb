@@ -91,7 +91,8 @@ module CommandProposal
         if ::CommandProposal.sessions.key?("task:#{@task.id}")
           @task.first_iteration.update(status: :success, completed_at: Time.current)
         else
-          @task.first_iteration.update(status: :terminated, completed_at: Time.current)
+          ended_at = @task.iterations.last&.end_time || Time.current
+          @task.first_iteration.update(status: :terminated, completed_at: ended_at)
         end
         ::CommandProposal.sessions.delete("task:#{@task.id}")
       end

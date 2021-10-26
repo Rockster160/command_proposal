@@ -1,8 +1,14 @@
 <% if lines.none? && !(skip_empty ||= false) -%><div class="line"></div><% end
 -%><% lines.each do |iteration| -%>
-  <div class="line"><%= iteration.code -%><%
-    if iteration.result.present?
-      -%><div class="result"><%= iteration.result %></div><%
-    end
-  -%></div>
+  <div class="line"><%= iteration.code
+    -%><div class="result"><%=
+      if iteration.result.present?
+        iteration.result
+      elsif iteration.completed?
+        "Error: No response"
+      else
+        content_tag :i, nil, class: "fa fa-circle-o-notch fa-spin cmd-icon-grey"
+      end
+    %></div
+  ></div>
 <% end -%>

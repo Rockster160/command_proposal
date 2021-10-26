@@ -141,6 +141,16 @@ cmdDocReady(function() {
       line.textContent = console_input.textContent
 
       console_input.textContent = ""
+
+      var result = document.createElement("div")
+      result.classList.add("result")
+
+      var spinner = document.createElement("i")
+      spinner.className = "fa fa-circle-o-notch fa-spin cmd-icon-grey"
+      result.append(spinner)
+
+      line.appendChild(result)
+
       lines.appendChild(line)
       stored_entry = undefined
       history_cmd_idx = undefined
@@ -167,6 +177,8 @@ cmdDocReady(function() {
           done: function(res, status, req) {
             if (status == 200) {
               var json = JSON.parse(res)
+              line.querySelector(".result").remove()
+
               var result = document.createElement("div")
               result.classList.add("result")
 

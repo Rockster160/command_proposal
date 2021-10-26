@@ -65,6 +65,7 @@ class ::CommandProposal::RunnerController < ::CommandProposal::EngineController
       result: @iteration.result,
       status: @iteration.status,
       duration: humanized_duration(@iteration.duration),
+      started_at: @iteration.started_at&.strftime("%b %-d '%y, %-l:%M%P")
     }.tap do |response|
       if @iteration.started?
         response[:endpoint] = runner_url(@task, @iteration)

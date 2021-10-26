@@ -4,13 +4,13 @@ cmdDocReady(function() {
   function setReadOnlyUI(cm) {
     cm.getWrapperElement().classList.add("CodeMirror-readonly")
 
-    pencil = document.createElement("i")
+    var pencil = document.createElement("i")
     pencil.className = "fa fa-pencil fa-stack-1x"
 
-    ban = document.createElement("i")
+    var ban = document.createElement("i")
     ban.className = "fa fa-ban fa-stack-2x fa-flip-horizontal"
 
-    stack = document.createElement("span")
+    var stack = document.createElement("span")
     stack.className = "fa-stack fa-2x"
     stack.append(pencil)
     stack.append(ban)

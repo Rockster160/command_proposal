@@ -29,6 +29,7 @@ cmdDocReady(function() {
             }
             document.querySelector("td[data-iteration-status]").innerText = json.status
             document.querySelector("td[data-iteration-duration]").innerText = json.duration
+            document.querySelector("td[data-iteration-started]").innerText = json.started_at
 
             if (continue_statuses.includes(json.status)) {
               setTimeout(function() { pingFeed(terminal) }, 1000)
