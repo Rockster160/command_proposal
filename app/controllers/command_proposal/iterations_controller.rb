@@ -28,7 +28,6 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
 
     return error!("Session has expired. Please start a new session.") if runner.nil?
 
-
     @task.user = command_user # Separate from update to ensure it's set first
     @task.update(code: params[:code]) # Creates a new iteration
     @iteration = @task.current_iteration

@@ -7,7 +7,7 @@
 
 class ::CommandProposal::Task < ApplicationRecord
   self.table_name = :command_proposal_tasks
-  attr_accessor :user
+  attr_accessor :user, :skip_approval
 
   has_many :iterations
   has_many :ordered_iterations, -> { order(created_at: :desc) }, class_name: "CommandProposal::Iteration"
@@ -79,7 +79,17 @@ class ::CommandProposal::Task < ApplicationRecord
   end
 
   def code=(new_code)
-    iterations.create(code: new_code, requester: user)
+    if skip_approval
+      iterations.create(
+        code: new_code,
+        requester: user,
+        status: :approved,
+        approver: user,
+        approved_at: Time.current
+      )
+    else
+      iterations.create(code: new_code, requester: user)
+    end
   end
 
   private

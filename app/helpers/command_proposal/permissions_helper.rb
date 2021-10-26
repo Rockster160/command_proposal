@@ -2,14 +2,14 @@ module CommandProposal
   module PermissionsHelper
     def can_command?(user=command_user)
       return false unless permitted_to_use?
-      return true unless cmd_config.approval_required?
+      return true unless approval_required?
 
       command_user.try("#{cmd_config.role_scope}?")
     end
 
     def can_approve?(iteration)
       return false unless permitted_to_use?
-      return true unless cmd_config.approval_required?
+      return true unless approval_required?
       return if iteration.nil?
 
       command_user.try("#{cmd_config.role_scope}?") && !current_is_author?(iteration)
@@ -17,9 +17,13 @@ module CommandProposal
 
     def has_approval?(task)
       return false unless permitted_to_use?
-      return true unless cmd_config.approval_required?
+      return true unless approval_required?
 
       task&.approved?
+    end
+
+    def approval_required?
+      cmd_config.approval_required?
     end
 
     def current_is_author?(iteration)
