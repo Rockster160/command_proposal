@@ -66,7 +66,7 @@ module CommandProposal
         # Rollback the create/update if anything fails
         ActiveRecord::Base.transaction do
           command_request if @task.function? && @iteration.approved_at? && @iteration.complete?
-          @iteration.update(@params)
+          @iteration.update(@params.merge(requester: @user))
 
           error!("Cannot run without approval.") unless has_approval?(@task)
         end
