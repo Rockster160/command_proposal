@@ -186,7 +186,21 @@ cmdDocReady(function() {
                 result.classList.add("cmd-error")
                 result.textContent = json.error
               } else {
-                result.textContent = json.result
+                var truncate = 2000
+                if (json.result.length > truncate-3) {
+                  result.textContent = json.result.slice(0, truncate-3) + "..."
+                  var encoded = encodeURIComponent(json.result)
+
+                  var download = document.createElement("a")
+                  download.classList.add("cmd-truncated-download")
+                  download.setAttribute("href", "data:application/txt," + encoded)
+                  download.setAttribute("download", "result.txt")
+                  download.textContent = "Output truncated. Click here to download full result."
+
+                  line.insertAdjacentElement("afterend", download)
+                } else {
+                  result.textContent = json.result
+                }
               }
 
               line.appendChild(result)

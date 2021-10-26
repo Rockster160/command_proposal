@@ -2,13 +2,17 @@
 -%><% lines.each do |iteration| -%>
   <div class="line"><%= iteration.code
     -%><div class="result"><%=
+      truncate = ::CommandProposal::Iteration::TRUNCATE_COUNT
       if iteration.result.present?
-        iteration.result
+        iteration.result.truncate(truncate)
       elsif iteration.completed?
         "Error: No response"
       else
         content_tag :i, nil, class: "fa fa-circle-o-notch fa-spin cmd-icon-grey"
       end
     %></div
-  ></div>
-<% end -%>
+  ></div><%=
+  if iteration.result.length > truncate
+    link_to("Output truncated. Click here to download full result.", "data:application/txt,#{ERB::Util.url_encode(iteration.result)}", class: "cmd-truncated-download", download: "result.txt")
+  end
+%><% end -%>

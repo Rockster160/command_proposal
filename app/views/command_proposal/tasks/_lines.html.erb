@@ -1,4 +1,8 @@
 <% if lines.blank? && !(skip_empty ||= false) -%><div class="line"></div><% end
 -%><% lines&.split("\n").each do |line|
-  -%><div class="line"><%= line -%></div><%
+  truncate = ::CommandProposal::Iteration::TRUNCATE_COUNT
+  -%><div class="line"><%= line.truncate(truncate) -%></div><%=
+  if line.length > truncate
+    link_to("Output truncated. Click here to download full result.", "data:application/txt,#{ERB::Util.url_encode(line)}", class: "cmd-truncated-download", download: "result.txt")
+  end -%><%
 end -%>

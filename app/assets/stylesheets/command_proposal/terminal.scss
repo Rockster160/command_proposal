@@ -10,6 +10,8 @@
   font-family: monospace;
   text-align: left;
   counter-reset: line-count;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 
   .line {
     min-height: 18px;

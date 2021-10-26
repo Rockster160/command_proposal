@@ -21,6 +21,9 @@ class ::CommandProposal::Iteration < ApplicationRecord
   serialize :args, ::CommandProposal::Service::JSONWrapper
   include ::CommandProposal::Service::ExternalBelong
 
+  TRUNCATE_COUNT = 2000
+  # Also hardcoded in JS: app/assets/javascripts/command_proposal/console.js
+
   has_many :comments
   belongs_to :task
   external_belongs_to :requester
