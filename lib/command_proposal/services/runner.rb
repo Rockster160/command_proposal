@@ -76,7 +76,11 @@ module CommandProposal
 
       def run
         begin
-          @session.eval("#{bring_function};params = #{@iteration.args || {}}.with_indifferent_access")
+          params_str = ""
+          unless @iteration.task.console? # Don't bring params into the console
+            params_str = "params = #{@iteration.args || {}}.with_indifferent_access"
+          end
+          @session.eval("#{bring_function};#{params_str}")
         rescue Exception => e # rubocop:disable Lint/RescueException - Yes, rescue full Exception so that we can catch typos in evals as well
           return @iteration.result = results_from_exception(e)
         end
