@@ -1,3 +1,3 @@
 module CommandProposal
-  VERSION = ""
+  VERSION = "1.0.13"
 end
