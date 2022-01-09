@@ -7,15 +7,11 @@
       <!-- <th>Diff</th> -->
     </thead>
     <tbody>
-      <% primary_iteration = @task.primary_iteration %>
-      <% @task.iterations.where.not(id: @iteration&.id).order(created_at: :desc).each do |iteration| %>
+      <% @task.iterations.order(created_at: :desc).each do |iteration| %>
         <tr>
           <td>
-            <% if iteration.id == primary_iteration&.id %>
-              <%= link_to iteration.created_at.strftime("%b %-d, %Y at %H:%M"), cmd_path(@task) %>
-            <% else %>
-              <%= link_to iteration.created_at.strftime("%b %-d, %Y at %H:%M"), cmd_path(@task, iteration: iteration.id) %>
-            <% end %>
+            <%= ">" if iteration == @iteration %>
+            <%= link_to iteration.created_at.strftime("%b %-d, %Y at %H:%M"), cmd_path(@task, iteration: iteration.id) %>
           </td>
           <td><%= iteration.status.capitalize %></td>
           <!-- <td><%#= iteration.comments.count %></td> -->
