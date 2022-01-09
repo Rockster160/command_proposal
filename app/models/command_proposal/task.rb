@@ -15,12 +15,19 @@ class ::CommandProposal::Task < ApplicationRecord
   scope :search, ->(text) {
     where("name ILIKE :q OR description ILIKE :q", q: "%#{text}%")
   }
+  scope :by_session, ->(filter) {
+    if filter.present?
+      where(session_type: filter) if filter.to_s.in?(session_types.keys)
+    else
+      where(session_type: :function)
+    end
+  }
 
   enum session_type: {
-    # Task will have multiple iterations that are all essentially the same just with code changes
-    task:     0,
     # Function iterations are much like tasks
     function: 1,
+    # Task will have multiple iterations that are all essentially the same just with code changes
+    task:     0,
     # Console iterations are actually line by line, so order matters
     console:  2,
     # Modules are included in tasks and not run independently
