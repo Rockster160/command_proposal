@@ -22,6 +22,11 @@ class ::CommandProposal::Task < ApplicationRecord
       where(session_type: :function)
     end
   }
+  scope :cmd_page, ->(page=nil) {
+    page = page.presence&.to_i || 1
+    per = ::CommandProposal::PAGINATION_PER
+    limit(per).offset(per * (page - 1))
+  }
 
   enum session_type: {
     # Function iterations are much like tasks

@@ -7,7 +7,8 @@
       <!-- <th>Diff</th> -->
     </thead>
     <tbody>
-      <% @task.iterations.order(created_at: :desc).each do |iteration| %>
+      <% paginated_iterations = @task.iterations.cmd_page(params[:page]) %>
+      <% paginated_iterations.order(created_at: :desc).each do |iteration| %>
         <tr>
           <td>
             <%= ">" if iteration == @iteration %>
@@ -20,4 +21,6 @@
       <% end %>
     </tbody>
   </table>
+
+  <%= command_paginate paginated_iterations %>
 <% end %>

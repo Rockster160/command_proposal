@@ -6,6 +6,8 @@ require "command_proposal/services/shut_down"
 
 module CommandProposal
   class Error < StandardError; end
+  PAGINATION_PER = 10
+
   def self.sessions
     @sessions ||= {}
   end

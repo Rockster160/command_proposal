@@ -18,6 +18,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
     @tasks = @tasks.order(Arel.sql("COALESCE(command_proposal_tasks.last_executed_at, command_proposal_tasks.created_at) DESC"))
     @tasks = @tasks.search(params[:search]) if params[:search].present?
     @tasks = @tasks.by_session(params[:filter])
+    @tasks = @tasks.cmd_page(params[:page])
   end
 
   def show

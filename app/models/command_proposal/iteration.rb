@@ -23,6 +23,7 @@ class ::CommandProposal::Iteration < ApplicationRecord
 
   TRUNCATE_COUNT = 2000
   # Also hardcoded in JS: app/assets/javascripts/command_proposal/console.js
+  PAGINATION_PER = 2
 
   has_many :comments
   belongs_to :task
@@ -40,6 +41,12 @@ class ::CommandProposal::Iteration < ApplicationRecord
     terminated: 7, # Closed via server restart
   }
 
+  scope :cmd_page, ->(page=nil) {
+    page = page.presence&.to_i || 1
+    per = ::CommandProposal::PAGINATION_PER
+    limit(per).offset(per * (page - 1))
+  }
+
   delegate :name, to: :task
   delegate :description, to: :task
   delegate :session_type, to: :task
@@ -53,6 +60,10 @@ class ::CommandProposal::Iteration < ApplicationRecord
     return [] unless bring_str.present?
 
     ::CommandProposal::Task.module.where(friendly_id: bring_str.scan(/\s+\:(\w+),?/).flatten)
+  end
+
+  def primary_iteration?
+    task.primary_iteration == self
   end
 
   def complete?

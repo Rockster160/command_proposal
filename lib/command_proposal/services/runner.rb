@@ -92,7 +92,7 @@ module CommandProposal
 
         running_thread = Thread.new do
           begin
-            # Run bring functions in here so we can capture any string outputs
+            # Run `bring` functions in here so we can capture any string outputs
             # OR! Run the full runner and instead of saving to an iteration, return the string for prepending here
             result = @session.eval("_ = (#{@iteration.code})").inspect # rubocop:disable Security/Eval - Eval is scary, but in this case it's exactly what we need.
             result = nil unless @iteration.task.console? # Only store final result for consoles

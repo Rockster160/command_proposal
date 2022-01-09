@@ -35,3 +35,20 @@
     background: lightgrey;
   }
 }
+
+.cmd-pagination {
+  text-align: center;
+  margin-top: 10px;
+
+  .cmd-pagination-link {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &.current-page {
+      font-weight: bold;
+    }
+  }
+}
