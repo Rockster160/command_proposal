@@ -38,7 +38,8 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   end
 
   def new
-    @task = ::CommandProposal::Task.new(session_type: params[:session_type])
+    @task = ::CommandProposal::Task.new
+    @task.session_type = params[:session_type] if params[:session_type].in?(::CommandProposal::Task.session_types)
 
     render "form"
   end

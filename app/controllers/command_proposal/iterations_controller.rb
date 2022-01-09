@@ -33,8 +33,13 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
     @iteration = @task.current_iteration
     @iteration.update(status: :approved) # Task was already approved, and this is line-by-line
 
-    # in-sync
-    runner.execute(@iteration)
+    # async, but wait for the job to finish
+    ::CommandProposal::CommandRunnerJob.perform_later(@iteration.id)
+    loop do
+      sleep 0.2
+
+      break if @iteration.reload.complete?
+    end
 
     render json: {
       result: @iteration.result
