@@ -5,7 +5,7 @@
       truncate = ::CommandProposal::Iteration::TRUNCATE_COUNT
       if iteration.result.present?
         iteration.result.truncate(truncate)
-      elsif iteration.completed?
+      elsif iteration.complete?
         "Error: No response"
       else
         content_tag :i, nil, class: "fa fa-circle-o-notch fa-spin cmd-icon-grey"
