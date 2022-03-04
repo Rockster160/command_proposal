@@ -1,8 +1,12 @@
 <% if @task.iterations.many? %>
-  <table class="cmd-table">
+  <table class="cmd-table cmd-past-iterations">
     <thead>
       <th>Timestamp / Link</th>
       <th>Status</th>
+      <% if @iteration&.params.present? %>
+        <th>Params</th>
+      <% end %>
+      <th>Result</th>
       <!-- <th># Comments</th> -->
       <!-- <th>Diff</th> -->
     </thead>
@@ -15,6 +19,14 @@
             <%= link_to iteration.created_at.strftime("%b %-d, %Y at %H:%M"), cmd_path(@task, iteration: iteration.id) %>
           </td>
           <td><%= iteration.status.capitalize %></td>
+          <% if @iteration&.params.present? %>
+            <td>
+              <% iteration&.args.each do |arg_k, arg_v| %>
+                <span class=cmd-arg""><%= arg_k %>=<%= arg_v.to_s.truncate(50) %></span>
+              <% end %>
+            </td>
+          <% end %>
+          <td><%= iteration.result.to_s.truncate(200) %></td>
           <!-- <td><%#= iteration.comments.count %></td> -->
           <!-- <td><%#= link_to "Diff", cmd_path(@task, iteration: @iteration.id, diff: iteration.id) %></td> -->
         </tr>

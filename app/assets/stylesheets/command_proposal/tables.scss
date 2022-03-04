@@ -75,4 +75,7 @@
     font-size: 12px;
     color: grey;
   }
+  &.cmd-past-iterations tbody tr:nth-child(even) {
+    background: whitesmoke;
+  }
 }
