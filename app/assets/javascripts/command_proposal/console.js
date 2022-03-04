@@ -178,40 +178,77 @@ cmdDocReady(function() {
           body: JSON.stringify(params),
           done: function(res, status, req) {
             if (status == 200) {
-              var json = JSON.parse(res)
-              line.querySelector(".result").remove()
-
-              var result = document.createElement("div")
-              result.classList.add("result")
-
-              if (json.error) {
-                result.classList.add("cmd-error")
-                result.textContent = json.error
-              } else {
-                var truncate = 2000
-                if (json.result.length > truncate-3) {
-                  result.textContent = json.result.slice(0, truncate-3) + "..."
-                  var encoded = encodeURIComponent(json.result)
-
-                  var download = document.createElement("a")
-                  download.classList.add("cmd-truncated-download")
-                  download.setAttribute("href", "data:application/txt," + encoded)
-                  download.setAttribute("download", "result.txt")
-                  download.textContent = "Output truncated. Click here to download full result."
-
-                  line.insertAdjacentElement("afterend", download)
-                } else {
-                  result.textContent = json.result
-                }
-              }
-
-              line.appendChild(result)
+              handleSuccessfulCommand(evt, line, JSON.parse(res))
             } else {
               console.log("Error: ", res, req);
             }
-            evt.finish()
           }
         })
+      })
+    }
+
+    function handleSuccessfulCommand(evt, line, json) {
+
+      if (json.error) {
+        addLineResult(line, json.error, "cmd-error")
+      } else if (json.status != "started") {
+        addLineResult(line, json.result)
+      } else {
+        return setTimeout(function() { pollIteration(evt, line, json.results_endpoint) }, 2000)
+      }
+
+      evt.finish()
+    }
+
+    function addLineResult(line, text, result_class) {
+      line.querySelector(".result").remove()
+
+      if (/^[\s\n]*$/.test(text)) { return }
+
+      var result = document.createElement("div")
+      result.classList.add("result")
+      if (result_class) { result.classList.add(result_class) }
+
+      var truncate = 2000
+      if (text.length > truncate-3) {
+        result.textContent = text.slice(0, truncate-3) + "..."
+        var encoded = encodeURIComponent(text)
+
+        var download = document.createElement("a")
+        download.classList.add("cmd-truncated-download")
+        download.setAttribute("href", "data:application/txt," + encoded)
+        download.setAttribute("download", "result.txt")
+        download.textContent = "Output truncated. Click here to download full result."
+
+        line.insertAdjacentElement("afterend", download)
+      } else {
+        result.textContent = text
+      }
+
+      line.appendChild(result)
+    }
+
+    function pollIteration(evt, line, endpoint) {
+      var client = new HttpClient()
+      client.get(endpoint, {
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": $.rails.csrfToken()
+        },
+        done: function(res, status, req) {
+          if (status == 200) {
+            var json = JSON.parse(res)
+            if (json.status == "started") {
+              setTimeout(function() { pollIteration(evt, line, endpoint) }, 2000)
+            } else {
+              addLineResult(line, json.result)
+              evt.finish()
+            }
+          } else {
+            console.log("Error: ", res, req);
+            evt.finish()
+          }
+        }
       })
     }
   }

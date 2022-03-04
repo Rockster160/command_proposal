@@ -9,6 +9,16 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
 
   layout "application"
 
+  def show
+    @iteration = ::CommandProposal::Iteration.find(params[:id])
+
+    render json: {
+      results_endpoint: cmd_path(@iteration),
+      result: @iteration.result,
+      status: @iteration.status
+    }
+  end
+
   def create
     return error!("You do not have permission to run commands.") unless can_command?
 
@@ -33,14 +43,20 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
 
     # async, but wait for the job to finish
     ::CommandProposal::CommandRunnerJob.perform_later(@iteration.id, "task:#{@task.id}")
+
+    max_wait_seconds = 3
     loop do
-      sleep 0.2
+      break unless max_wait_seconds.positive?
+
+      max_wait_seconds -= sleep 0.2
 
       break if @iteration.reload.complete?
     end
 
     render json: {
-      result: @iteration.result
+      results_endpoint: cmd_path(@iteration),
+      result: @iteration.result,
+      status: @iteration.status
     }
   end
 
