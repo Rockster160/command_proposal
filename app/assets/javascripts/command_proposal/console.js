@@ -142,14 +142,16 @@ cmdDocReady(function() {
 
       console_input.textContent = ""
 
-      var result = document.createElement("div")
-      result.classList.add("result")
+      if (!(/^[\s\n]*$/.test(line.textContent))) {
+        var result = document.createElement("div")
+        result.classList.add("result")
 
-      var spinner = document.createElement("i")
-      spinner.className = "fa fa-circle-o-notch fa-spin cmd-icon-grey"
-      result.append(spinner)
+        var spinner = document.createElement("i")
+        spinner.className = "fa fa-circle-o-notch fa-spin cmd-icon-grey"
+        result.append(spinner)
 
-      line.appendChild(result)
+        line.appendChild(result)
+      }
 
       lines.appendChild(line)
       stored_entry = undefined
