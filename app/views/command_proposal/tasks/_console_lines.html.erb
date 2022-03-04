@@ -12,7 +12,7 @@
       end
     %></div
   ></div><%=
-  if iteration.result.length > truncate
+  if iteration.result&.length.to_i > truncate
     link_to("Output truncated. Click here to download full result.", "data:application/txt,#{ERB::Util.url_encode(iteration.result)}", class: "cmd-truncated-download", download: "result.txt")
   end
 %><% end -%>
