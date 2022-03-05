@@ -65,7 +65,7 @@ module CommandProposal
       end
 
       def quick_run(friendly_id)
-        task = ::CommandProposal::Task.module.find_by!(friendly_id: friendly_id)
+        task = ::CommandProposal::Task.find_by!(friendly_id: friendly_id)
         iteration = task&.primary_iteration
 
         raise CommandProposal::Error, ":#{friendly_id} does not have approval to run." unless iteration&.approved?

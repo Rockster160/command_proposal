@@ -65,6 +65,10 @@ class ::CommandProposal::Iteration < ApplicationRecord
     task.primary_iteration == self
   end
 
+  def approved?
+    super || (session_type == "function" && approved_at?)
+  end
+
   def complete?
     success? || failed? || cancelled? || terminated?
   end
