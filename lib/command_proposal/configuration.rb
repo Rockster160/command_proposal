@@ -13,6 +13,7 @@ module CommandProposal
       :approval_callback,
       :success_callback,
       :failed_callback,
+      :skip_approval_for_types,
     )
 
     def initialize
@@ -30,6 +31,7 @@ module CommandProposal
       @approval_callback = nil
       @success_callback = nil
       @failed_callback = nil
+      @skip_approval_for_types = nil
     end
 
     def user_class

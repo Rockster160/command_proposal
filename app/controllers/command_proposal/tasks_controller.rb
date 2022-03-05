@@ -53,7 +53,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   def create
     @task = ::CommandProposal::Task.new(task_params.except(:code))
     @task.user = command_user
-    @task.skip_approval = true unless approval_required?
+    @task.skip_approval = true unless approval_required?(@task.session_type)
 
     # Cannot create the iteration until the task is created, so save then update
     if @task.save && @task.update(task_params)
@@ -72,7 +72,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
   def update
     @task = ::CommandProposal::Task.find_by!(friendly_id: params[:id])
     @task.user = command_user
-    @task.skip_approval = true unless approval_required?
+    @task.skip_approval = true unless approval_required?(@task.session_type)
 
     if @task.update(task_params)
       redirect_to cmd_path(@task)

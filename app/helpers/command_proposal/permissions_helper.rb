@@ -9,7 +9,7 @@ module CommandProposal
 
     def can_approve?(iteration)
       return false unless permitted_to_use?
-      return true unless approval_required?
+      return true unless approval_required?(iteration.task.session_type)
       return if iteration.nil?
 
       command_user.try("#{cmd_config.role_scope}?") && !current_is_author?(iteration)
@@ -17,13 +17,18 @@ module CommandProposal
 
     def has_approval?(task)
       return false unless permitted_to_use?
-      return true unless approval_required?
+      return true unless approval_required?(task.session_type)
 
       task&.approved?
     end
 
-    def approval_required?
-      cmd_config.approval_required?
+    def approval_required?(task_type=nil)
+      return false unless cmd_config.approval_required?
+      return true if task_type.blank?
+
+      skips = cmd_config.skip_approval_for_types.presence || []
+
+      Array.wrap(skips).map(&:to_sym).exclude?(task_type.to_sym)
     end
 
     def current_is_author?(iteration)
