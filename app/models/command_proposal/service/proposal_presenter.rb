@@ -13,6 +13,7 @@ module CommandProposal
       delegate :description, to: :iteration
       delegate :args, to: :iteration
       delegate :code, to: :iteration
+      delegate :result, to: :iteration
       delegate :status, to: :iteration
       delegate :approved_at, to: :iteration
       delegate :started_at, to: :iteration
