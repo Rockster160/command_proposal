@@ -188,11 +188,10 @@ cmdDocReady(function() {
     }
 
     function handleSuccessfulCommand(evt, line, json) {
-
       if (json.error) {
         addLineResult(line, json.error, "cmd-error")
       } else if (json.status != "started") {
-        addLineResult(line, json.result)
+        addLineResult(line, json.result, json.status == "failed" ? "cmd-error" : "")
       } else {
         return setTimeout(function() { pollIteration(evt, line, json.results_endpoint) }, 2000)
       }
@@ -203,7 +202,7 @@ cmdDocReady(function() {
     function addLineResult(line, text, result_class) {
       line.querySelector(".result").remove()
 
-      if (/^[\s\n]*$/.test(text)) { return }
+      if (!text || /^[\s\n]*$/.test(text)) { return }
 
       var result = document.createElement("div")
       result.classList.add("result")
@@ -241,7 +240,7 @@ cmdDocReady(function() {
             if (json.status == "started") {
               setTimeout(function() { pollIteration(evt, line, endpoint) }, 2000)
             } else {
-              addLineResult(line, json.result)
+              addLineResult(line, json.result, json.status == "failed" ? "cmd-error" : "")
               evt.finish()
             }
           } else {

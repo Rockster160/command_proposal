@@ -51,6 +51,19 @@ module CommandProposal
         proposal
       end
 
+      def quick_fail(iteration, msg)
+        @iteration = iteration
+        prepare
+
+        @iteration.status = :failed
+        @iteration.result = msg
+
+        complete
+        proposal = ::CommandProposal::Service::ProposalPresenter.new(@iteration)
+        @iteration = nil
+        proposal
+      end
+
       def quick_run(friendly_id)
         task = ::CommandProposal::Task.module.find_by!(friendly_id: friendly_id)
         iteration = task&.primary_iteration

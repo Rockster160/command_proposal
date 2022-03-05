@@ -58,7 +58,7 @@ class ::CommandProposal::TasksController < ::CommandProposal::EngineController
     # Cannot create the iteration until the task is created, so save then update
     if @task.save && @task.update(task_params)
       if @task.console?
-        @task.iterations.create(requester: command_user) # Blank iteration to track approval
+        @task.code = nil # Creates a blank iteration to track approval
         redirect_to cmd_path(@task)
       else
         redirect_to cmd_path(:edit, @task)

@@ -23,7 +23,6 @@ class ::CommandProposal::Iteration < ApplicationRecord
 
   TRUNCATE_COUNT = 2000
   # Also hardcoded in JS: app/assets/javascripts/command_proposal/console.js
-  PAGINATION_PER = 2
 
   has_many :comments
   belongs_to :task

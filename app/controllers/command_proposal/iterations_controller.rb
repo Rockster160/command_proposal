@@ -27,11 +27,7 @@ class ::CommandProposal::IterationsController < ::CommandProposal::EngineControl
     return error!("Can only run commands on type: :console") unless @task.console?
     return error!("Session has not been approved.") unless has_approval?(@task)
 
-    if @task.iterations.many?
-      runner = ::CommandProposal.sessions["task:#{@task.id}"]
-
-      return error!("Session has expired. Please start a new session.") if runner.nil?
-    elsif @task.iterations.one?
+    if @task.iterations.one?
       # Track console details in first iteration
       @task.first_iteration.update(started_at: Time.current, status: :started)
     end

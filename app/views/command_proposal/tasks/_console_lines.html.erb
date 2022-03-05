@@ -1,7 +1,7 @@
 <% if lines.none? && !(skip_empty ||= false) -%><div class="line"></div><% end
 -%><% lines.each do |iteration| -%>
   <div class="line"><%= iteration.code
-    -%><div class="result"><%=
+    -%><div class="result <%= 'cmd-error' if iteration.failed? %>"><%=
       truncate = ::CommandProposal::Iteration::TRUNCATE_COUNT
       if iteration.result.present?
         iteration.result.truncate(truncate)
