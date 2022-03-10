@@ -98,8 +98,8 @@ module CommandProposal
           return @iteration.result = results_from_exception(e)
         end
 
-        stored_stdout = $stdout
-        $stdout = StringIO.new
+        stored_stdout = $stdout # quiet
+        $stdout = StringIO.new # quiet
         result = nil # Init var for scope
         status = nil
 
@@ -136,7 +136,7 @@ module CommandProposal
         output = nil if output == ""
         # Not using presence because we want to maintain other empty objects such as [] and {}
 
-        $stdout = stored_stdout
+        $stdout = stored_stdout # quiet
         @iteration.status = status
         @iteration.result = [output, result].compact.join("\n")
       end

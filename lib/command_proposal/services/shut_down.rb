@@ -13,7 +13,7 @@ module CommandProposal
       def terminate(iteration)
         return unless iteration.running?
 
-        terminated_result = iteration.result + "\n\n~~~~~ TERMINATED ~~~~~"
+        terminated_result = "#{iteration&.result}\n\n~~~~~ TERMINATED ~~~~~"
         iteration.update(
           status: :terminated,
           result: terminated_result,
