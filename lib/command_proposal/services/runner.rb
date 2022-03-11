@@ -103,7 +103,7 @@ module CommandProposal
         result = nil # Init var for scope
         status = nil
 
-        running_thread = Thread.new do
+        runner_proc = proc {
           begin
             # Run `bring` functions in here so we can capture any string outputs
             # OR! Run the full runner and instead of saving to an iteration, return the string for prepending here
@@ -115,21 +115,29 @@ module CommandProposal
 
             result = results_from_exception(e)
           end
-        end
+        }
 
-        while running_thread.status.present?
-          @iteration.reload
-
-          if $stdout.try(:string) != @iteration.result
-            @iteration.update(result: $stdout.try(:string).dup)
+        if Rails.application.config.active_job&.queue_adapter == :inline
+          runner_proc.call
+        else
+          running_thread = Thread.new do
+            runner_proc.call
           end
 
-          if @iteration.cancelling?
-            running_thread.exit
-            status = :cancelled
-          end
+          while running_thread.status.present?
+            @iteration.reload
 
-          sleep 0.4
+            if $stdout.try(:string) != @iteration.result
+              @iteration.update(result: $stdout.try(:string).dup)
+            end
+
+            if @iteration.cancelling?
+              running_thread.exit
+              status = :cancelled
+            end
+
+            sleep 0.4
+          end
         end
 
         output = $stdout.try(:string)
