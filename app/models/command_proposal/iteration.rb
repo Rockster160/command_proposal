@@ -24,8 +24,8 @@ class ::CommandProposal::Iteration < ApplicationRecord
   TRUNCATE_COUNT = 2000
   # Also hardcoded in JS: app/assets/javascripts/command_proposal/console.js
 
-  has_many :comments
-  belongs_to :task
+  has_many :comments, class_name: "CommandProposal::Comment"
+  belongs_to :task, class_name: "CommandProposal::Task"
   external_belongs_to :requester
   external_belongs_to :approver
 

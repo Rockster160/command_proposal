@@ -9,7 +9,7 @@ class ::CommandProposal::Task < ApplicationRecord
   self.table_name = :command_proposal_tasks
   attr_accessor :user, :skip_approval
 
-  has_many :iterations
+  has_many :iterations, class_name: "CommandProposal::Iteration"
   has_many :ordered_iterations, -> { order(created_at: :desc) }, class_name: "CommandProposal::Iteration"
 
   scope :search, ->(text) {
