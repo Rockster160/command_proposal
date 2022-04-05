@@ -1,6 +1,6 @@
 module CommandProposal
   module Service
-    class JSONWrapper
+    class JsonWrapper
       # Allows directly setting pre-stringified JSON.
       def self.dump(obj)
         return obj if obj.is_a?(String)

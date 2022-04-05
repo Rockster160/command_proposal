@@ -18,7 +18,7 @@ require_dependency "command_proposal/service/json_wrapper"
 
 class ::CommandProposal::Iteration < ApplicationRecord
   self.table_name = :command_proposal_iterations
-  serialize :args, ::CommandProposal::Service::JSONWrapper
+  serialize :args, ::CommandProposal::Service::JsonWrapper
   include ::CommandProposal::Service::ExternalBelong
 
   TRUNCATE_COUNT = 2000
