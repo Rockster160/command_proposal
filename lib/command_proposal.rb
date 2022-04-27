@@ -26,8 +26,8 @@ module CommandProposal
 
   def self.engine_name
     @engine_name ||= begin
-      `rails routes | grep command_proposal_engine`[/\w*command_proposal_engine/]
-    end
+      `bundle exec rails routes | grep command_proposal_engine`.to_s[/\w*command_proposal_engine/]
+    end || "command_proposal_engine"
   end
 
   def self.configure
